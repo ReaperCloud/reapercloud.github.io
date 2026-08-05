@@ -801,16 +801,12 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
-let themeTransitionFinishing = false;
-let themeTransitionWarmupInProgress = false;
-let themeTransitionWarmed = false;
-let queuedThemeTogglePosition = null;
-
-let activeThemeTransitionId = 0;
 let themeTransitionWatchdogTimer = null;
-let themeButtonUnlockTimer = null;
-let fallbackThemeSwapTimer = null;
-let fallbackThemeFinishTimer = null;
+
+const THEME_CIRCLE_EXPAND_MS = 320;
+const THEME_SWAP_WAIT_MS = 300;
+const THEME_CIRCLE_FADE_MS = 190;
+const THEME_BUTTON_COOLDOWN_MS = 420;
 
 
 function setThemeButtonBusy(isBusy) {
@@ -826,82 +822,41 @@ function setThemeButtonBusy(isBusy) {
 }
 
 
-function clearFallbackThemeTimers() {
-    window.clearTimeout(fallbackThemeSwapTimer);
-    window.clearTimeout(fallbackThemeFinishTimer);
-
-    fallbackThemeSwapTimer = null;
-    fallbackThemeFinishTimer = null;
-}
-
-
-function clearThemeSafetyTimers() {
+function clearThemeTransitionWatchdog() {
     window.clearTimeout(themeTransitionWatchdogTimer);
-    window.clearTimeout(themeButtonUnlockTimer);
-
     themeTransitionWatchdogTimer = null;
-    themeButtonUnlockTimer = null;
 }
 
 
-function beginThemeTransition() {
-    if (
-        themeTransitionInProgress ||
-        themeTransitionFinishing
-    ) {
-        return 0;
-    }
-
-    clearThemeSafetyTimers();
-
-    themeTransitionInProgress = true;
-    themeTransitionFinishing = false;
-    activeThemeTransitionId += 1;
-
-    const transitionId = activeThemeTransitionId;
-
-    setThemeButtonBusy(true);
-
-    /*
-        Protección de emergencia: si el navegador no resuelve una
-        View Transition por algún motivo, el botón vuelve a habilitarse.
-    */
-    themeTransitionWatchdogTimer = window.setTimeout(() => {
-        finishThemeTransition(
-            currentTheme(),
-            transitionId,
-            80
-        );
-    }, 1800);
-
-    return transitionId;
-}
-
-
-function finishThemeTransition(
-    nextTheme,
-    transitionId = activeThemeTransitionId,
-    unlockDelay = 240
-) {
-    if (
-        transitionId !== activeThemeTransitionId ||
-        themeTransitionFinishing
-    ) {
+function resetThemeOverlay() {
+    if (!themeOverlay) {
         return;
     }
 
-    themeTransitionFinishing = true;
+    themeOverlay.getAnimations().forEach((animation) => {
+        animation.cancel();
+    });
 
-    root.classList.remove(
-        "theme-transition",
-        "theme-transition-prewarm",
-        "theme-style-prewarm"
-    );
+    themeOverlay.style.opacity = "0";
+    themeOverlay.style.clipPath =
+        "circle(0px at var(--theme-x) var(--theme-y))";
+}
 
-    document.body.classList.remove("theme-animating");
 
-    window.clearTimeout(themeTransitionWatchdogTimer);
-    themeTransitionWatchdogTimer = null;
+function finishThemeAnimation(nextTheme, announceChange = true) {
+    clearThemeTransitionWatchdog();
+    resetThemeOverlay();
+
+    root.classList.remove("theme-animation-active");
+
+    window.setTimeout(() => {
+        themeTransitionInProgress = false;
+        setThemeButtonBusy(false);
+    }, THEME_BUTTON_COOLDOWN_MS);
+
+    if (!announceChange) {
+        return;
+    }
 
     const copy = currentCopy();
 
@@ -910,270 +865,48 @@ function finishThemeTransition(
             ? copy.themeDarkAnnouncement
             : copy.themeLightAnnouncement
     );
+}
 
+
+function getThemeCoverColor(theme) {
+    return theme === "dark"
+        ? "#0d0e12"
+        : "#f5f5f7";
+}
+
+
+async function toggleTheme(event) {
     /*
-        Se mantiene un pequeño cooldown después de la animación.
-        Así una ráfaga de clics no crea capturas consecutivas de
-        toda la página ni satura la memoria gráfica del navegador.
+        Mientras la animación y el cooldown estén activos, todos los
+        clics adicionales se descartan. No se crea ninguna cola.
     */
-    themeButtonUnlockTimer = window.setTimeout(() => {
-        if (transitionId !== activeThemeTransitionId) {
-            return;
-        }
-
-        themeTransitionInProgress = false;
-        themeTransitionFinishing = false;
-        setThemeButtonBusy(false);
-    }, unlockDelay);
-}
-
-
-function forceThemeStyleCalculation() {
-    void document.documentElement.offsetWidth;
-    void document.body.offsetHeight;
-
-    const warmElements = [
-        document.body,
-        siteHeader,
-        document.querySelector("main"),
-        themeButton,
-        document.querySelector(".project-card"),
-        document.querySelector(".section-heading")
-    ].filter(Boolean);
-
-    warmElements.forEach((element) => {
-        const computedStyle = window.getComputedStyle(element);
-
-        void computedStyle.color;
-        void computedStyle.backgroundColor;
-        void computedStyle.borderColor;
-        void computedStyle.boxShadow;
-    });
-}
-
-
-function warmUpBothThemeStyles() {
-    const initialTheme = currentTheme();
-    const oppositeTheme =
-        initialTheme === "dark" ? "light" : "dark";
-
-    root.classList.add("theme-style-prewarm");
-
-    root.dataset.theme = oppositeTheme;
-    forceThemeStyleCalculation();
-
-    root.dataset.theme = initialTheme;
-    forceThemeStyleCalculation();
-
-    root.classList.remove("theme-style-prewarm");
-    updateThemeButton(initialTheme);
-}
-
-
-function runQueuedThemeToggle() {
-    if (!queuedThemeTogglePosition) {
-        return;
-    }
-
-    const position = queuedThemeTogglePosition;
-    queuedThemeTogglePosition = null;
-
-    window.requestAnimationFrame(() => {
-        toggleTheme({
-            clientX: position.x,
-            clientY: position.y
-        });
-    });
-}
-
-
-function warmUpThemeTransition() {
-    if (
-        themeTransitionWarmed ||
-        themeTransitionWarmupInProgress ||
-        themeTransitionInProgress ||
-        reducedMotionQuery.matches ||
-        !document.startViewTransition ||
-        document.visibilityState !== "visible"
-    ) {
-        return;
-    }
-
-    themeTransitionWarmupInProgress = true;
-
-    warmUpBothThemeStyles();
-    root.classList.add("theme-transition-prewarm");
-
-    const buttonBounds = themeButton?.getBoundingClientRect();
-    const warmX = buttonBounds
-        ? buttonBounds.left + buttonBounds.width / 2
-        : window.innerWidth * 0.88;
-    const warmY = buttonBounds
-        ? buttonBounds.top + buttonBounds.height / 2
-        : 44;
-
-    let warmupTransition;
-
-    try {
-        warmupTransition =
-            document.startViewTransition(() => {});
-    } catch {
-        root.classList.remove("theme-transition-prewarm");
-        themeTransitionWarmupInProgress = false;
-        themeTransitionWarmed = true;
-        runQueuedThemeToggle();
-        return;
-    }
-
-    warmupTransition.ready
-        .then(() => {
-            const warmAnimation = root.animate(
-                {
-                    clipPath: [
-                        `circle(1px at ${warmX}px ${warmY}px)`,
-                        `circle(2px at ${warmX}px ${warmY}px)`
-                    ]
-                },
-                {
-                    duration: 1,
-                    fill: "both",
-                    pseudoElement:
-                        "::view-transition-new(root)"
-                }
-            );
-
-            return warmAnimation.finished.catch(() => {});
-        })
-        .catch(() => {});
-
-    warmupTransition.finished
-        .catch(() => {})
-        .finally(() => {
-            root.classList.remove("theme-transition-prewarm");
-            themeTransitionWarmupInProgress = false;
-            themeTransitionWarmed = true;
-            runQueuedThemeToggle();
-        });
-}
-
-
-function scheduleThemeTransitionWarmup() {
-    const schedule = () => {
-        window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
-                if ("requestIdleCallback" in window) {
-                    window.requestIdleCallback(
-                        warmUpThemeTransition,
-                        { timeout: 220 }
-                    );
-                    return;
-                }
-
-                window.setTimeout(warmUpThemeTransition, 40);
-            });
-        });
-    };
-
-    if (document.visibilityState === "visible") {
-        schedule();
-        return;
-    }
-
-    document.addEventListener(
-        "visibilitychange",
-        () => {
-            if (document.visibilityState === "visible") {
-                schedule();
-            }
-        },
-        { once: true }
-    );
-}
-
-
-function playFallbackThemeAnimation(event, nextTheme) {
-    if (!themeOverlay) {
-        setTheme(nextTheme);
-        return;
-    }
-
-    const transitionId = beginThemeTransition();
-
-    if (!transitionId) {
-        return;
-    }
-
-    const { x, y } = getEventPosition(event);
-
-    themeOverlay.style.setProperty(
-        "--theme-x",
-        `${Math.round((x / window.innerWidth) * 100)}%`
-    );
-
-    themeOverlay.style.setProperty(
-        "--theme-y",
-        `${Math.round((y / window.innerHeight) * 100)}%`
-    );
-
-    clearFallbackThemeTimers();
-
-    document.body.classList.remove("theme-animating");
-    void themeOverlay.offsetWidth;
-    document.body.classList.add("theme-animating");
-
-    fallbackThemeSwapTimer = window.setTimeout(() => {
-        setTheme(nextTheme, false);
-    }, 80);
-
-    fallbackThemeFinishTimer = window.setTimeout(() => {
-        finishThemeTransition(
-            nextTheme,
-            transitionId
-        );
-    }, 650);
-}
-
-
-function toggleTheme(event) {
-    if (
-        themeTransitionInProgress ||
-        themeTransitionFinishing
-    ) {
-        return;
-    }
-
-    if (themeTransitionWarmupInProgress) {
-        /*
-            Durante el precalentamiento solo se conserva el primer clic.
-            Los clics adicionales se ignoran para impedir una cola de
-            cambios de tema.
-        */
-        if (!queuedThemeTogglePosition) {
-            const { x, y } = getEventPosition(event);
-            queuedThemeTogglePosition = { x, y };
-        }
-
+    if (themeTransitionInProgress) {
         return;
     }
 
     const nextTheme =
         currentTheme() === "dark" ? "light" : "dark";
 
-    if (reducedMotionQuery.matches) {
+    if (
+        reducedMotionQuery.matches ||
+        !themeOverlay
+    ) {
+        themeTransitionInProgress = true;
+        setThemeButtonBusy(true);
         setTheme(nextTheme);
+
+        window.setTimeout(() => {
+            themeTransitionInProgress = false;
+            setThemeButtonBusy(false);
+        }, THEME_BUTTON_COOLDOWN_MS);
+
         return;
     }
 
-    if (!document.startViewTransition) {
-        playFallbackThemeAnimation(event, nextTheme);
-        return;
-    }
-
-    const transitionId = beginThemeTransition();
-
-    if (!transitionId) {
-        return;
-    }
+    themeTransitionInProgress = true;
+    setThemeButtonBusy(true);
+    clearThemeTransitionWatchdog();
+    resetThemeOverlay();
 
     const { x, y } = getEventPosition(event);
 
@@ -1181,86 +914,88 @@ function toggleTheme(event) {
         Math.hypot(
             Math.max(x, window.innerWidth - x),
             Math.max(y, window.innerHeight - y)
-        ) + 8;
+        ) + 12;
 
-    root.classList.add("theme-transition");
+    themeOverlay.style.setProperty("--theme-x", `${x}px`);
+    themeOverlay.style.setProperty("--theme-y", `${y}px`);
+    themeOverlay.style.setProperty(
+        "--theme-cover-color",
+        getThemeCoverColor(nextTheme)
+    );
 
-    let transition;
+    themeOverlay.style.opacity = "1";
+    themeOverlay.style.clipPath =
+        `circle(0px at ${x}px ${y}px)`;
+
+    root.classList.add("theme-animation-active");
+
+    /*
+        Protección final: incluso si el navegador cancela una animación
+        o la pestaña pierde visibilidad, el botón vuelve a habilitarse.
+    */
+    themeTransitionWatchdogTimer = window.setTimeout(() => {
+        setTheme(nextTheme, false);
+        finishThemeAnimation(nextTheme, false);
+    }, 2200);
 
     try {
-        transition = document.startViewTransition(() => {
-            setTheme(nextTheme, false);
+        /*
+            Primera fase: un círculo del color del tema nuevo crece
+            desde el botón. Solo se anima una capa fija del viewport.
+        */
+        const expandAnimation = themeOverlay.animate(
+            [
+                {
+                    clipPath:
+                        `circle(0px at ${x}px ${y}px)`
+                },
+                {
+                    clipPath:
+                        `circle(${endRadius}px at ${x}px ${y}px)`
+                }
+            ],
+            {
+                duration: THEME_CIRCLE_EXPAND_MS,
+                easing: "cubic-bezier(.22, 1, .36, 1)",
+                fill: "forwards"
+            }
+        );
+
+        await expandAnimation.finished;
+
+        /*
+            El tema cambia cuando la capa ya cubre todo. De esta forma,
+            el recálculo de estilos no se ve como un salto.
+        */
+        setTheme(nextTheme, false);
+
+        await new Promise((resolve) => {
+            window.setTimeout(resolve, THEME_SWAP_WAIT_MS);
         });
+
+        /*
+            Segunda fase: la capa desaparece y deja ver el tema nuevo.
+        */
+        const fadeAnimation = themeOverlay.animate(
+            [
+                { opacity: 1 },
+                { opacity: 0 }
+            ],
+            {
+                duration: THEME_CIRCLE_FADE_MS,
+                easing: "ease-out",
+                fill: "forwards"
+            }
+        );
+
+        await fadeAnimation.finished;
+
+        finishThemeAnimation(nextTheme);
     } catch {
         setTheme(nextTheme, false);
-        finishThemeTransition(
-            nextTheme,
-            transitionId,
-            100
-        );
-        return;
+        finishThemeAnimation(nextTheme);
     }
-
-    transition.ready
-        .then(() => {
-            const limitedHardware =
-                (
-                    Number.isFinite(navigator.hardwareConcurrency) &&
-                    navigator.hardwareConcurrency <= 4
-                ) ||
-                (
-                    Number.isFinite(navigator.deviceMemory) &&
-                    navigator.deviceMemory <= 4
-                );
-
-            const duration =
-                limitedHardware ? 620 : 540;
-
-            const revealAnimation = root.animate(
-                [
-                    {
-                        clipPath:
-                            `circle(1px at ${x}px ${y}px)`,
-                        offset: 0
-                    },
-                    {
-                        clipPath:
-                            `circle(${endRadius * 0.18}px at ${x}px ${y}px)`,
-                        offset: 0.2
-                    },
-                    {
-                        clipPath:
-                            `circle(${endRadius}px at ${x}px ${y}px)`,
-                        offset: 1
-                    }
-                ],
-                {
-                    duration,
-                    easing: "cubic-bezier(.22, 1, .36, 1)",
-                    fill: "both",
-                    pseudoElement:
-                        "::view-transition-new(root)"
-                }
-            );
-
-            return revealAnimation.finished.catch(() => {});
-        })
-        .catch(() => {});
-
-    transition.finished
-        .catch(() => {})
-        .finally(() => {
-            themeTransitionWarmed = true;
-
-            finishThemeTransition(
-                nextTheme,
-                transitionId
-            );
-        });
 }
-
-
-scheduleThemeTransitionWarmup();
 
 function updateHeader() {
     siteHeader?.classList.toggle("scrolled", window.scrollY > 16);

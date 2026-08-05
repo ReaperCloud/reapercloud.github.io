@@ -190,44 +190,27 @@ ul {
     opacity: 0;
     pointer-events: none;
 
-    background:
-        radial-gradient(
-            circle at var(--theme-x, 85%) var(--theme-y, 10%),
-            rgba(255, 255, 255, 0.28),
-            transparent 22%
+    background: var(
+        --theme-cover-color,
+        var(--background)
+    );
+
+    clip-path:
+        circle(
+            0px
+            at var(--theme-x, 88vw)
+            var(--theme-y, 42px)
         );
+
+    contain: strict;
+    will-change: clip-path, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
-html[data-theme="dark"] .theme-transition-overlay {
-    background:
-        radial-gradient(
-            circle at var(--theme-x, 85%) var(--theme-y, 10%),
-            rgba(180, 175, 255, 0.18),
-            transparent 22%
-        );
-}
-
-body.theme-animating .theme-transition-overlay {
-    animation:
-        themePulse
-        620ms
-        cubic-bezier(.22, 1, .36, 1);
-}
-
-@keyframes themePulse {
-    0% {
-        opacity: 0;
-        transform: scale(0.96);
-    }
-
-    20% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-        transform: scale(1.02);
-    }
+html.theme-animation-active,
+html.theme-animation-active body {
+    cursor: default;
 }
 
 .page-container {
@@ -2039,58 +2022,6 @@ html[data-theme="dark"] .theme-icon-moon {
 
 .badge-card h3 {
     min-block-size: 2.8em;
-}
-
-/* Transición nativa y profesional para tema e idioma. */
-::view-transition-old(root),
-::view-transition-new(root) {
-    mix-blend-mode: normal;
-}
-
-html.theme-transition::view-transition-old(root),
-html.theme-transition::view-transition-new(root) {
-    animation: none;
-}
-
-html.theme-transition::view-transition-old(root) {
-    z-index: 1;
-}
-
-html.theme-transition::view-transition-new(root) {
-    z-index: 2;
-}
-
-html.theme-transition::view-transition-new(root) {
-    will-change: clip-path;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-
-html.theme-transition-prewarm::view-transition-old(root),
-html.theme-transition-prewarm::view-transition-new(root) {
-    animation: none !important;
-}
-
-html.theme-transition-prewarm::view-transition-old(root) {
-    opacity: 0;
-}
-
-html.theme-transition-prewarm::view-transition-new(root) {
-    opacity: 1;
-}
-
-
-/*
-    Solo se usa durante el precalentamiento invisible del inicio.
-    Al ocurrir antes de la interacción, estas reglas no añaden trabajo
-    al clic real del interruptor.
-*/
-html.theme-style-prewarm *,
-html.theme-style-prewarm *::before,
-html.theme-style-prewarm *::after {
-    transition: none !important;
-    animation: none !important;
 }
 
 html.language-transition::view-transition-old(root) {
@@ -13731,9 +13662,8 @@ html[data-theme="dark"]
 
 
 /*
-    El botón se bloquea mientras termina la captura del tema y durante
-    un cooldown corto. No cambia visualmente; únicamente evita clics
-    repetidos que podrían crear varias View Transitions consecutivas.
+    El botón permanece bloqueado durante la animación circular y un
+    cooldown corto. Los clics repetidos se descartan completamente.
 */
 .theme-button:disabled,
 .theme-button[aria-busy="true"] {
