@@ -671,6 +671,8 @@ function applyLanguage(language, shouldAnnounce = false) {
 
 
 let languageTransitionInProgress = false;
+let languageApplyTimer = null;
+let languageFinishTimer = null;
 
 
 function changeLanguage(language) {
@@ -694,55 +696,32 @@ function changeLanguage(language) {
     }
 
     languageTransitionInProgress = true;
+
     languageSwitch?.setAttribute(
         "data-pending-language",
         safeLanguage
     );
 
-    const finishLanguageChange = () => {
+    window.clearTimeout(languageApplyTimer);
+    window.clearTimeout(languageFinishTimer);
+
+    /*
+        La pastilla comienza a deslizarse y el contenido cambia
+        a mitad del recorrido. No se anima ni se captura la página.
+    */
+    languageApplyTimer = window.setTimeout(() => {
+        applyLanguage(safeLanguage, false);
+    }, 105);
+
+    languageFinishTimer = window.setTimeout(() => {
         languageSwitch?.removeAttribute(
             "data-pending-language"
         );
+
         languageTransitionInProgress = false;
         announceLanguageChange();
-    };
-
-    /*
-        El indicador empieza a deslizarse primero. Un instante después
-        cambia el contenido, de modo que el movimiento sí es visible
-        incluso cuando el navegador usa View Transitions.
-    */
-    window.setTimeout(() => {
-        if (document.startViewTransition) {
-            root.classList.add("language-transition");
-
-            const transition = document.startViewTransition(() => {
-                applyLanguage(safeLanguage, false);
-            });
-
-            transition.finished
-                .catch(() => {})
-                .finally(() => {
-                    root.classList.remove("language-transition");
-                    finishLanguageChange();
-                });
-
-            return;
-        }
-
-        document.body.classList.add("language-fading");
-
-        window.setTimeout(() => {
-            applyLanguage(safeLanguage, false);
-        }, 80);
-
-        window.setTimeout(() => {
-            document.body.classList.remove("language-fading");
-            finishLanguageChange();
-        }, 280);
-    }, 70);
+    }, 285);
 }
-
 
 function currentTheme() {
     return root.dataset.theme === "dark" ? "dark" : "light";
@@ -822,71 +801,70 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
-let themeSwapTimer = null;
-let themeFinishTimer = null;
+let fallbackThemeSwapTimer = null;
+let fallbackThemeFinishTimer = null;
 
 
-function clearThemeAnimationTimers() {
-    window.clearTimeout(themeSwapTimer);
-    window.clearTimeout(themeFinishTimer);
+function clearFallbackThemeTimers() {
+    window.clearTimeout(fallbackThemeSwapTimer);
+    window.clearTimeout(fallbackThemeFinishTimer);
 
-    themeSwapTimer = null;
-    themeFinishTimer = null;
+    fallbackThemeSwapTimer = null;
+    fallbackThemeFinishTimer = null;
 }
 
 
-function playThemeAnimation(event, nextTheme) {
+function finishThemeTransition(nextTheme) {
+    root.classList.remove(
+        "theme-transition",
+        "theme-transition-capture"
+    );
+
+    document.body.classList.remove("theme-animating");
+    themeTransitionInProgress = false;
+
+    const copy = currentCopy();
+
+    announce(
+        nextTheme === "dark"
+            ? copy.themeDarkAnnouncement
+            : copy.themeLightAnnouncement
+    );
+}
+
+
+function playFallbackThemeAnimation(event, nextTheme) {
     if (!themeOverlay) {
         setTheme(nextTheme);
         return;
     }
 
     const { x, y } = getEventPosition(event);
-    const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
+
+    themeOverlay.style.setProperty(
+        "--theme-x",
+        `${Math.round((x / window.innerWidth) * 100)}%`
     );
 
-    clearThemeAnimationTimers();
+    themeOverlay.style.setProperty(
+        "--theme-y",
+        `${Math.round((y / window.innerHeight) * 100)}%`
+    );
+
+    clearFallbackThemeTimers();
     themeTransitionInProgress = true;
-
-    themeOverlay.style.setProperty(
-        "--theme-x-px",
-        `${Math.round(x)}px`
-    );
-    themeOverlay.style.setProperty(
-        "--theme-y-px",
-        `${Math.round(y)}px`
-    );
-    themeOverlay.style.setProperty(
-        "--theme-diameter",
-        `${Math.ceil(endRadius * 2)}px`
-    );
-    themeOverlay.style.setProperty(
-        "--theme-cover-color",
-        nextTheme === "dark" ? "#0d0e12" : "#f5f5f7"
-    );
 
     document.body.classList.remove("theme-animating");
     void themeOverlay.offsetWidth;
     document.body.classList.add("theme-animating");
 
-    /* El tema cambia cuando el círculo ya cubre toda la pantalla. */
-    themeSwapTimer = window.setTimeout(() => {
+    fallbackThemeSwapTimer = window.setTimeout(() => {
         setTheme(nextTheme, false);
-    }, 330);
+    }, 80);
 
-    themeFinishTimer = window.setTimeout(() => {
-        document.body.classList.remove("theme-animating");
-        themeTransitionInProgress = false;
-
-        const copy = currentCopy();
-        announce(
-            nextTheme === "dark"
-                ? copy.themeDarkAnnouncement
-                : copy.themeLightAnnouncement
-        );
-    }, 740);
+    fallbackThemeFinishTimer = window.setTimeout(() => {
+        finishThemeTransition(nextTheme);
+    }, 650);
 }
 
 
@@ -895,16 +873,93 @@ function toggleTheme(event) {
         return;
     }
 
-    const nextTheme = currentTheme() === "dark" ? "light" : "dark";
+    const nextTheme =
+        currentTheme() === "dark" ? "light" : "dark";
 
     if (reducedMotionQuery.matches) {
         setTheme(nextTheme);
         return;
     }
 
-    playThemeAnimation(event, nextTheme);
-}
+    if (!document.startViewTransition) {
+        playFallbackThemeAnimation(event, nextTheme);
+        return;
+    }
 
+    const { x, y } = getEventPosition(event);
+
+    const endRadius =
+        Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        ) + 4;
+
+    themeTransitionInProgress = true;
+
+    /*
+        theme-transition-capture desactiva por un instante las
+        transiciones internas de tarjetas, fondos e iconos. Así
+        el navegador captura directamente el estado final del tema
+        y no una imagen intermedia que después salte.
+    */
+    root.classList.add(
+        "theme-transition",
+        "theme-transition-capture"
+    );
+
+    const transition = document.startViewTransition(() => {
+        setTheme(nextTheme, false);
+    });
+
+    transition.ready
+        .then(() => {
+            root.classList.remove(
+                "theme-transition-capture"
+            );
+
+            const limitedHardware =
+                (
+                    Number.isFinite(navigator.hardwareConcurrency) &&
+                    navigator.hardwareConcurrency <= 4
+                ) ||
+                (
+                    Number.isFinite(navigator.deviceMemory) &&
+                    navigator.deviceMemory <= 4
+                );
+
+            const duration =
+                limitedHardware ? 470 : 540;
+
+            const revealAnimation = root.animate(
+                {
+                    clipPath: [
+                        `circle(0px at ${x}px ${y}px)`,
+                        `circle(${endRadius}px at ${x}px ${y}px)`
+                    ]
+                },
+                {
+                    duration,
+                    easing: "cubic-bezier(.22, 1, .36, 1)",
+                    fill: "both",
+                    pseudoElement:
+                        "::view-transition-new(root)"
+                }
+            );
+
+            return revealAnimation.finished.catch(() => {});
+        })
+        .catch(() => {
+            root.classList.remove(
+                "theme-transition-capture"
+            );
+        });
+
+    transition.finished
+        .catch(() => {})
+        .finally(() => {
+            finishThemeTransition(nextTheme);
+        });
+}
 
 function updateHeader() {
     siteHeader?.classList.toggle("scrolled", window.scrollY > 16);

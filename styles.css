@@ -187,59 +187,46 @@ ul {
     z-index: 4500;
     inset: 0;
 
-    overflow: hidden;
-    pointer-events: none;
-}
-
-/*
-    La transición del tema usa una sola capa circular animada.
-    Es mucho más ligera que capturar y recortar toda la página,
-    por lo que permanece fluida también en laptops.
-*/
-.theme-transition-overlay::before {
-    content: "";
-
-    position: absolute;
-    left: var(--theme-x-px, 88vw);
-    top: var(--theme-y-px, 44px);
-
-    width: var(--theme-diameter, 0px);
-    height: var(--theme-diameter, 0px);
-
-    border-radius: 50%;
-
-    background: var(--theme-cover-color, #0d0e12);
-    box-shadow: 0 0 80px rgba(17, 18, 22, 0.12);
-
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-    transform-origin: center;
-    will-change: transform, opacity;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at var(--theme-x, 85%) var(--theme-y, 10%),
+            rgba(255, 255, 255, 0.28),
+            transparent 22%
+        );
 }
 
-body.theme-animating .theme-transition-overlay::before {
-    animation: themeCoverReveal 720ms cubic-bezier(.22, 1, .36, 1) both;
+html[data-theme="dark"] .theme-transition-overlay {
+    background:
+        radial-gradient(
+            circle at var(--theme-x, 85%) var(--theme-y, 10%),
+            rgba(180, 175, 255, 0.18),
+            transparent 22%
+        );
 }
 
-@keyframes themeCoverReveal {
+body.theme-animating .theme-transition-overlay {
+    animation:
+        themePulse
+        620ms
+        cubic-bezier(.22, 1, .36, 1);
+}
+
+@keyframes themePulse {
     0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        transform: scale(0.96);
     }
 
-    46% {
+    20% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-
-    62% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.025);
     }
 
     100% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(1.025);
+        transform: scale(1.02);
     }
 }
 
@@ -2073,6 +2060,26 @@ html.theme-transition::view-transition-new(root) {
     z-index: 2;
 }
 
+
+/*
+    Durante la captura del nuevo tema se detienen solamente
+    transiciones y animaciones internas. Esto evita capturar
+    colores a medio cambiar y reduce el trabajo en laptops.
+*/
+html.theme-transition-capture *,
+html.theme-transition-capture *::before,
+html.theme-transition-capture *::after {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    animation-play-state: paused !important;
+}
+
+html.theme-transition::view-transition-new(root) {
+    will-change: clip-path;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
 html.language-transition::view-transition-old(root) {
     animation: languageViewOut 170ms ease both;
 }
@@ -2328,7 +2335,7 @@ main,
         transition: none;
     }
 
-    body.theme-animating .theme-transition-overlay::before {
+    body.theme-animating .theme-transition-overlay {
         animation: none;
     }
 }
