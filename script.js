@@ -858,11 +858,6 @@ function cleanupThemeTransitionClasses() {
         "theme-transition",
         "theme-transition-prewarm"
     );
-
-    root.style.removeProperty("--theme-vt-x");
-    root.style.removeProperty("--theme-vt-y");
-    root.style.removeProperty("--theme-vt-r-small");
-    root.style.removeProperty("--theme-vt-r");
 }
 
 
@@ -918,20 +913,72 @@ function releaseThemeButtonWhenReady() {
 }
 
 
+function isCssTransition(animation) {
+    if (
+        typeof CSSTransition !== "undefined" &&
+        animation instanceof CSSTransition
+    ) {
+        return true;
+    }
+
+    return animation?.constructor?.name === "CSSTransition";
+}
+
+
+function finishNewThemeCssTransitions(previousAnimations) {
+    /*
+        Al cambiar data-theme, varios componentes crean sus propias
+        transiciones de color y fondo. Si la nueva captura se toma
+        mientras siguen en su primer fotograma, el círculo revela una
+        vista todavía clara y al final "salta" al tema oscuro.
+
+        Se terminan únicamente las CSS transitions que nacieron con
+        este cambio de tema. Animaciones existentes, hover, carruseles
+        y demás efectos no se tocan.
+    */
+    const currentAnimations =
+        document.getAnimations({ subtree: true });
+
+    currentAnimations.forEach((animation) => {
+        if (
+            previousAnimations.has(animation) ||
+            !isCssTransition(animation)
+        ) {
+            return;
+        }
+
+        try {
+            animation.finish();
+        } catch {
+            /*
+                Algunas transiciones pueden desaparecer entre la
+                consulta y finish(). No afecta el cambio del tema.
+            */
+        }
+    });
+}
+
+
 function applyThemeForSnapshot(nextTheme) {
+    const previousAnimations = new Set(
+        document.getAnimations({ subtree: true })
+    );
+
     setTheme(nextTheme, false);
 
     /*
-        Con las transiciones de color apagadas por CSS mientras dura
-        "theme-transition" (ver styles.css), el cambio de tema ya es
-        instantáneo por sí solo: ya no hace falta recorrer
-        document.getAnimations() ni forzar finish() en cada transición
-        nueva, que era trabajo síncrono pesado justo en el arranque de
-        la animación y causaba el tirón inicial.
+        Fuerza el cálculo del estilo nuevo mientras el renderizado de
+        View Transition está suspendido. No se espera ninguna promesa
+        ni se realiza trabajo de red dentro del callback.
+    */
+    void root.offsetWidth;
+    void window.getComputedStyle(document.body).color;
 
-        Esta lectura fuerza el cálculo del estilo nuevo mientras el
-        renderizado de View Transition está suspendido, para que la
-        captura corresponda al estado final.
+    finishNewThemeCssTransitions(previousAnimations);
+
+    /*
+        Una segunda lectura confirma que la captura nueva corresponde
+        al estado final, no a un fotograma intermedio.
     */
     void root.offsetWidth;
 }
@@ -1035,40 +1082,6 @@ function startThemeTransition(request) {
     const { x, y, radius } =
         getThemeTransitionGeometry(request);
 
-    /*
-        Estas variables se fijan ANTES de startViewTransition y la
-        animación del círculo vive en CSS (@keyframes theme-circle-reveal)
-        en vez de crearse con root.animate() dentro de un .then() de
-        transition.ready.
-
-        Motivo: entre que el navegador crea los pseudo-elementos de la
-        transición y el momento en que un .then() de JS llega a ejecutarse,
-        existe una ventana de tiempo real. Si en esa ventana el
-        pseudo-elemento ::view-transition-new(root) no tiene ninguna
-        animación asociada (como ocurría antes, con "animation: none" en
-        CSS a la espera del root.animate() tardío), el navegador puede dar
-        por terminada la transición de inmediato. Eso cortaba el círculo a
-        medio camino y el tema saltaba de golpe al estado final — más
-        notorio en laptop, donde hay más elementos en pantalla y ese
-        .then() tarda un poco más en ejecutarse.
-
-        Al fijar la animación en CSS, el navegador la asocia al
-        pseudo-elemento en el mismo paso síncrono en que lo crea, así que
-        esa ventana de carrera desaparece y transition.finished espera
-        correctamente los THEME_TRANSITION_DURATION ms completos.
-    */
-    root.style.setProperty(
-        "--theme-transition-duration",
-        `${THEME_TRANSITION_DURATION}ms`
-    );
-    root.style.setProperty("--theme-vt-x", `${x}px`);
-    root.style.setProperty("--theme-vt-y", `${y}px`);
-    root.style.setProperty(
-        "--theme-vt-r-small",
-        `${radius * 0.18}px`
-    );
-    root.style.setProperty("--theme-vt-r", `${radius}px`);
-
     root.classList.add("theme-transition");
 
     let transition;
@@ -1095,6 +1108,46 @@ function startThemeTransition(request) {
     themeSafetyTimer = window.setTimeout(() => {
         safelySkipThemeTransition(transition);
     }, THEME_SAFETY_TIMEOUT);
+
+    transition.ready
+        .then(() => {
+            if (transition !== activeThemeTransition) {
+                return;
+            }
+
+            activeThemeAnimation = root.animate(
+                [
+                    {
+                        clipPath:
+                            `circle(1px at ${x}px ${y}px)`,
+                        offset: 0
+                    },
+                    {
+                        clipPath:
+                            `circle(${radius * 0.18}px at ${x}px ${y}px)`,
+                        offset: 0.2
+                    },
+                    {
+                        clipPath:
+                            `circle(${radius}px at ${x}px ${y}px)`,
+                        offset: 1
+                    }
+                ],
+                {
+                    duration: THEME_TRANSITION_DURATION,
+                    easing: "cubic-bezier(.22, 1, .36, 1)",
+                    fill: "both",
+                    pseudoElement:
+                        "::view-transition-new(root)"
+                }
+            );
+        })
+        .catch(() => {
+            /*
+                ready puede rechazarse aunque el callback sí haya
+                cambiado correctamente el tema.
+            */
+        });
 
     transition.updateCallbackDone
         .catch(() => {
