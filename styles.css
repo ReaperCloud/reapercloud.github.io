@@ -2047,6 +2047,8 @@ html[data-theme="dark"] .theme-icon-moon {
     mix-blend-mode: normal;
 }
 
+html.theme-transition::view-transition-group(root),
+html.theme-transition::view-transition-image-pair(root),
 html.theme-transition::view-transition-old(root),
 html.theme-transition::view-transition-new(root) {
     animation: none;
@@ -2058,43 +2060,29 @@ html.theme-transition::view-transition-old(root) {
 
 html.theme-transition::view-transition-new(root) {
     z-index: 2;
+
     will-change: clip-path;
     backface-visibility: hidden;
     transform: translateZ(0);
 }
 
 /*
-    Precalentamiento real del mismo snapshot y del mismo clip circular.
-    La captura anterior permanece completamente visible mientras la nueva
-    se procesa con una opacidad imperceptible.
+    Warm-up invisible de la API. Las dos capturas son idénticas y la
+    transición se omite apenas el árbol de pseudoelementos está listo.
 */
+html.theme-transition-prewarm::view-transition-group(root),
+html.theme-transition-prewarm::view-transition-image-pair(root),
 html.theme-transition-prewarm::view-transition-old(root),
 html.theme-transition-prewarm::view-transition-new(root) {
     animation: none !important;
 }
 
 html.theme-transition-prewarm::view-transition-old(root) {
-    z-index: 2;
     opacity: 1;
 }
 
 html.theme-transition-prewarm::view-transition-new(root) {
-    z-index: 1;
-    opacity: 0.001;
-    will-change: clip-path;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-/*
-    Solo se usa durante el cálculo invisible de los dos temas al inicio.
-    No se mantiene activa durante la interacción real.
-*/
-html.theme-style-prewarm *,
-html.theme-style-prewarm *::before,
-html.theme-style-prewarm *::after {
-    transition: none !important;
-    animation: none !important;
+    opacity: 0;
 }
 
 html.language-transition::view-transition-old(root) {
@@ -13735,19 +13723,13 @@ html[data-theme="dark"]
 
 
 /*
-    El interruptor permanece físicamente bloqueado durante el
-    precalentamiento, la transición y el cooldown. Los clics repetidos
-    no se guardan ni crean nuevas capturas de la página.
+    El interruptor no se deshabilita físicamente. Las pulsaciones
+    adicionales llegan al debounce interno, reinician su contador fijo
+    y nunca generan una segunda View Transition superpuesta.
 */
-.theme-button:disabled,
 .theme-button[aria-busy="true"] {
     opacity: 1;
-    cursor: default;
-    pointer-events: none;
-}
-
-.theme-button[data-theme-preparing="true"] {
-    cursor: wait;
+    cursor: pointer;
 }
 
 .theme-button {
