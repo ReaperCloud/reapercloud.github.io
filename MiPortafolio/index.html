@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Portafolio de Alejandro Lira, estudiante de Desarrollo de Software."
+        id="meta-description"
+    >
+    <meta name="color-scheme" content="light dark">
+
+    <title>Alejandro Lira | Desarrollo de Software</title>
+
+    <meta name="author" content="Alejandro Lira">
+    <link rel="canonical" href="https://alejandrolira.dev/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:title" content="Alejandro Lira | Desarrollo de Software">
+    <meta
+        property="og:description"
+        content="Portafolio de Alejandro Lira, estudiante de Desarrollo de Software."
+    >
+    <meta property="og:url" content="https://alejandrolira.dev/">
+    <meta property="og:site_name" content="Alejandro Lira">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Alejandro Lira | Desarrollo de Software">
+    <meta
+        name="twitter:description"
+        content="Portafolio de Alejandro Lira, estudiante de Desarrollo de Software."
+    >
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Alejandro Lira",
+        "url": "https://alejandrolira.dev/",
+        "email": "mailto:alejandro@alejandrolira.dev",
+        "jobTitle": "Desarrollador de Software",
+        "sameAs": [
+            "https://github.com/ReaperCloud"
+        ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./badges.css">
+
+    <script>
+        (() => {
+            try {
+                const savedTheme = localStorage.getItem("portfolio-theme");
+                const prefersDark = window.matchMedia(
+                    "(prefers-color-scheme: dark)"
+                ).matches;
+
+                document.documentElement.dataset.theme =
+                    savedTheme === "dark" || savedTheme === "light"
+                        ? savedTheme
+                        : prefersDark
+                            ? "dark"
+                            : "light";
+
+                const savedLanguage = localStorage.getItem("portfolio-language");
+                document.documentElement.dataset.language =
+                    savedLanguage === "en" ? "en" : "es";
+                document.documentElement.lang =
+                    savedLanguage === "en" ? "en" : "es";
+            } catch {
+                document.documentElement.dataset.theme = "light";
+                document.documentElement.dataset.language = "es";
+            }
+        })();
+    </script>
+</head>
+<body>
+    <a
+        class="skip-link"
+        href="#main-content"
+        data-i18n="accessibility.skip"
+    >
+        Saltar al contenido
+    </a>
+
+    <div
+        class="screen-reader-only"
+        id="status-message"
+        aria-live="polite"
+    ></div>
+
+    <div
+        class="theme-transition-overlay"
+        id="theme-transition-overlay"
+        aria-hidden="true"
+    ></div>
+
+    <!-- ======================================================
+         NAVEGACIÓN
+    ======================================================= -->
+
+    <header class="site-header" id="site-header">
+        <div class="header-inner">
+            <a
+                class="logo"
+                href="#inicio"
+                data-i18n-aria="accessibility.goHome"
+                aria-label="Ir al inicio"
+            >
+                <img
+                    class="logo-image"
+                    src="./assets/images/branding/LogoAlexLira.svg"
+                    alt=""
+                    aria-hidden="true"
+                >
+            </a>
+
+            <nav
+                class="desktop-nav"
+                data-i18n-aria="accessibility.mainNav"
+                aria-label="Navegación principal"
+            >
+                <a href="#inicio" data-i18n="nav.home">Inicio</a>
+                <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
+                <a href="#insignias" data-i18n="nav.badges">Insignias</a>
+                <a href="#perfil" data-i18n="nav.profile">Perfil</a>
+                <a href="#cv" data-i18n="nav.cv">CV</a>
+                <a href="#contacto" data-i18n="nav.contact">Contacto</a>
+            </nav>
+
+            <div class="header-actions">
+                <div
+                    class="language-switch"
+                    id="language-switch"
+                    role="group"
+                    data-i18n-aria="accessibility.languageGroup"
+                    aria-label="Idioma del sitio"
+                >
+                    <button
+                        class="language-option"
+                        type="button"
+                        data-language="es"
+                        lang="es"
+                        aria-label="Mostrar el sitio en español"
+                        aria-pressed="true"
+                    >
+                        ES
+                    </button>
+
+                    <button
+                        class="language-option"
+                        type="button"
+                        data-language="en"
+                        lang="en"
+                        aria-label="Show the site in English"
+                        aria-pressed="false"
+                    >
+                        EN
+                    </button>
+                </div>
+
+                <button
+                    class="theme-button"
+                    id="theme-button"
+                    type="button"
+                    aria-label="Activar modo oscuro"
+                    aria-pressed="false"
+                >
+                    <svg
+                        class="theme-icon theme-icon-sun"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <circle cx="12" cy="12" r="3.5"></circle>
+                        <path d="M12 2.5v2M12 19.5v2M4.57 4.57l1.42 1.42M18.01 18.01l1.42 1.42M2.5 12h2M19.5 12h2M4.57 19.43l1.42-1.42M18.01 5.99l1.42-1.42"></path>
+                    </svg>
+
+                    <svg
+                        class="theme-icon theme-icon-moon"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M20.2 15.7A8.3 8.3 0 0 1 8.3 3.8 8.5 8.5 0 1 0 20.2 15.7Z"></path>
+                    </svg>
+                </button>
+
+                <a class="contact-pill" href="#contacto" data-i18n="nav.contact">
+                    Contacto
+                </a>
+
+                <button
+                    class="menu-button"
+                    id="menu-button"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="mobile-nav"
+                    aria-label="Abrir menú"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+
+        <nav
+            class="mobile-nav"
+            id="mobile-nav"
+            data-i18n-aria="accessibility.mobileNav"
+            aria-label="Navegación móvil"
+            hidden
+        >
+            <a href="#inicio" data-i18n="nav.home">Inicio</a>
+            <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
+            <a href="#insignias" data-i18n="nav.badges">Insignias</a>
+            <a href="#perfil" data-i18n="nav.profile">Perfil</a>
+            <a href="#cv" data-i18n="nav.cv">CV</a>
+            <a href="#contacto" data-i18n="nav.contact">Contacto</a>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- ======================================================
+             HERO
+        ======================================================= -->
+
+        <section class="hero-section page-section" id="inicio">
+            <div class="page-container">
+                <div class="hero-card reveal">
+                    <div class="hero-copy">
+                        <div class="availability-pill">
+                            <span class="availability-dot" aria-hidden="true"></span>
+                            <span data-i18n="hero.availability">
+                                Disponible para prácticas
+                            </span>
+                        </div>
+
+                        <p class="eyebrow" data-i18n="hero.greeting">
+                            Hola, soy Alejandro
+                        </p>
+
+                        <h1>
+                            <span class="hero-title-main" data-i18n="hero.titleMain">
+                                Desarrollador
+                            </span>
+                            <span class="hero-title-accent" data-i18n="hero.titleAccent">
+                                de Software.
+                            </span>
+                        </h1>
+
+                        <p class="hero-summary" data-i18n="hero.summary">
+                            Estudiante de Desarrollo de Software enfocado en
+                            crear experiencias claras, modernas y bien pensadas.
+                        </p>
+
+                        <div class="hero-buttons">
+                            <a class="primary-button" href="#proyectos">
+                                <span data-i18n="actions.viewProjects">Ver proyectos</span>
+                                <span aria-hidden="true">→</span>
+                            </a>
+
+                            <a class="secondary-button" href="#cv">
+                                <span data-i18n="actions.viewCv">Ver CV</span>
+                            </a>
+                        </div>
+
+                        <div class="quick-links">
+                            <a href="https://github.com/ReaperCloud" target="_blank" rel="noopener">
+                                GitHub ↗
+                            </a>
+
+                            <a href="https://www.linkedin.com/" target="_blank" rel="noopener">
+                                LinkedIn ↗
+                            </a>
+
+                            <a href="mailto:alejandro@alejandrolira.dev" class="email-choice-trigger">
+                                <span data-i18n="actions.email">Correo</span> ↗
+                            </a>
+                        </div>
+                    </div>
+
+                    <!--
+                        FOTO PRINCIPAL
+
+                        Coloca tu fotografía exactamente aquí:
+                        assets/images/profile/alejandro.jpg
+
+                        No necesitas modificar el HTML.
+                    -->
+
+                    <div class="hero-photo-frame" id="hero-photo-frame">
+                        <img
+                            class="hero-image"
+                            id="hero-photo"
+                            src="./assets/images/profile/alejandro.jpg"
+                            data-i18n-alt="accessibility.heroPhoto"
+                            alt="Alejandro Lira, desarrollador de software"
+                        >
+
+                        <div
+                            class="hero-photo-fallback"
+                            id="hero-photo-fallback"
+                            role="img"
+                            data-i18n-aria="accessibility.heroPlaceholder"
+                            aria-label="Espacio reservado para la imagen principal"
+                        >
+                            <div class="hero-placeholder-glow" aria-hidden="true"></div>
+                            <span aria-hidden="true">&lt;/&gt;</span>
+                            <strong data-i18n="placeholders.mainImage">
+                                Imagen principal
+                            </strong>
+                            <small data-i18n="placeholders.photoPath">
+                                Agrega assets/images/profile/alejandro.jpg
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             PROYECTOS
+        ======================================================= -->
+
+        <section class="section page-section" id="proyectos">
+            <div class="page-container">
+                <div class="section-heading reveal">
+                    <div>
+                        <p class="eyebrow" data-i18n="projects.eyebrow">
+                            Trabajo seleccionado
+                        </p>
+                        <h2>
+                            <span class="heading-main" data-i18n="projects.titleMain">
+                                Ideas que convertí
+                            </span>
+                            <span class="heading-accent" data-i18n="projects.titleAccent">
+                                en experiencias reales.
+                            </span>
+                        </h2>
+                    </div>
+
+                    <p data-i18n="projects.introduction">
+                        Solo muestro unos pocos proyectos para que se entiendan
+                        mejor y no se sienta saturado.
+                    </p>
+                </div>
+
+                <div
+                    class="projects-carousel reveal"
+                    id="projects-carousel"
+                    data-i18n-aria="accessibility.projectsCarousel"
+                    aria-label="Carrusel de proyectos"
+                >
+                    <div
+                        class="projects-carousel-toolbar"
+                        id="projects-carousel-toolbar"
+                        hidden
+                    >
+                        <div class="projects-navigation">
+                            <button
+                                class="carousel-button"
+                                id="projects-previous"
+                                type="button"
+                                data-i18n-aria="accessibility.previousProjects"
+                                aria-label="Ver proyectos anteriores"
+                            >
+                                <span aria-hidden="true">←</span>
+                            </button>
+
+                            <button
+                                class="carousel-button"
+                                id="projects-next"
+                                type="button"
+                                data-i18n-aria="accessibility.nextProjects"
+                                aria-label="Ver más proyectos"
+                            >
+                                <span aria-hidden="true">→</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div
+                        class="projects-viewport"
+                        id="projects-viewport"
+                        tabindex="0"
+                    >
+                        <div
+                            class="projects-track"
+                            id="projects-track"
+                        ></div>
+                    </div>
+
+                    <div
+                        class="projects-pagination"
+                        id="projects-pagination"
+                        aria-hidden="true"
+                        hidden
+                    ></div>
+                </div>
+            </div>
+        </section>
+
+<!-- ======================================================
+             INSIGNIAS
+        ======================================================= -->
+
+        <section class="section page-section" id="insignias">
+            <div class="page-container">
+                <div class="section-heading badges-section-heading reveal">
+                    <div>
+                        <p
+                            class="eyebrow"
+                            data-badges-copy="eyebrow"
+                        >
+                            Certificaciones
+                        </p>
+
+                        <h2>
+                            <span
+                                class="heading-main"
+                                data-badges-copy="titleMain"
+                            >
+                                Insignias destacadas
+                            </span>
+
+                            <span
+                                class="heading-accent"
+                                data-badges-copy="titleAccent"
+                            >
+                                y credenciales.
+                            </span>
+                        </h2>
+
+                        <p
+                            class="badges-section-description"
+                            data-badges-copy="description"
+                        >
+                            Una selección de las certificaciones más alineadas
+                            con mi perfil de desarrollo de software.
+                        </p>
+                    </div>
+
+                    <button
+                        class="section-link badges-open-button"
+                        id="badges-open-button"
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-controls="badges-dialog"
+                    >
+                        <span data-badges-copy="viewAll">
+                            Ver las 28 insignias
+                        </span>
+
+                        <span aria-hidden="true">↗</span>
+                    </button>
+                </div>
+
+                <div
+                    class="badges-grid badges-featured-grid"
+                    id="featured-badges-grid"
+                    aria-live="polite"
+                ></div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             PERFIL
+        ======================================================= -->
+
+        <section
+            class="section page-section profile-rework-section"
+            id="perfil"
+        >
+            <div class="page-container">
+                <div class="section-heading reveal">
+                    <div>
+                        <p
+                            class="eyebrow"
+                            data-i18n="profile.eyebrow"
+                        >
+                            Perfil
+                        </p>
+
+                        <h2>
+                            <span
+                                class="heading-main"
+                                data-i18n="profile.titleMain"
+                            >
+                                Un poco sobre mí
+                            </span>
+
+                            <span
+                                class="heading-accent"
+                                data-i18n="profile.titleAccent"
+                            >
+                                y cómo trabajo.
+                            </span>
+                        </h2>
+                    </div>
+
+                    <p data-i18n="profile.introduction">
+                        Aquí puedes conocer un poco más sobre mí, las
+                        herramientas con las que trabajo y la forma en la
+                        que abordo cada proyecto.
+                    </p>
+                </div>
+
+                <div class="profile-rework-layout">
+                    <!-- ==========================================
+                         SOBRE MÍ
+                    =========================================== -->
+
+                    <article class="profile-rework-about reveal">
+                        <div class="profile-rework-about-heading">
+                            <h3 data-i18n="profile.learning">
+                                Aprendo creando.
+                            </h3>
+                        </div>
+
+                        <p
+                            class="profile-rework-summary"
+                            data-i18n="profile.summary"
+                        >
+                            Me interesa construir soluciones útiles, bien
+                            estructuradas y agradables de usar. Busco una
+                            oportunidad donde pueda seguir creciendo en
+                            desarrollo de software y aportar con proyectos
+                            reales.
+                        </p>
+
+                        <dl class="profile-rework-facts">
+                            <div>
+                                <dt data-i18n="profile.locationLabel">
+                                    Ubicación
+                                </dt>
+
+                                <dd data-i18n="profile.mexico">
+                                    México
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt data-i18n="profile.educationLabel">
+                                    Formación
+                                </dt>
+
+                                <dd class="profile-education">
+                                    <strong
+                                        class="profile-education-degree"
+                                        data-i18n="profile.educationValue"
+                                    >
+                                        Desarrollo de Software
+                                    </strong>
+
+                                    <span class="profile-education-details">
+                                        <span
+                                            data-i18n="profile.educationInstitution"
+                                        >
+                                            Universidad Tecmilenio
+                                        </span>
+
+                                        <span class="profile-education-progress">
+                                            <span
+                                                class="profile-education-light"
+                                                aria-hidden="true"
+                                            ></span>
+
+                                            <span
+                                                data-i18n="profile.educationStatus"
+                                            >
+                                                En curso
+                                            </span>
+                                        </span>
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt data-i18n="profile.focusLabel">
+                                    Enfoque
+                                </dt>
+
+                                <dd data-i18n="profile.focusValue">
+                                    Aplicaciones accesibles y multiplataforma
+                                </dd>
+                            </div>
+                        </dl>
+
+                        <div class="profile-meta">
+                            <span data-i18n="profile.student">
+                                Estudiante
+                            </span>
+
+                            <span data-i18n="profile.internships">
+                                Prácticas profesionales
+                            </span>
+
+                            <span data-i18n="profile.crossPlatform">
+                                Multiplataforma
+                            </span>
+                        </div>
+                    </article>
+
+                    <!-- ==========================================
+                         PANEL CON NAVEGACIÓN
+                    =========================================== -->
+
+                    <section
+                        class="profile-rework-details reveal"
+                        aria-labelledby="profile-details-title"
+                    >
+                        <h3
+                            class="screen-reader-only"
+                            id="profile-details-title"
+                            data-i18n="profile.detailsTitle"
+                        >
+                            Información profesional
+                        </h3>
+
+                        <!--
+                            Los radio buttons conservan navegación por teclado.
+                            No requieren cambios en script.js.
+                        -->
+
+                        <input
+                            class="profile-rework-radio"
+                            id="profile-view-tools"
+                            name="profile-view"
+                            type="radio"
+                            checked
+                        >
+
+                        <input
+                            class="profile-rework-radio"
+                            id="profile-view-languages"
+                            name="profile-view"
+                            type="radio"
+                        >
+
+                        <input
+                            class="profile-rework-radio"
+                            id="profile-view-highlights"
+                            name="profile-view"
+                            type="radio"
+                        >
+
+                        <nav
+                            class="profile-rework-tabs"
+                            data-i18n-aria="profile.tabsAria"
+                            aria-label="Información del perfil"
+                        >
+                            <label for="profile-view-tools">
+                                <span data-i18n="profile.tools">
+                                    Herramientas
+                                </span>
+                            </label>
+
+                            <label for="profile-view-languages">
+                                <span data-i18n="profile.languages">
+                                    Idiomas
+                                </span>
+                            </label>
+
+                            <label for="profile-view-highlights">
+                                <span data-i18n="profile.highlights">
+                                    Logros
+                                </span>
+                            </label>
+                        </nav>
+
+                        <div class="profile-rework-panels">
+                            <!-- HERRAMIENTAS -->
+
+                            <div
+                                class="profile-rework-panel profile-rework-tools"
+                                data-profile-panel="tools"
+                            >
+                                <div class="profile-rework-panel-heading">
+                                    <div>
+                                        <p
+                                            class="eyebrow"
+                                            data-i18n="profile.stackEyebrow"
+                                        >
+                                            Stack técnico
+                                        </p>
+
+                                        <h4 data-i18n="profile.stackTitle">
+                                            Herramientas con las que construyo.
+                                        </h4>
+                                    </div>
+
+                                </div>
+
+                                <p
+                                    class="profile-rework-panel-copy"
+                                    data-i18n="profile.stackDescription"
+                                >
+                                    Tecnologías que he utilizado en
+                                    aplicaciones móviles, proyectos web,
+                                    bases de datos y experiencias
+                                    interactivas.
+                                </p>
+
+                                <div
+                                    class="profile-rework-tools-carousel"
+                                    data-profile-tools-carousel
+                                >
+                                    <button
+                                        class="profile-rework-tools-arrow profile-rework-tools-previous"
+                                        type="button"
+                                        data-profile-tools-previous
+                                        data-i18n-aria="profile.previousTools"
+                                        aria-label="Herramientas anteriores"
+                                        hidden
+                                    >
+                                        <span aria-hidden="true">←</span>
+                                    </button>
+
+                                    <div class="profile-rework-tools-viewport">
+                                        <div class="profile-rework-tools-grid">
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/javascript.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>JavaScript</strong>
+
+                                                    <small data-i18n="profile.web">
+                                                        Desarrollo web
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/python.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Python</strong>
+
+                                                    <small data-i18n="profile.logic">
+                                                        Lógica y datos
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/java.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Java</strong>
+
+                                                    <small data-i18n="profile.software">
+                                                        Software
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/c.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>C#</strong>
+
+                                                    <small data-i18n="profile.software">
+                                                        Software
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/sql.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>SQL</strong>
+
+                                                    <small data-i18n="profile.databases">
+                                                        Bases de datos
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/html.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>HTML</strong>
+
+                                                    <small data-i18n="profile.web">
+                                                        Desarrollo web
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/css.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>CSS</strong>
+
+                                                    <small data-i18n="profile.design">
+                                                        Diseño de interfaz
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/swift.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Swift</strong>
+
+                                                    <small data-i18n="profile.mobile">
+                                                        Desarrollo móvil
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/flutter.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Flutter</strong>
+
+                                                    <small data-i18n="profile.crossPlatform">
+                                                        Multiplataforma
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/firebase.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Firebase</strong>
+
+                                                    <small data-i18n="profile.backend">
+                                                        Backend y datos
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/dart.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Dart</strong>
+
+                                                    <small data-i18n="profile.development">
+                                                        Desarrollo
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/figma.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Figma</strong>
+
+                                                    <small data-i18n="profile.design">
+                                                        Diseño de interfaz
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/unity.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Unity</strong>
+
+                                                    <small data-i18n="profile.creation3d">
+                                                        Creación 3D
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/roblox.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Roblox Studio</strong>
+
+                                                    <small data-i18n="profile.creation3d">
+                                                        Creación 3D
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/lua.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Lua</strong>
+
+                                                    <small data-i18n="profile.development">
+                                                        Desarrollo
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/blender.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Blender</strong>
+
+                                                    <small data-i18n="profile.creation3d">
+                                                        Creación 3D
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/inkscape.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Inkscape</strong>
+
+                                                    <small data-i18n="profile.design">
+                                                        Diseño de interfaz
+                                                    </small>
+                                                </div>
+                                            </article>
+
+                                            <!--
+                                            =================================================
+                                            TEMPLATE PARA AGREGAR OTRA HERRAMIENTA
+
+                                            1. Copia este bloque fuera del comentario.
+                                            2. Guarda el icono en:
+                                               assets/images/tools/
+                                            3. Cambia nombre, imagen y descripción.
+                                            =================================================
+
+                                            <article class="profile-rework-tool">
+                                                <span class="profile-tool-mark">
+                                                    <img
+                                                        class="profile-tool-image"
+                                                        src="./assets/images/tools/nueva-herramienta.png"
+                                                        alt=""
+                                                        aria-hidden="true"
+                                                    >
+                                                </span>
+
+                                                <div>
+                                                    <strong>Nombre</strong>
+
+                                                    <small>
+                                                        Descripción breve
+                                                    </small>
+                                                </div>
+                                            </article>
+                                            -->
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        class="profile-rework-tools-arrow profile-rework-tools-next"
+                                        type="button"
+                                        data-profile-tools-next
+                                        data-i18n-aria="profile.nextTools"
+                                        aria-label="Siguientes herramientas"
+                                        hidden
+                                    >
+                                        <span aria-hidden="true">→</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- IDIOMAS -->
+
+                            <div
+                                class="profile-rework-panel profile-rework-languages"
+                                data-profile-panel="languages"
+                            >
+                                <div class="profile-rework-panel-heading">
+                                    <div>
+                                        <p
+                                            class="eyebrow"
+                                            data-i18n="profile.communication"
+                                        >
+                                            Comunicación
+                                        </p>
+
+                                        <h4 data-i18n="profile.languagesTitle">
+                                            Idiomas que utilizo.
+                                        </h4>
+                                    </div>
+
+                                </div>
+
+                                <p
+                                    class="profile-rework-panel-copy"
+                                    data-i18n="profile.languagesDescription"
+                                >
+                                    Me comunico de forma nativa en español y
+                                    utilizo inglés para documentación, cursos
+                                    y contenido técnico.
+                                </p>
+
+                                <div class="profile-rework-language-grid">
+                                    <article class="profile-rework-language">
+                                        <div class="profile-language-heading">
+                                            <span aria-hidden="true">ES</span>
+
+                                            <strong data-i18n="profile.native">
+                                                Nativo
+                                            </strong>
+                                        </div>
+
+                                        <h5 data-i18n="profile.spanish">
+                                            Español
+                                        </h5>
+
+                                        <p data-i18n="profile.spanishUse">
+                                            Comunicación diaria,
+                                            presentaciones y documentación
+                                            de proyectos.
+                                        </p>
+
+                                        <div
+                                            class="profile-language-level level-native"
+                                            aria-hidden="true"
+                                        >
+                                            <span></span>
+                                        </div>
+                                    </article>
+
+                                    <article class="profile-rework-language">
+                                        <div class="profile-language-heading">
+                                            <span aria-hidden="true">EN</span>
+
+                                            <strong data-i18n="profile.upperIntermediate">
+                                                Intermedio alto
+                                            </strong>
+                                        </div>
+
+                                        <h5 data-i18n="profile.english">
+                                            Inglés
+                                        </h5>
+
+                                        <p data-i18n="profile.englishUse">
+                                            Lectura técnica, cursos,
+                                            investigación y comunicación
+                                            profesional.
+                                        </p>
+
+                                        <div
+                                            class="profile-language-level level-english"
+                                            aria-hidden="true"
+                                        >
+                                            <span></span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+
+                            <!-- LOGROS -->
+
+                            <div
+                                class="profile-rework-panel profile-rework-highlights"
+                                data-profile-panel="highlights"
+                            >
+                                <div class="profile-rework-panel-heading">
+                                    <div>
+                                        <p
+                                            class="eyebrow"
+                                            data-i18n="profile.highlightsEyebrow"
+                                        >
+                                            Logros
+                                        </p>
+
+                                        <h4 data-i18n="profile.highlightsTitle">
+                                            Experiencias que respaldan mi perfil.
+                                        </h4>
+                                    </div>
+
+                                </div>
+
+                                <p
+                                    class="profile-rework-panel-copy"
+                                    data-i18n="profile.highlightsDescription"
+                                >
+                                    Una selección breve de resultados
+                                    académicos y proyectos relevantes dentro
+                                    de mi formación.
+                                </p>
+
+                                <div class="profile-rework-highlight-grid">
+                                    <article class="profile-rework-highlight">
+                                        <strong data-i18n="profile.firstPlace">
+                                            1er lugar
+                                        </strong>
+
+                                        <h5 data-i18n="profile.inclusiveClassroom">
+                                            Aula Inclusiva
+                                        </h5>
+
+                                        <p data-i18n="profile.inclusiveDescription">
+                                            Reconocimiento de Tecmilenio por
+                                            KiPP, una aplicación educativa
+                                            accesible.
+                                        </p>
+                                    </article>
+
+                                    <article class="profile-rework-highlight">
+                                        <strong>Apple + Android</strong>
+
+                                        <h5 data-i18n="profile.multiPlatformTitle">
+                                            Desarrollo multiplataforma
+                                        </h5>
+
+                                        <p data-i18n="profile.multiPlatformDescription">
+                                            Experiencia creando productos para
+                                            iPhone, iPad, Mac y dispositivos
+                                            Android.
+                                        </p>
+                                    </article>
+
+                                    <article class="profile-rework-highlight">
+                                        <strong>28</strong>
+
+                                        <h5 data-i18n="profile.certifications">
+                                            Insignias y certificaciones
+                                        </h5>
+
+                                        <p data-i18n="profile.certificationsDescription">
+                                            Formación complementaria en
+                                            desarrollo, datos, nube, redes y
+                                            ciberseguridad.
+                                        </p>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             CV
+        ======================================================= -->
+
+        <section class="section page-section cv-section" id="cv">
+            <div class="page-container">
+                <div class="section-heading reveal">
+                    <div>
+                        <p class="eyebrow" data-i18n="cv.eyebrow">
+                            Currículum
+                        </p>
+
+                        <h2>
+                            <span class="heading-main" data-i18n="cv.titleMain">
+                                Conoce mi trayectoria
+                            </span>
+
+                            <span class="heading-accent" data-i18n="cv.titleAccent">
+                                profesional.
+                            </span>
+                        </h2>
+                    </div>
+
+                    <p data-i18n="cv.introduction">
+                        Consulta mi formación, proyectos, tecnologías y
+                        certificaciones en un currículum claro y directo.
+                    </p>
+                </div>
+
+                <div class="cv-card cv-rework-card cv-profile-restored reveal">
+                    <div class="cv-copy cv-rework-copy">
+                        <h3 data-i18n="cv.cardTitle">
+                            Mi trayectoria en un solo documento.
+                        </h3>
+
+                        <p data-i18n="cv.cardDescription">
+                            Conoce mi formación en Desarrollo de Software, los
+                            proyectos que he desarrollado y las tecnologías y
+                            certificaciones que respaldan mi perfil.
+                        </p>
+
+                        <div
+                            class="cv-summary-grid"
+                            aria-label="Contenido del currículum"
+                        >
+                            <span class="cv-summary-item">
+                                <strong data-i18n="cv.summaryEducation">
+                                    Formación
+                                </strong>
+                            </span>
+
+                            <span class="cv-summary-item">
+                                <strong data-i18n="cv.summaryProjects">
+                                    Proyectos
+                                </strong>
+                            </span>
+
+                            <span class="cv-summary-item">
+                                <strong data-i18n="cv.summarySkills">
+                                    Tecnologías
+                                </strong>
+                            </span>
+
+                            <span
+                                class="cv-summary-item cv-summary-item-accent"
+                            >
+                                <strong data-i18n="cv.summaryCertifications">
+                                    Certificaciones
+                                </strong>
+                            </span>
+
+                            <span class="cv-summary-item">
+                                <strong data-i18n="cv.summaryLanguages">
+                                    Idiomas
+                                </strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="cv-preview-shell cv-compact-panel cv-rework-preview cv-restored-panel"
+                        id="cv-preview-renderer"
+                        data-pdf-source="./assets/cv/Alejandro-Lira-CV.pdf"
+                    >
+                        <div class="cv-preview-column">
+                            <button
+                                class="cv-thumbnail-button cv-rework-preview-button"
+                                id="cv-open-preview"
+                                type="button"
+                                data-i18n-aria="accessibility.previewCv"
+                                aria-label="Abrir el currículum"
+                            >
+                                <span
+                                    class="cv-thumbnail-frame cv-live-preview cv-rework-document-frame"
+                                >
+                                    <canvas
+                                        class="cv-live-preview-canvas"
+                                        id="cv-live-preview-canvas"
+                                        aria-hidden="true"
+                                    ></canvas>
+
+                                    <span
+                                        class="cv-live-preview-loading"
+                                        id="cv-live-preview-loading"
+                                        aria-hidden="true"
+                                    >
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </span>
+
+                                    <span
+                                        class="cv-live-preview-error"
+                                        id="cv-live-preview-error"
+                                        hidden
+                                    >
+                                        <span aria-hidden="true">CV</span>
+
+                                        <strong data-i18n="cv.previewError">
+                                            No se pudo cargar la vista del currículum
+                                        </strong>
+                                    </span>
+
+                                    <span
+                                        class="cv-thumbnail-hover"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="cv-hover-action">
+                                            <span>↗</span>
+                                        </span>
+
+                                        <strong data-i18n="actions.previewCv">
+                                            Ver currículum
+                                        </strong>
+                                    </span>
+                                </span>
+                            </button>
+
+                            <div class="cv-rework-actions cv-preview-actions">
+                                <button
+                                    class="primary-button"
+                                    id="cv-open-preview-secondary"
+                                    type="button"
+                                >
+                                    <span data-i18n="actions.previewCv">
+                                        Ver currículum
+                                    </span>
+
+                                    <span aria-hidden="true">↗</span>
+                                </button>
+
+                                <a
+                                    class="secondary-button"
+                                    href="./assets/cv/Alejandro-Lira-CV.pdf"
+                                    download
+                                >
+                                    <span data-i18n="actions.downloadCv">
+                                        Descargar CV
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="cv-compact-information cv-rework-information">
+                            <div class="cv-rework-profile-heading">
+                                <h4 data-i18n="cv.profileName">
+                                    Alejandro Lira
+                                </h4>
+
+                                <p
+                                    class="cv-profile-role"
+                                    data-i18n="cv.profileRole"
+                                >
+                                    Desarrollo de Software
+                                </p>
+                            </div>
+
+                            <p
+                                class="cv-compact-description"
+                                data-i18n="cv.compactDescription"
+                            >
+                                Estudiante enfocado en crear soluciones
+                                accesibles, multiplataforma y bien estructuradas.
+                            </p>
+
+                            <ul class="cv-profile-highlights">
+                                <li>
+                                    <span aria-hidden="true"></span>
+
+                                    <strong data-i18n="cv.highlightMobile">
+                                        Aplicaciones móviles y multiplataforma
+                                    </strong>
+                                </li>
+
+                                <li>
+                                    <span aria-hidden="true"></span>
+
+                                    <strong data-i18n="cv.highlightWeb">
+                                        Desarrollo web y bases de datos
+                                    </strong>
+                                </li>
+
+                                <li>
+                                    <span aria-hidden="true"></span>
+
+                                    <strong data-i18n="cv.highlightAccessibility">
+                                        Accesibilidad y experiencia de usuario
+                                    </strong>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             CONTACTO
+        ======================================================= -->
+
+        <section class="section page-section contact-section" id="contacto">
+            <div class="page-container">
+                <p
+                    class="eyebrow contact-section-eyebrow reveal"
+                    data-i18n="contact.eyebrow"
+                >
+                    Contacto
+                </p>
+
+                <div class="contact-card reveal">
+                    <div class="contact-copy">
+                        <h2>
+                            <span class="contact-heading-main" data-i18n="contact.titleMain">
+                                Estoy listo para aprender,
+                            </span>
+                            <span data-i18n="contact.titleAccent">
+                                crear y aportar.
+                            </span>
+                        </h2>
+
+                        <p data-i18n="contact.summary">
+                            Si buscas a alguien con ganas de aprender y construir
+                            buenas experiencias, me encantará hablar contigo.
+                        </p>
+                    </div>
+
+                    <div class="contact-showcase">
+                        <a
+                            class="contact-primary-card email-choice-trigger"
+                            href="mailto:alejandro@alejandrolira.dev"
+                        >
+                            <div class="contact-primary-top">
+                                <span
+                                    class="contact-primary-icon"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        class="contact-mail-icon"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <rect
+                                            x="3"
+                                            y="5"
+                                            width="18"
+                                            height="14"
+                                            rx="3"
+                                        ></rect>
+
+                                        <path d="M5 8l7 5 7-5"></path>
+                                    </svg>
+                                </span>
+
+                                <span class="contact-availability">
+                                    <span aria-hidden="true"></span>
+                                    <span data-i18n="hero.availability">
+                                        Disponible para prácticas
+                                    </span>
+                                </span>
+                            </div>
+
+                            <div class="contact-primary-copy">
+                                <small data-i18n="contact.emailLabel">
+                                    Correo directo
+                                </small>
+
+                                <strong>alejandro@alejandrolira.dev</strong>
+                            </div>
+
+                            <span class="contact-primary-arrow" aria-hidden="true">
+                                ↗
+                            </span>
+                        </a>
+
+                        <div class="contact-social-grid">
+                            <a
+                                class="contact-social-card"
+                                href="https://www.linkedin.com/"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <span class="contact-social-icon" aria-hidden="true">
+                                    in
+                                </span>
+
+                                <div>
+                                    <small>LinkedIn</small>
+                                    <strong data-i18n="contact.linkedinAction">
+                                        Conectar
+                                    </strong>
+                                </div>
+
+                                <span aria-hidden="true">↗</span>
+                            </a>
+
+                            <a
+                                class="contact-social-card"
+                                href="https://github.com/ReaperCloud"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <span class="contact-social-icon" aria-hidden="true">
+                                    GH
+                                </span>
+
+                                <div>
+                                    <small>GitHub</small>
+                                    <strong data-i18n="contact.githubAction">
+                                        Ver código
+                                    </strong>
+                                </div>
+
+                                <span aria-hidden="true">↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="page-container footer-inner">
+            <p>
+                Alejandro Lira · <span id="current-year"></span> ·
+                <a href="mailto:alejandro@alejandrolira.dev" class="email-choice-trigger">
+                    alejandro@alejandrolira.dev
+                </a>
+            </p>
+
+            <a href="#inicio">
+                <span data-i18n="actions.backToTop">Volver arriba</span> ↑
+            </a>
+        </div>
+    </footer>
+
+    <!-- ======================================================
+         VISOR DEL CV
+    ======================================================= -->
+
+    <dialog
+        class="cv-viewer-dialog"
+        id="cv-viewer-dialog"
+        aria-labelledby="cv-viewer-title"
+    >
+        <div class="cv-viewer-shell">
+            <header class="cv-viewer-header">
+                <div class="cv-viewer-title-group">
+                    <span class="cv-viewer-file-icon" aria-hidden="true">
+                        CV
+                    </span>
+
+                    <div>
+                        <span data-i18n="cv.viewerEyebrow">
+                            Vista del documento
+                        </span>
+
+                        <h2
+                            id="cv-viewer-title"
+                            data-i18n="cv.viewerTitle"
+                        >
+                            Alejandro Lira · Currículum
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="cv-viewer-header-actions">
+                    <a
+                        class="cv-viewer-action"
+                        href="./assets/cv/Alejandro-Lira-CV.pdf"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <span data-i18n="actions.openCv">
+                            Abrir
+                        </span>
+                        <span aria-hidden="true">↗</span>
+                    </a>
+
+                    <a
+                        class="cv-viewer-action"
+                        href="./assets/cv/Alejandro-Lira-CV.pdf"
+                        download
+                    >
+                        <span data-i18n="actions.downloadCv">
+                            Descargar
+                        </span>
+                        <span aria-hidden="true">↓</span>
+                    </a>
+
+                    <button
+                        class="cv-viewer-close"
+                        id="cv-viewer-close"
+                        type="button"
+                        data-i18n-aria="accessibility.closeCvPreview"
+                        aria-label="Cerrar la previsualización del CV"
+                    >
+                        ×
+                    </button>
+                </div>
+            </header>
+
+            <div class="cv-viewer-content" id="cv-viewer-content">
+                <iframe
+                    class="cv-viewer-pdf"
+                    id="cv-viewer-pdf"
+                    data-src="./assets/cv/Alejandro-Lira-CV.pdf#view=FitH&toolbar=1&navpanes=0"
+                    title="Previsualización completa del currículum"
+                ></iframe>
+
+                <div class="cv-viewer-help">
+                    <span data-i18n="cv.viewerHelp">
+                        También puedes abrirlo en una pestaña nueva o descargar una copia.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+<!-- ======================================================
+         TODAS LAS INSIGNIAS
+    ======================================================= -->
+
+    <dialog
+        class="badges-dialog"
+        id="badges-dialog"
+        aria-labelledby="badges-dialog-title"
+    >
+        <div class="badges-dialog-layout">
+            <header class="badges-dialog-header">
+                <div>
+                    <p
+                        class="eyebrow"
+                        data-badges-copy="dialogEyebrow"
+                    >
+                        Credenciales
+                    </p>
+
+                    <h2
+                        id="badges-dialog-title"
+                        data-badges-copy="dialogTitle"
+                    >
+                        Todas mis insignias
+                    </h2>
+
+                    <p
+                        class="badges-dialog-description"
+                        data-badges-copy="dialogDescription"
+                    >
+                        Cursos, certificaciones y reconocimientos obtenidos
+                        durante mi formación.
+                    </p>
+                </div>
+
+                <button
+                    class="dialog-close badges-dialog-close"
+                    id="badges-dialog-close"
+                    type="button"
+                    data-badges-aria="close"
+                    aria-label="Cerrar la galería de insignias"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div
+                class="badges-dialog-count"
+                id="badges-dialog-count"
+                aria-live="polite"
+            ></div>
+
+            <div
+                class="badges-all-grid"
+                id="all-badges-grid"
+            ></div>
+        </div>
+    </dialog>
+
+    <!-- ======================================================
+         DETALLE DINÁMICO DEL PROYECTO
+    ======================================================= -->
+
+    <dialog
+        class="project-dialog project-showcase-dialog"
+        id="project-dialog"
+        aria-labelledby="project-dialog-title"
+    >
+        <div class="project-showcase-layout">
+            <button
+                class="dialog-close"
+                id="project-dialog-close"
+                type="button"
+                data-i18n-aria="accessibility.closeProject"
+                aria-label="Cerrar detalles del proyecto"
+            >
+                ×
+            </button>
+
+            <header class="project-showcase-header">
+                <p
+                    class="eyebrow"
+                    id="project-dialog-meta"
+                ></p>
+
+                <h2 id="project-dialog-title"></h2>
+            </header>
+
+            <div class="project-showcase-content">
+                <section
+                    class="project-gallery"
+                    id="project-gallery"
+                    data-i18n-aria="accessibility.projectGallery"
+                    aria-label="Galería de imágenes del proyecto"
+                >
+                    <div class="project-gallery-viewport">
+                        <div
+                            class="project-gallery-track"
+                            id="project-gallery-track"
+                        ></div>
+
+                        <button
+                            class="project-gallery-button project-gallery-previous"
+                            id="project-image-previous"
+                            type="button"
+                            data-i18n-aria="accessibility.previousProjectImage"
+                            aria-label="Imagen anterior"
+                        >
+                            <span aria-hidden="true">←</span>
+                        </button>
+
+                        <button
+                            class="project-gallery-button project-gallery-next"
+                            id="project-image-next"
+                            type="button"
+                            data-i18n-aria="accessibility.nextProjectImage"
+                            aria-label="Imagen siguiente"
+                        >
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
+
+                    <div
+                        class="project-gallery-pagination"
+                        id="project-gallery-pagination"
+                    ></div>
+                </section>
+
+                <section class="project-showcase-description">
+                    <div class="project-description-heading">
+                        <p class="eyebrow" data-i18n="projects.aboutProject">
+                            Sobre el proyecto
+                        </p>
+
+                        <span
+                            class="project-description-line"
+                            aria-hidden="true"
+                        ></span>
+                    </div>
+
+                    <p id="project-dialog-description"></p>
+
+                    <div class="project-technologies-block">
+                        <span
+                            class="project-technologies-label"
+                            data-i18n="projects.technologiesLabel"
+                        >
+                            Tecnologías
+                        </span>
+
+                        <ul
+                            class="tag-list project-dialog-tags"
+                            id="project-dialog-tags"
+                            data-i18n-aria="accessibility.technologies"
+                            aria-label="Tecnologías utilizadas"
+                        ></ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </dialog>
+
+
+    <dialog
+        class="email-choice-dialog"
+        id="email-choice-dialog"
+        aria-labelledby="email-choice-title"
+    >
+        <div class="email-choice-shell">
+            <button
+                class="email-choice-close"
+                id="email-choice-close"
+                type="button"
+                aria-label="Cerrar"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+
+            <div class="email-choice-header">
+                <h2 class="email-choice-heading" id="email-choice-title">
+                    <span
+                        class="email-choice-heading-main"
+                        id="email-choice-title-main"
+                    >
+                        Contáctame
+                    </span>
+                    <span
+                        class="email-choice-heading-accent"
+                        id="email-choice-title-accent"
+                    >
+                        Estoy listo para aprender, crear y aportar.
+                    </span>
+                </h2>
+            </div>
+
+            <div class="email-choice-actions">
+                <button
+                    class="email-choice-action"
+                    id="email-choice-gmail"
+                    type="button"
+                >
+                    <span class="email-choice-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 7.5v9A2.5 2.5 0 0 0 6.5 19h11a2.5 2.5 0 0 0 2.5-2.5v-9"></path>
+                            <path d="m4.5 7 7.5 5.5L19.5 7"></path>
+                            <path d="M7 5h10a3 3 0 0 1 3 3"></path>
+                        </svg>
+                    </span>
+
+                    <span class="email-choice-action-copy">
+                        <strong id="email-choice-gmail-title">Abrir Gmail</strong>
+                        <small id="email-choice-gmail-copy">
+                            Se abrirá en una pestaña nueva
+                        </small>
+                    </span>
+
+                    <span class="email-choice-action-arrow" aria-hidden="true">↗</span>
+                </button>
+
+                <button
+                    class="email-choice-action"
+                    id="email-choice-app"
+                    type="button"
+                >
+                    <span class="email-choice-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                            <path d="m7 9 5 3.5L17 9"></path>
+                        </svg>
+                    </span>
+
+                    <span class="email-choice-action-copy">
+                        <strong id="email-choice-app-title">Usar una app de correo</strong>
+                        <small id="email-choice-app-copy">
+                            Outlook, Mail u otra aplicación instalada
+                        </small>
+                    </span>
+
+                    <span class="email-choice-action-arrow" aria-hidden="true">→</span>
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+
+    <script src="./projects-data.js"></script>
+    <script src="./badges-data.js"></script>
+    <script src="./script.js"></script>
+    <script src="./badges.js"></script>
+    <script type="module" src="./cv-thumbnail.mjs"></script>
+</body>
+</html>
