@@ -801,15 +801,26 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
-let themeTransitionWatchdogTimer = null;
+let themeTransitionReady = false;
+let themeTransitionWarmupInProgress = false;
+let activeThemeTransition = null;
+let activeThemeAnimation = null;
+let themeUnlockTimer = null;
+let themeLastTransitionStartedAt = -Infinity;
+let themeBurstCooldownUntil = 0;
 
-const THEME_CIRCLE_EXPAND_MS = 320;
-const THEME_SWAP_WAIT_MS = 300;
-const THEME_CIRCLE_FADE_MS = 190;
-const THEME_BUTTON_COOLDOWN_MS = 420;
+const THEME_TRANSITION_DURATION = 540;
+const THEME_MIN_INTERVAL = 1150;
+const THEME_POST_COOLDOWN = 420;
+const THEME_BURST_WINDOW = 8000;
+const THEME_BURST_LIMIT = 4;
+const THEME_BURST_COOLDOWN = 4500;
+const THEME_WARMUP_TIMEOUT = 800;
+
+const themeTransitionStarts = [];
 
 
-function setThemeButtonBusy(isBusy) {
+function setThemeButtonBusy(isBusy, isPreparing = false) {
     if (!themeButton) {
         return;
     }
@@ -819,183 +830,511 @@ function setThemeButtonBusy(isBusy) {
         "aria-busy",
         isBusy ? "true" : "false"
     );
-}
 
-
-function clearThemeTransitionWatchdog() {
-    window.clearTimeout(themeTransitionWatchdogTimer);
-    themeTransitionWatchdogTimer = null;
-}
-
-
-function resetThemeOverlay() {
-    if (!themeOverlay) {
-        return;
+    if (isPreparing) {
+        themeButton.dataset.themePreparing = "true";
+    } else {
+        delete themeButton.dataset.themePreparing;
     }
+}
 
-    themeOverlay.getAnimations().forEach((animation) => {
-        animation.cancel();
+
+function wait(milliseconds) {
+    return new Promise((resolve) => {
+        window.setTimeout(resolve, milliseconds);
     });
-
-    themeOverlay.style.opacity = "0";
-    themeOverlay.style.clipPath =
-        "circle(0px at var(--theme-x) var(--theme-y))";
 }
 
 
-function finishThemeAnimation(nextTheme, announceChange = true) {
-    clearThemeTransitionWatchdog();
-    resetThemeOverlay();
+function nextPaint() {
+    return new Promise((resolve) => {
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(resolve);
+        });
+    });
+}
 
-    root.classList.remove("theme-animation-active");
 
-    window.setTimeout(() => {
-        themeTransitionInProgress = false;
-        setThemeButtonBusy(false);
-    }, THEME_BUTTON_COOLDOWN_MS);
+function getThemeTransitionGeometry(event) {
+    const { x, y } = getEventPosition(event);
 
-    if (!announceChange) {
-        return;
+    const radius =
+        Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        ) + 8;
+
+    return { x, y, radius };
+}
+
+
+function pruneThemeTransitionHistory(now = performance.now()) {
+    while (
+        themeTransitionStarts.length > 0 &&
+        now - themeTransitionStarts[0] > THEME_BURST_WINDOW
+    ) {
+        themeTransitionStarts.shift();
+    }
+}
+
+
+function themeTransitionRateLimited() {
+    const now = performance.now();
+
+    pruneThemeTransitionHistory(now);
+
+    if (now < themeBurstCooldownUntil) {
+        return true;
     }
 
-    const copy = currentCopy();
+    if (
+        now - themeLastTransitionStartedAt <
+        THEME_MIN_INTERVAL
+    ) {
+        return true;
+    }
 
-    announce(
-        nextTheme === "dark"
-            ? copy.themeDarkAnnouncement
-            : copy.themeLightAnnouncement
+    if (themeTransitionStarts.length >= THEME_BURST_LIMIT) {
+        themeBurstCooldownUntil =
+            now + THEME_BURST_COOLDOWN;
+
+        return true;
+    }
+
+    return false;
+}
+
+
+function registerThemeTransitionStart() {
+    const now = performance.now();
+
+    themeLastTransitionStartedAt = now;
+    themeTransitionStarts.push(now);
+    pruneThemeTransitionHistory(now);
+}
+
+
+function forceThemeStyleCalculation() {
+    void document.documentElement.offsetWidth;
+    void document.body.offsetHeight;
+
+    const warmElements = [
+        document.body,
+        siteHeader,
+        document.querySelector("main"),
+        themeButton,
+        document.querySelector(".hero-card"),
+        document.querySelector(".project-card"),
+        document.querySelector(".section-heading")
+    ].filter(Boolean);
+
+    warmElements.forEach((element) => {
+        const computedStyle = window.getComputedStyle(element);
+
+        void computedStyle.color;
+        void computedStyle.backgroundColor;
+        void computedStyle.borderColor;
+        void computedStyle.boxShadow;
+    });
+}
+
+
+function precomputeBothThemeStyles() {
+    const initialTheme = currentTheme();
+    const oppositeTheme =
+        initialTheme === "dark" ? "light" : "dark";
+
+    root.classList.add("theme-style-prewarm");
+
+    root.dataset.theme = oppositeTheme;
+    forceThemeStyleCalculation();
+
+    root.dataset.theme = initialTheme;
+    forceThemeStyleCalculation();
+
+    root.classList.remove("theme-style-prewarm");
+    updateThemeButton(initialTheme);
+}
+
+
+function imageIntersectsWarmupArea(image) {
+    const bounds = image.getBoundingClientRect();
+    const margin = Math.max(window.innerHeight * 0.35, 240);
+
+    return (
+        bounds.bottom >= -margin &&
+        bounds.top <= window.innerHeight + margin &&
+        bounds.right >= 0 &&
+        bounds.left <= window.innerWidth
     );
 }
 
 
-function getThemeCoverColor(theme) {
-    return theme === "dark"
-        ? "#0d0e12"
-        : "#f5f5f7";
+async function decodeVisibleThemeImages() {
+    const visibleImages = Array.from(document.images)
+        .filter(imageIntersectsWarmupArea)
+        .slice(0, 12);
+
+    const decodeTasks = visibleImages.map(async (image) => {
+        try {
+            if (!image.complete) {
+                await Promise.race([
+                    new Promise((resolve) => {
+                        image.addEventListener("load", resolve, {
+                            once: true
+                        });
+
+                        image.addEventListener("error", resolve, {
+                            once: true
+                        });
+                    }),
+                    wait(500)
+                ]);
+            }
+
+            if (typeof image.decode === "function") {
+                await image.decode();
+            }
+        } catch {
+            /* Una imagen fallida no debe bloquear el interruptor. */
+        }
+    });
+
+    await Promise.allSettled(decodeTasks);
+}
+
+
+async function waitForThemeWarmupResources() {
+    const fontTask = document.fonts?.ready ??
+        Promise.resolve();
+
+    await Promise.race([
+        Promise.allSettled([
+            fontTask,
+            decodeVisibleThemeImages()
+        ]),
+        wait(THEME_WARMUP_TIMEOUT)
+    ]);
+
+    await nextPaint();
+}
+
+
+function cleanupThemeTransitionClasses() {
+    root.classList.remove(
+        "theme-transition",
+        "theme-transition-prewarm",
+        "theme-style-prewarm"
+    );
+}
+
+
+function cancelTrackedThemeAnimation() {
+    try {
+        activeThemeAnimation?.cancel();
+    } catch {
+        /* La animación ya pudo haber terminado. */
+    }
+
+    activeThemeAnimation = null;
+}
+
+
+function releaseThemeButtonAfterCooldown() {
+    window.clearTimeout(themeUnlockTimer);
+
+    themeUnlockTimer = window.setTimeout(() => {
+        themeTransitionInProgress = false;
+        setThemeButtonBusy(false);
+    }, THEME_POST_COOLDOWN);
+}
+
+
+function safelySkipActiveThemeTransition() {
+    try {
+        activeThemeTransition?.skipTransition();
+    } catch {
+        /* La transición puede haber finalizado entre ambos pasos. */
+    }
+}
+
+
+async function warmUpThemeTransition() {
+    if (
+        themeTransitionReady ||
+        themeTransitionWarmupInProgress
+    ) {
+        return;
+    }
+
+    themeTransitionWarmupInProgress = true;
+    setThemeButtonBusy(true, true);
+
+    if (
+        reducedMotionQuery.matches ||
+        !document.startViewTransition
+    ) {
+        themeTransitionReady = true;
+        themeTransitionWarmupInProgress = false;
+        setThemeButtonBusy(false);
+        return;
+    }
+
+    await waitForThemeWarmupResources();
+    precomputeBothThemeStyles();
+
+    const buttonBounds = themeButton?.getBoundingClientRect();
+    const x = buttonBounds
+        ? buttonBounds.left + buttonBounds.width / 2
+        : window.innerWidth * 0.88;
+    const y = buttonBounds
+        ? buttonBounds.top + buttonBounds.height / 2
+        : 44;
+    const radius =
+        Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        ) + 8;
+
+    root.classList.add("theme-transition-prewarm");
+
+    let warmupTransition = null;
+    let warmupAnimation = null;
+
+    try {
+        warmupTransition =
+            document.startViewTransition(() => {});
+
+        await warmupTransition.ready;
+
+        /*
+            Se ejercita exactamente el mismo clip circular y el mismo
+            tamaño de snapshot que usará el primer clic real. La vista
+            nueva permanece prácticamente invisible, por lo que el
+            usuario sigue viendo la captura anterior sin destellos.
+        */
+        warmupAnimation = root.animate(
+            [
+                {
+                    clipPath:
+                        `circle(1px at ${x}px ${y}px)`
+                },
+                {
+                    clipPath:
+                        `circle(${radius}px at ${x}px ${y}px)`
+                }
+            ],
+            {
+                duration: 120,
+                easing: "cubic-bezier(.22, 1, .36, 1)",
+                fill: "both",
+                pseudoElement:
+                    "::view-transition-new(root)"
+            }
+        );
+
+        await Promise.allSettled([
+            warmupAnimation.finished,
+            warmupTransition.finished
+        ]);
+    } catch {
+        try {
+            warmupTransition?.skipTransition();
+        } catch {
+            /* No hay nada adicional que recuperar. */
+        }
+    } finally {
+        try {
+            warmupAnimation?.cancel();
+        } catch {
+            /* La animación ya terminó. */
+        }
+
+        cleanupThemeTransitionClasses();
+        themeTransitionReady = true;
+        themeTransitionWarmupInProgress = false;
+        setThemeButtonBusy(false);
+    }
+}
+
+
+function scheduleThemeTransitionWarmup() {
+    setThemeButtonBusy(true, true);
+
+    const startWarmup = () => {
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                warmUpThemeTransition();
+            });
+        });
+    };
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            startWarmup,
+            { once: true }
+        );
+    } else {
+        startWarmup();
+    }
+}
+
+
+function playFallbackThemeAnimation(event, nextTheme) {
+    if (!themeOverlay) {
+        setTheme(nextTheme);
+        return;
+    }
+
+    const { x, y } = getEventPosition(event);
+
+    themeOverlay.style.setProperty(
+        "--theme-x",
+        `${Math.round((x / window.innerWidth) * 100)}%`
+    );
+
+    themeOverlay.style.setProperty(
+        "--theme-y",
+        `${Math.round((y / window.innerHeight) * 100)}%`
+    );
+
+    document.body.classList.remove("theme-animating");
+    void themeOverlay.offsetWidth;
+    document.body.classList.add("theme-animating");
+
+    window.setTimeout(() => {
+        setTheme(nextTheme, false);
+    }, 80);
+
+    window.setTimeout(() => {
+        document.body.classList.remove("theme-animating");
+        releaseThemeButtonAfterCooldown();
+    }, 650);
 }
 
 
 async function toggleTheme(event) {
-    /*
-        Mientras la animación y el cooldown estén activos, todos los
-        clics adicionales se descartan. No se crea ninguna cola.
-    */
-    if (themeTransitionInProgress) {
+    if (
+        !themeTransitionReady ||
+        themeTransitionWarmupInProgress ||
+        themeTransitionInProgress ||
+        activeThemeTransition ||
+        document.activeViewTransition ||
+        themeTransitionRateLimited()
+    ) {
         return;
     }
 
     const nextTheme =
         currentTheme() === "dark" ? "light" : "dark";
 
-    if (
-        reducedMotionQuery.matches ||
-        !themeOverlay
-    ) {
-        themeTransitionInProgress = true;
-        setThemeButtonBusy(true);
+    themeTransitionInProgress = true;
+    registerThemeTransitionStart();
+    setThemeButtonBusy(true);
+
+    if (reducedMotionQuery.matches) {
         setTheme(nextTheme);
-
-        window.setTimeout(() => {
-            themeTransitionInProgress = false;
-            setThemeButtonBusy(false);
-        }, THEME_BUTTON_COOLDOWN_MS);
-
+        releaseThemeButtonAfterCooldown();
         return;
     }
 
-    themeTransitionInProgress = true;
-    setThemeButtonBusy(true);
-    clearThemeTransitionWatchdog();
-    resetThemeOverlay();
+    if (!document.startViewTransition) {
+        playFallbackThemeAnimation(event, nextTheme);
+        return;
+    }
 
-    const { x, y } = getEventPosition(event);
+    const { x, y, radius } =
+        getThemeTransitionGeometry(event);
 
-    const endRadius =
-        Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        ) + 12;
+    root.classList.add("theme-transition");
 
-    themeOverlay.style.setProperty("--theme-x", `${x}px`);
-    themeOverlay.style.setProperty("--theme-y", `${y}px`);
-    themeOverlay.style.setProperty(
-        "--theme-cover-color",
-        getThemeCoverColor(nextTheme)
-    );
-
-    themeOverlay.style.opacity = "1";
-    themeOverlay.style.clipPath =
-        `circle(0px at ${x}px ${y}px)`;
-
-    root.classList.add("theme-animation-active");
-
-    /*
-        Protección final: incluso si el navegador cancela una animación
-        o la pestaña pierde visibilidad, el botón vuelve a habilitarse.
-    */
-    themeTransitionWatchdogTimer = window.setTimeout(() => {
-        setTheme(nextTheme, false);
-        finishThemeAnimation(nextTheme, false);
-    }, 2200);
+    let transition = null;
+    let safetyTimer = null;
 
     try {
+        transition = document.startViewTransition(() => {
+            setTheme(nextTheme, false);
+        });
+
+        activeThemeTransition = transition;
+
         /*
-            Primera fase: un círculo del color del tema nuevo crece
-            desde el botón. Solo se anima una capa fija del viewport.
+            El temporizador nunca desbloquea el botón por su cuenta.
+            Si Chrome tarda demasiado, primero ordena omitir la
+            animación y después se espera a transition.finished.
         */
-        const expandAnimation = themeOverlay.animate(
+        safetyTimer = window.setTimeout(() => {
+            safelySkipActiveThemeTransition();
+        }, 2200);
+
+        await transition.ready;
+
+        activeThemeAnimation = root.animate(
             [
                 {
                     clipPath:
-                        `circle(0px at ${x}px ${y}px)`
+                        `circle(1px at ${x}px ${y}px)`,
+                    offset: 0
                 },
                 {
                     clipPath:
-                        `circle(${endRadius}px at ${x}px ${y}px)`
+                        `circle(${radius * 0.18}px at ${x}px ${y}px)`,
+                    offset: 0.2
+                },
+                {
+                    clipPath:
+                        `circle(${radius}px at ${x}px ${y}px)`,
+                    offset: 1
                 }
             ],
             {
-                duration: THEME_CIRCLE_EXPAND_MS,
+                duration: THEME_TRANSITION_DURATION,
                 easing: "cubic-bezier(.22, 1, .36, 1)",
-                fill: "forwards"
+                fill: "both",
+                pseudoElement:
+                    "::view-transition-new(root)"
             }
         );
 
-        await expandAnimation.finished;
-
-        /*
-            El tema cambia cuando la capa ya cubre todo. De esta forma,
-            el recálculo de estilos no se ve como un salto.
-        */
-        setTheme(nextTheme, false);
-
-        await new Promise((resolve) => {
-            window.setTimeout(resolve, THEME_SWAP_WAIT_MS);
-        });
-
-        /*
-            Segunda fase: la capa desaparece y deja ver el tema nuevo.
-        */
-        const fadeAnimation = themeOverlay.animate(
-            [
-                { opacity: 1 },
-                { opacity: 0 }
-            ],
-            {
-                duration: THEME_CIRCLE_FADE_MS,
-                easing: "ease-out",
-                fill: "forwards"
-            }
-        );
-
-        await fadeAnimation.finished;
-
-        finishThemeAnimation(nextTheme);
+        await transition.finished;
     } catch {
-        setTheme(nextTheme, false);
-        finishThemeAnimation(nextTheme);
+        try {
+            await transition?.updateCallbackDone;
+        } catch {
+            setTheme(nextTheme, false);
+        }
+    } finally {
+        window.clearTimeout(safetyTimer);
+        cancelTrackedThemeAnimation();
+        cleanupThemeTransitionClasses();
+
+        activeThemeTransition = null;
+
+        const copy = currentCopy();
+
+        announce(
+            nextTheme === "dark"
+                ? copy.themeDarkAnnouncement
+                : copy.themeLightAnnouncement
+        );
+
+        releaseThemeButtonAfterCooldown();
     }
 }
+
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        safelySkipActiveThemeTransition();
+    }
+});
+
+window.addEventListener("pagehide", () => {
+    safelySkipActiveThemeTransition();
+});
+
+scheduleThemeTransitionWarmup();
 
 function updateHeader() {
     siteHeader?.classList.toggle("scrolled", window.scrollY > 16);
