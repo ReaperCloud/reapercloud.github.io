@@ -1257,14 +1257,13 @@ let activeProjectId = null;
 let activeProjectImageIndex = 0;
 let projectCarouselUpdatePending = false;
 let activeProjectImageResizeObserver = null;
-let projectGalleryCounter = null;
 
 /*
     Cambiar este valor obliga al navegador a solicitar nuevamente
     las capturas de los proyectos. Evita que una respuesta 404
     antigua quede guardada en caché después de publicar cambios.
 */
-const PORTFOLIO_ASSET_VERSION = "20260805-2";
+const PORTFOLIO_ASSET_VERSION = "20260805-3";
 
 function versionedPortfolioAsset(source) {
     if (
@@ -1905,7 +1904,6 @@ function renderGalleryPagination(images, language) {
     }
 
     projectGalleryPagination.replaceChildren();
-    projectGalleryCounter = null;
 
     const hasMultipleImages =
         images.length > 1;
@@ -1945,24 +1943,7 @@ function renderGalleryPagination(images, language) {
         dots.append(button);
     });
 
-    projectGalleryCounter = document.createElement(
-        "output"
-    );
-    projectGalleryCounter.className =
-        "project-gallery-counter";
-    projectGalleryCounter.setAttribute(
-        "aria-live",
-        "polite"
-    );
-    projectGalleryCounter.setAttribute(
-        "aria-atomic",
-        "true"
-    );
-
-    projectGalleryPagination.append(
-        dots,
-        projectGalleryCounter
-    );
+    projectGalleryPagination.append(dots);
 }
 
 
@@ -2177,17 +2158,6 @@ function showProjectImage(index, animate = true) {
             );
         });
 
-    if (projectGalleryCounter) {
-        const counterText =
-            `${safeIndex + 1} / ${slides.length}`;
-
-        projectGalleryCounter.value = counterText;
-        projectGalleryCounter.textContent = counterText;
-        projectGalleryCounter.setAttribute(
-            "aria-label",
-            counterText
-        );
-    }
 }
 
 

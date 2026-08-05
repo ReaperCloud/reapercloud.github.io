@@ -13550,21 +13550,21 @@ html[data-theme="dark"]
 
 
 /* =========================================================
-   GALERÍA DE PROYECTOS — CONTADOR VISIBLE Y LAPTOPS
+   GALERÍA DE PROYECTOS — AJUSTE PARA LAPTOPS
 
-   Mantiene los puntos existentes, añade el indicador 1 / N y
-   reserva una fila real para que nunca quede fuera del modal.
+   Conserva únicamente los puntos originales y reserva una fila
+   real para evitar que queden recortados en pantallas de poca altura.
 ========================================================= */
 
 .project-gallery-pagination {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    gap: 12px !important;
+    gap: 7px !important;
 
     width: 100%;
     min-width: 0;
-    min-height: 30px !important;
+    min-height: 24px !important;
 
     overflow: visible;
 }
@@ -13578,50 +13578,9 @@ html[data-theme="dark"]
     min-width: 0;
 }
 
-.project-gallery-counter {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 46px;
-    height: 26px;
-    padding: 0 9px;
-
-    border: 1px solid var(--border);
-    border-radius: 999px;
-
-    color: var(--text-secondary);
-    background:
-        color-mix(
-            in srgb,
-            var(--surface-solid) 88%,
-            var(--accent-soft)
-        );
-
-    box-shadow: 0 7px 18px rgba(17, 18, 22, 0.07);
-
-    font-size: 0.68rem;
-    font-weight: 760;
-    line-height: 1;
-    letter-spacing: 0.035em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-html[data-theme="dark"] .project-gallery-counter {
-    color: var(--text-primary);
-    background:
-        color-mix(
-            in srgb,
-            var(--surface-soft) 86%,
-            var(--accent-soft)
-        );
-}
-
 /*
    En pantallas de laptop con poca altura, la galería utiliza el
-   espacio disponible y reserva 30 px para puntos + contador.
-   Así el indicador no queda recortado por overflow: hidden.
+   espacio disponible y reserva una fila para los puntos originales.
 */
 
 @media (min-width: 901px) and (max-height: 900px) {
@@ -13652,7 +13611,7 @@ html[data-theme="dark"] .project-gallery-counter {
 
         grid-template-rows:
             minmax(0, 1fr)
-            30px !important;
+            24px !important;
 
         gap: 9px !important;
     }
@@ -13678,18 +13637,11 @@ html[data-theme="dark"] .project-gallery-counter {
 
 @media (max-width: 680px) {
     .project-gallery-pagination {
-        gap: 9px !important;
-        min-height: 28px !important;
+        gap: 6px !important;
+        min-height: 22px !important;
     }
 
     .project-gallery-dots {
         gap: 6px;
-    }
-
-    .project-gallery-counter {
-        min-width: 43px;
-        height: 24px;
-        padding-inline: 8px;
-        font-size: 0.64rem;
     }
 }
