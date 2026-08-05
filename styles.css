@@ -185,51 +185,49 @@ ul {
 .theme-transition-overlay {
     position: fixed;
     z-index: 4500;
-
-    left: 88vw;
-    top: 42px;
-
-    /*
-        300vmax garantiza que la circunferencia cubra el viewport
-        completo incluso cuando nace cerca de una esquina.
-    */
-    width: 300vmax;
-    height: 300vmax;
-
-    border-radius: 50%;
+    inset: 0;
 
     opacity: 0;
     pointer-events: none;
 
     background:
         radial-gradient(
-            circle at 50% 50%,
-            rgba(127, 116, 255, 0.06) 0%,
-            rgba(127, 116, 255, 0.025) 36%,
-            transparent 62%
-        ),
-        var(--theme-wipe-color, #101116);
-
-    box-shadow:
-        inset 0 0 0 1px rgba(127, 116, 255, 0.08);
-
-    transform:
-        translate3d(-50%, -50%, 0)
-        scale(0.001);
-
-    transform-origin: 50% 50%;
-
-    contain: strict;
-    will-change: transform, opacity;
-    backface-visibility: hidden;
+            circle at var(--theme-x, 85%) var(--theme-y, 10%),
+            rgba(255, 255, 255, 0.28),
+            transparent 22%
+        );
 }
 
-.theme-transition-overlay.is-visible {
-    opacity: 1;
+html[data-theme="dark"] .theme-transition-overlay {
+    background:
+        radial-gradient(
+            circle at var(--theme-x, 85%) var(--theme-y, 10%),
+            rgba(180, 175, 255, 0.18),
+            transparent 22%
+        );
 }
 
-.theme-transition-overlay.is-fading {
-    pointer-events: none;
+body.theme-animating .theme-transition-overlay {
+    animation:
+        themePulse
+        620ms
+        cubic-bezier(.22, 1, .36, 1);
+}
+
+@keyframes themePulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.02);
+    }
 }
 
 .page-container {
@@ -2043,7 +2041,50 @@ html[data-theme="dark"] .theme-icon-moon {
     min-block-size: 2.8em;
 }
 
-/* El selector de idioma conserva su animación local. */
+/* Transiciones nativas del tema y del idioma. */
+::view-transition-old(root),
+::view-transition-new(root) {
+    mix-blend-mode: normal;
+}
+
+html.theme-transition::view-transition-group(root),
+html.theme-transition::view-transition-image-pair(root),
+html.theme-transition::view-transition-old(root),
+html.theme-transition::view-transition-new(root) {
+    animation: none;
+}
+
+html.theme-transition::view-transition-old(root) {
+    z-index: 1;
+}
+
+html.theme-transition::view-transition-new(root) {
+    z-index: 2;
+
+    will-change: clip-path;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/*
+    Warm-up invisible de la API. Las dos capturas son idénticas y la
+    transición se omite apenas el árbol de pseudoelementos está listo.
+*/
+html.theme-transition-prewarm::view-transition-group(root),
+html.theme-transition-prewarm::view-transition-image-pair(root),
+html.theme-transition-prewarm::view-transition-old(root),
+html.theme-transition-prewarm::view-transition-new(root) {
+    animation: none !important;
+}
+
+html.theme-transition-prewarm::view-transition-old(root) {
+    opacity: 1;
+}
+
+html.theme-transition-prewarm::view-transition-new(root) {
+    opacity: 0;
+}
+
 html.language-transition::view-transition-old(root) {
     animation: languageViewOut 170ms ease both;
 }
@@ -2299,8 +2340,8 @@ main,
         transition: none;
     }
 
-    .theme-transition-overlay {
-        transition: none;
+    body.theme-animating .theme-transition-overlay {
+        animation: none;
     }
 }
 
@@ -13682,8 +13723,9 @@ html[data-theme="dark"]
 
 
 /*
-    Las pulsaciones adicionales reinician un único debounce fijo.
-    No se acumulan tiempos ni se crean animaciones nuevas.
+    El interruptor no se deshabilita físicamente. Las pulsaciones
+    adicionales llegan al debounce interno, reinician su contador fijo
+    y nunca generan una segunda View Transition superpuesta.
 */
 .theme-button[aria-busy="true"] {
     opacity: 1;
