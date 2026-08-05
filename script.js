@@ -775,27 +775,50 @@ function setTheme(theme, shouldAnnounce = true) {
 
 
 function getEventPosition(event) {
-    if (
-        event &&
-        Number.isFinite(event.clientX) &&
-        Number.isFinite(event.clientY) &&
-        (event.clientX !== 0 || event.clientY !== 0)
-    ) {
-        return {
-            x: event.clientX,
-            y: event.clientY
-        };
-    }
+    /*
+        El origen visual siempre se obtiene del centro real del botón,
+        no de clientX/clientY. En algunas combinaciones de Chrome,
+        escalado de pantalla y View Transition, el clic y el snapshot
+        pueden terminar usando espacios de coordenadas distintos.
 
+        También guardamos porcentajes relativos al viewport. El clip
+        circular usa esos porcentajes para permanecer alineado aunque
+        Chrome escale internamente la captura.
+    */
     const buttonBounds = themeButton?.getBoundingClientRect();
 
+    const viewportWidth =
+        document.documentElement.clientWidth ||
+        window.innerWidth ||
+        1;
+
+    const viewportHeight =
+        document.documentElement.clientHeight ||
+        window.innerHeight ||
+        1;
+
+    let x = buttonBounds
+        ? buttonBounds.left + buttonBounds.width / 2
+        : Number.isFinite(event?.clientX)
+            ? event.clientX
+            : viewportWidth * 0.88;
+
+    let y = buttonBounds
+        ? buttonBounds.top + buttonBounds.height / 2
+        : Number.isFinite(event?.clientY)
+            ? event.clientY
+            : 44;
+
+    x = Math.min(Math.max(x, 0), viewportWidth);
+    y = Math.min(Math.max(y, 0), viewportHeight);
+
     return {
-        x: buttonBounds
-            ? buttonBounds.left + buttonBounds.width / 2
-            : window.innerWidth * 0.88,
-        y: buttonBounds
-            ? buttonBounds.top + buttonBounds.height / 2
-            : 44
+        x,
+        y,
+        xPercent: (x / viewportWidth) * 100,
+        yPercent: (y / viewportHeight) * 100,
+        viewportWidth,
+        viewportHeight
     };
 }
 
@@ -1004,13 +1027,20 @@ function toggleTheme(event) {
         return;
     }
 
-    const { x, y } = getEventPosition(event);
+    const {
+        x,
+        y,
+        xPercent,
+        yPercent,
+        viewportWidth,
+        viewportHeight
+    } = getEventPosition(event);
 
     const endRadius =
         Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
+            Math.max(x, viewportWidth - x),
+            Math.max(y, viewportHeight - y)
+        ) + 12;
 
     root.classList.add("theme-transition");
 
@@ -1058,8 +1088,8 @@ function toggleTheme(event) {
             activeThemeAnimation = root.animate(
                 {
                     clipPath: [
-                        `circle(0px at ${x}px ${y}px)`,
-                        `circle(${endRadius}px at ${x}px ${y}px)`
+                        `circle(0px at ${xPercent}% ${yPercent}%)`,
+                        `circle(${endRadius}px at ${xPercent}% ${yPercent}%)`
                     ]
                 },
                 {
