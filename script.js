@@ -1028,19 +1028,19 @@ function toggleTheme(event) {
     }
 
     const {
-        x,
-        y,
         xPercent,
-        yPercent,
-        viewportWidth,
-        viewportHeight
+        yPercent
     } = getEventPosition(event);
 
-    const endRadius =
-        Math.hypot(
-            Math.max(x, viewportWidth - x),
-            Math.max(y, viewportHeight - y)
-        ) + 12;
+    /*
+        Se usa una longitud relativa al viewport en lugar de píxeles.
+        En algunas laptops Chrome escala internamente el snapshot de
+        View Transition y un radio calculado en px puede quedarse corto.
+
+        160vmax supera la diagonal máxima posible del viewport
+        (aprox. 141.5vmax), incluso si el círculo nace en una esquina.
+    */
+    const endRadius = "160vmax";
 
     root.classList.add("theme-transition");
 
@@ -1089,7 +1089,7 @@ function toggleTheme(event) {
                 {
                     clipPath: [
                         `circle(0px at ${xPercent}% ${yPercent}%)`,
-                        `circle(${endRadius}px at ${xPercent}% ${yPercent}%)`
+                        `circle(${endRadius} at ${xPercent}% ${yPercent}%)`
                     ]
                 },
                 {
