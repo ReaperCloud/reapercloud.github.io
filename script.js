@@ -1257,6 +1257,29 @@ let activeProjectId = null;
 let activeProjectImageIndex = 0;
 let projectCarouselUpdatePending = false;
 let activeProjectImageResizeObserver = null;
+let projectGalleryCounter = null;
+
+/*
+    Cambiar este valor obliga al navegador a solicitar nuevamente
+    las capturas de los proyectos. Evita que una respuesta 404
+    antigua quede guardada en caché después de publicar cambios.
+*/
+const PORTFOLIO_ASSET_VERSION = "20260805-2";
+
+function versionedPortfolioAsset(source) {
+    if (
+        !source ||
+        /^(?:data:|blob:)/i.test(source)
+    ) {
+        return source;
+    }
+
+    const separator = source.includes("?")
+        ? "&"
+        : "?";
+
+    return `${source}${separator}v=${PORTFOLIO_ASSET_VERSION}`;
+}
 
 function portfolioProjects() {
     return Array.isArray(window.PORTFOLIO_PROJECTS)
@@ -1428,7 +1451,7 @@ function createProjectImage(
 ) {
     const image = document.createElement("img");
 
-    image.src = source;
+    image.src = versionedPortfolioAsset(source);
     image.alt = alternativeText;
     image.loading = "lazy";
     image.decoding = "async";
@@ -1882,6 +1905,7 @@ function renderGalleryPagination(images, language) {
     }
 
     projectGalleryPagination.replaceChildren();
+    projectGalleryCounter = null;
 
     const hasMultipleImages =
         images.length > 1;
@@ -1897,6 +1921,9 @@ function renderGalleryPagination(images, language) {
     if (!hasMultipleImages) {
         return;
     }
+
+    const dots = document.createElement("span");
+    dots.className = "project-gallery-dots";
 
     images.forEach((image, index) => {
         const button = document.createElement(
@@ -1915,10 +1942,27 @@ function renderGalleryPagination(images, language) {
             `${translations[language]["projects.goToImage"]} ${index + 1}`
         );
 
-        projectGalleryPagination.append(
-            button
-        );
+        dots.append(button);
     });
+
+    projectGalleryCounter = document.createElement(
+        "output"
+    );
+    projectGalleryCounter.className =
+        "project-gallery-counter";
+    projectGalleryCounter.setAttribute(
+        "aria-live",
+        "polite"
+    );
+    projectGalleryCounter.setAttribute(
+        "aria-atomic",
+        "true"
+    );
+
+    projectGalleryPagination.append(
+        dots,
+        projectGalleryCounter
+    );
 }
 
 
@@ -2132,6 +2176,18 @@ function showProjectImage(index, animate = true) {
                 isCurrent ? "true" : "false"
             );
         });
+
+    if (projectGalleryCounter) {
+        const counterText =
+            `${safeIndex + 1} / ${slides.length}`;
+
+        projectGalleryCounter.value = counterText;
+        projectGalleryCounter.textContent = counterText;
+        projectGalleryCounter.setAttribute(
+            "aria-label",
+            counterText
+        );
+    }
 }
 
 
