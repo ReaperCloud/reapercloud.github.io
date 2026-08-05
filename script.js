@@ -670,10 +670,16 @@ function applyLanguage(language, shouldAnnounce = false) {
 }
 
 
+let languageTransitionInProgress = false;
+
+
 function changeLanguage(language) {
     const safeLanguage = language === "en" ? "en" : "es";
 
-    if (safeLanguage === currentLanguage()) {
+    if (
+        safeLanguage === currentLanguage() ||
+        languageTransitionInProgress
+    ) {
         return;
     }
 
@@ -681,39 +687,60 @@ function changeLanguage(language) {
         announce(translations[safeLanguage].languageAnnouncement);
     };
 
-    if (!reducedMotionQuery.matches && document.startViewTransition) {
-        root.classList.add("language-transition");
-
-        const transition = document.startViewTransition(() => {
-            applyLanguage(safeLanguage, false);
-        });
-
-        transition.finished
-            .catch(() => {})
-            .finally(() => {
-                root.classList.remove("language-transition");
-                announceLanguageChange();
-            });
-
-        return;
-    }
-
     if (reducedMotionQuery.matches) {
         applyLanguage(safeLanguage, false);
         announceLanguageChange();
         return;
     }
 
-    document.body.classList.add("language-fading");
+    languageTransitionInProgress = true;
+    languageSwitch?.setAttribute(
+        "data-pending-language",
+        safeLanguage
+    );
 
-    window.setTimeout(() => {
-        applyLanguage(safeLanguage, false);
-    }, 110);
-
-    window.setTimeout(() => {
-        document.body.classList.remove("language-fading");
+    const finishLanguageChange = () => {
+        languageSwitch?.removeAttribute(
+            "data-pending-language"
+        );
+        languageTransitionInProgress = false;
         announceLanguageChange();
-    }, 300);
+    };
+
+    /*
+        El indicador empieza a deslizarse primero. Un instante después
+        cambia el contenido, de modo que el movimiento sí es visible
+        incluso cuando el navegador usa View Transitions.
+    */
+    window.setTimeout(() => {
+        if (document.startViewTransition) {
+            root.classList.add("language-transition");
+
+            const transition = document.startViewTransition(() => {
+                applyLanguage(safeLanguage, false);
+            });
+
+            transition.finished
+                .catch(() => {})
+                .finally(() => {
+                    root.classList.remove("language-transition");
+                    finishLanguageChange();
+                });
+
+            return;
+        }
+
+        document.body.classList.add("language-fading");
+
+        window.setTimeout(() => {
+            applyLanguage(safeLanguage, false);
+        }, 80);
+
+        window.setTimeout(() => {
+            document.body.classList.remove("language-fading");
+            finishLanguageChange();
+        }, 280);
+    }, 70);
 }
 
 
@@ -794,93 +821,88 @@ function getEventPosition(event) {
 }
 
 
-function playFallbackThemeAnimation(event) {
+let themeTransitionInProgress = false;
+let themeSwapTimer = null;
+let themeFinishTimer = null;
+
+
+function clearThemeAnimationTimers() {
+    window.clearTimeout(themeSwapTimer);
+    window.clearTimeout(themeFinishTimer);
+
+    themeSwapTimer = null;
+    themeFinishTimer = null;
+}
+
+
+function playThemeAnimation(event, nextTheme) {
     if (!themeOverlay) {
+        setTheme(nextTheme);
         return;
     }
 
     const { x, y } = getEventPosition(event);
-
-    themeOverlay.style.setProperty(
-        "--theme-x",
-        `${Math.round((x / window.innerWidth) * 100)}%`
+    const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
     );
 
+    clearThemeAnimationTimers();
+    themeTransitionInProgress = true;
+
     themeOverlay.style.setProperty(
-        "--theme-y",
-        `${Math.round((y / window.innerHeight) * 100)}%`
+        "--theme-x-px",
+        `${Math.round(x)}px`
+    );
+    themeOverlay.style.setProperty(
+        "--theme-y-px",
+        `${Math.round(y)}px`
+    );
+    themeOverlay.style.setProperty(
+        "--theme-diameter",
+        `${Math.ceil(endRadius * 2)}px`
+    );
+    themeOverlay.style.setProperty(
+        "--theme-cover-color",
+        nextTheme === "dark" ? "#0d0e12" : "#f5f5f7"
     );
 
     document.body.classList.remove("theme-animating");
-    void document.body.offsetWidth;
+    void themeOverlay.offsetWidth;
     document.body.classList.add("theme-animating");
 
-    window.setTimeout(() => {
+    /* El tema cambia cuando el círculo ya cubre toda la pantalla. */
+    themeSwapTimer = window.setTimeout(() => {
+        setTheme(nextTheme, false);
+    }, 330);
+
+    themeFinishTimer = window.setTimeout(() => {
         document.body.classList.remove("theme-animating");
-    }, 650);
+        themeTransitionInProgress = false;
+
+        const copy = currentCopy();
+        announce(
+            nextTheme === "dark"
+                ? copy.themeDarkAnnouncement
+                : copy.themeLightAnnouncement
+        );
+    }, 740);
 }
 
 
 function toggleTheme(event) {
+    if (themeTransitionInProgress) {
+        return;
+    }
+
     const nextTheme = currentTheme() === "dark" ? "light" : "dark";
-    const { x, y } = getEventPosition(event);
 
     if (reducedMotionQuery.matches) {
         setTheme(nextTheme);
         return;
     }
 
-    if (!document.startViewTransition) {
-        playFallbackThemeAnimation(event);
-
-        window.setTimeout(() => {
-            setTheme(nextTheme);
-        }, 80);
-
-        return;
-    }
-
-    const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-    );
-
-    root.classList.add("theme-transition");
-
-    const transition = document.startViewTransition(() => {
-        setTheme(nextTheme, false);
-    });
-
-    transition.ready
-        .then(() => {
-            root.animate(
-                {
-                    clipPath: [
-                        `circle(0px at ${x}px ${y}px)`,
-                        `circle(${endRadius}px at ${x}px ${y}px)`
-                    ]
-                },
-                {
-                    duration: 560,
-                    easing: "cubic-bezier(.22, 1, .36, 1)",
-                    pseudoElement: "::view-transition-new(root)"
-                }
-            );
-        })
-        .catch(() => {});
-
-    transition.finished
-        .catch(() => {})
-        .finally(() => {
-            root.classList.remove("theme-transition");
-
-            const copy = currentCopy();
-            announce(
-                nextTheme === "dark"
-                    ? copy.themeDarkAnnouncement
-                    : copy.themeLightAnnouncement
-            );
-        });
+    playThemeAnimation(event, nextTheme);
 }
 
 
