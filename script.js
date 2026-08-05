@@ -801,28 +801,157 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
-let themeTransitionWarmupInProgress = false;
-let themeTransitionWarmed = false;
-let fallbackThemeSwapTimer = null;
-let fallbackThemeFinishTimer = null;
+let activeThemeTransition = null;
+let activeThemeAnimation = null;
+let themeWarmupTransition = null;
+let queuedThemeRequest = null;
+
+let themeDebounceTimer = null;
+let themeSafetyTimer = null;
+let themeDebounceUntil = 0;
+let themeUserInteracted = false;
+let themeEngineWarmed = false;
+
+const THEME_TRANSITION_DURATION = 540;
+const THEME_CLICK_DEBOUNCE = 260;
+const THEME_SAFETY_TIMEOUT = 1800;
 
 
-function clearFallbackThemeTimers() {
-    window.clearTimeout(fallbackThemeSwapTimer);
-    window.clearTimeout(fallbackThemeFinishTimer);
+function setThemeButtonBusy(isBusy) {
+    if (!themeButton) {
+        return;
+    }
 
-    fallbackThemeSwapTimer = null;
-    fallbackThemeFinishTimer = null;
+    /*
+        No se usa disabled: el botón necesita seguir recibiendo
+        pulsaciones para reiniciar el debounce interno.
+    */
+    themeButton.setAttribute(
+        "aria-busy",
+        isBusy ? "true" : "false"
+    );
+
+    themeButton.dataset.themeBusy =
+        isBusy ? "true" : "false";
 }
 
 
-function finishThemeTransition(nextTheme) {
+function clearThemeSafetyTimer() {
+    window.clearTimeout(themeSafetyTimer);
+    themeSafetyTimer = null;
+}
+
+
+function cancelTrackedThemeAnimation() {
+    try {
+        activeThemeAnimation?.cancel();
+    } catch {
+        /* La animación ya pudo haber terminado. */
+    }
+
+    activeThemeAnimation = null;
+}
+
+
+function cleanupThemeTransitionClasses() {
     root.classList.remove(
         "theme-transition",
         "theme-transition-prewarm"
     );
 
-    document.body.classList.remove("theme-animating");
+    root.style.removeProperty("--theme-vt-x");
+    root.style.removeProperty("--theme-vt-y");
+    root.style.removeProperty("--theme-vt-r-small");
+    root.style.removeProperty("--theme-vt-r");
+}
+
+
+function getThemeTransitionGeometry(event) {
+    const { x, y } = getEventPosition(event);
+
+    const radius =
+        Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        ) + 8;
+
+    return { x, y, radius };
+}
+
+
+function resetThemeDebounce() {
+    const now = performance.now();
+    const wasDebouncing = now < themeDebounceUntil;
+
+    themeDebounceUntil =
+        now + THEME_CLICK_DEBOUNCE;
+
+    window.clearTimeout(themeDebounceTimer);
+
+    themeDebounceTimer = window.setTimeout(() => {
+        if (!themeTransitionInProgress) {
+            setThemeButtonBusy(false);
+        }
+    }, THEME_CLICK_DEBOUNCE);
+
+    return wasDebouncing;
+}
+
+
+function releaseThemeButtonWhenReady() {
+    const remaining =
+        themeDebounceUntil - performance.now();
+
+    window.clearTimeout(themeDebounceTimer);
+
+    if (remaining > 0) {
+        themeDebounceTimer = window.setTimeout(() => {
+            if (!themeTransitionInProgress) {
+                setThemeButtonBusy(false);
+            }
+        }, remaining);
+
+        return;
+    }
+
+    setThemeButtonBusy(false);
+}
+
+
+function applyThemeForSnapshot(nextTheme) {
+    setTheme(nextTheme, false);
+
+    /*
+        Con las transiciones de color apagadas por CSS mientras dura
+        "theme-transition" (ver styles.css), el cambio de tema ya es
+        instantáneo por sí solo: ya no hace falta recorrer
+        document.getAnimations() ni forzar finish() en cada transición
+        nueva, que era trabajo síncrono pesado justo en el arranque de
+        la animación y causaba el tirón inicial.
+
+        Esta lectura fuerza el cálculo del estilo nuevo mientras el
+        renderizado de View Transition está suspendido, para que la
+        captura corresponda al estado final.
+    */
+    void root.offsetWidth;
+}
+
+
+function safelySkipThemeTransition(transition = activeThemeTransition) {
+    try {
+        transition?.skipTransition();
+    } catch {
+        /* La transición ya pudo haber finalizado. */
+    }
+}
+
+
+function finishThemeTransition(nextTheme) {
+    clearThemeSafetyTimer();
+    cancelTrackedThemeAnimation();
+    cleanupThemeTransitionClasses();
+
+    activeThemeTransition = null;
     themeTransitionInProgress = false;
 
     const copy = currentCopy();
@@ -832,66 +961,20 @@ function finishThemeTransition(nextTheme) {
             ? copy.themeDarkAnnouncement
             : copy.themeLightAnnouncement
     );
-}
-
-
-function warmUpThemeTransition() {
-    if (
-        themeTransitionWarmed ||
-        themeTransitionWarmupInProgress ||
-        themeTransitionInProgress ||
-        reducedMotionQuery.matches ||
-        !document.startViewTransition ||
-        document.visibilityState !== "visible"
-    ) {
-        return;
-    }
-
-    themeTransitionWarmupInProgress = true;
-    root.classList.add("theme-transition-prewarm");
 
     /*
-        Esta transición no cambia nada visualmente. Solo permite que
-        Chrome prepare las capas y el compositor antes del primer clic.
+        El tiempo no se acumula. Siempre se calcula desde la última
+        pulsación recibida.
     */
-    const warmupTransition =
-        document.startViewTransition(() => {});
-
-    warmupTransition.finished
-        .catch(() => {})
-        .finally(() => {
-            root.classList.remove("theme-transition-prewarm");
-            themeTransitionWarmupInProgress = false;
-            themeTransitionWarmed = true;
-        });
-}
-
-
-function scheduleThemeTransitionWarmup() {
-    const beginWarmup = () => {
-        if ("requestIdleCallback" in window) {
-            window.requestIdleCallback(
-                warmUpThemeTransition,
-                { timeout: 1600 }
-            );
-            return;
-        }
-
-        window.setTimeout(warmUpThemeTransition, 700);
-    };
-
-    if (document.readyState === "complete") {
-        beginWarmup();
-        return;
-    }
-
-    window.addEventListener("load", beginWarmup, { once: true });
+    releaseThemeButtonWhenReady();
 }
 
 
 function playFallbackThemeAnimation(event, nextTheme) {
     if (!themeOverlay) {
         setTheme(nextTheme);
+        themeTransitionInProgress = false;
+        releaseThemeButtonWhenReady();
         return;
     }
 
@@ -907,115 +990,270 @@ function playFallbackThemeAnimation(event, nextTheme) {
         `${Math.round((y / window.innerHeight) * 100)}%`
     );
 
-    clearFallbackThemeTimers();
-    themeTransitionInProgress = true;
-
     document.body.classList.remove("theme-animating");
     void themeOverlay.offsetWidth;
     document.body.classList.add("theme-animating");
 
-    fallbackThemeSwapTimer = window.setTimeout(() => {
+    window.setTimeout(() => {
         setTheme(nextTheme, false);
     }, 80);
 
-    fallbackThemeFinishTimer = window.setTimeout(() => {
+    window.setTimeout(() => {
+        document.body.classList.remove("theme-animating");
         finishThemeTransition(nextTheme);
     }, 650);
 }
 
 
-function toggleTheme(event) {
-    if (themeTransitionInProgress || themeTransitionWarmupInProgress) {
+function startThemeTransition(request) {
+    if (
+        themeTransitionInProgress ||
+        activeThemeTransition ||
+        document.activeViewTransition
+    ) {
         return;
     }
 
     const nextTheme =
         currentTheme() === "dark" ? "light" : "dark";
 
+    themeTransitionInProgress = true;
+    setThemeButtonBusy(true);
+
     if (reducedMotionQuery.matches) {
         setTheme(nextTheme);
+        themeTransitionInProgress = false;
+        releaseThemeButtonWhenReady();
         return;
     }
 
     if (!document.startViewTransition) {
-        playFallbackThemeAnimation(event, nextTheme);
+        playFallbackThemeAnimation(request, nextTheme);
         return;
     }
 
-    const { x, y } = getEventPosition(event);
-
-    const endRadius =
-        Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        ) + 8;
-
-    themeTransitionInProgress = true;
-    root.classList.add("theme-transition");
+    const { x, y, radius } =
+        getThemeTransitionGeometry(request);
 
     /*
-        No se aplica una regla universal a todos los elementos.
-        Esa recalculación era la principal causa del tirón inicial
-        en laptops. La captura se mantiene ligera y el reveal sigue
-        saliendo desde el botón.
-    */
-    const transition = document.startViewTransition(() => {
-        setTheme(nextTheme, false);
-    });
+        Estas variables se fijan ANTES de startViewTransition y la
+        animación del círculo vive en CSS (@keyframes theme-circle-reveal)
+        en vez de crearse con root.animate() dentro de un .then() de
+        transition.ready.
 
+        Motivo: entre que el navegador crea los pseudo-elementos de la
+        transición y el momento en que un .then() de JS llega a ejecutarse,
+        existe una ventana de tiempo real. Si en esa ventana el
+        pseudo-elemento ::view-transition-new(root) no tiene ninguna
+        animación asociada (como ocurría antes, con "animation: none" en
+        CSS a la espera del root.animate() tardío), el navegador puede dar
+        por terminada la transición de inmediato. Eso cortaba el círculo a
+        medio camino y el tema saltaba de golpe al estado final — más
+        notorio en laptop, donde hay más elementos en pantalla y ese
+        .then() tarda un poco más en ejecutarse.
+
+        Al fijar la animación en CSS, el navegador la asocia al
+        pseudo-elemento en el mismo paso síncrono en que lo crea, así que
+        esa ventana de carrera desaparece y transition.finished espera
+        correctamente los THEME_TRANSITION_DURATION ms completos.
+    */
+    root.style.setProperty(
+        "--theme-transition-duration",
+        `${THEME_TRANSITION_DURATION}ms`
+    );
+    root.style.setProperty("--theme-vt-x", `${x}px`);
+    root.style.setProperty("--theme-vt-y", `${y}px`);
+    root.style.setProperty(
+        "--theme-vt-r-small",
+        `${radius * 0.18}px`
+    );
+    root.style.setProperty("--theme-vt-r", `${radius}px`);
+
+    root.classList.add("theme-transition");
+
+    let transition;
+
+    try {
+        transition = document.startViewTransition(() => {
+            applyThemeForSnapshot(nextTheme);
+        });
+    } catch {
+        setTheme(nextTheme, false);
+        finishThemeTransition(nextTheme);
+        return;
+    }
+
+    activeThemeTransition = transition;
+
+    /*
+        Si el navegador tarda de forma anormal, se omite solamente
+        la parte visual. El tema y el botón siguen recuperándose a
+        través de transition.finished.
+    */
+    clearThemeSafetyTimer();
+
+    themeSafetyTimer = window.setTimeout(() => {
+        safelySkipThemeTransition(transition);
+    }, THEME_SAFETY_TIMEOUT);
+
+    transition.updateCallbackDone
+        .catch(() => {
+            setTheme(nextTheme, false);
+        });
+
+    transition.finished
+        .catch(() => {
+            setTheme(nextTheme, false);
+        })
+        .finally(() => {
+            if (transition === activeThemeTransition) {
+                finishThemeTransition(nextTheme);
+            }
+        });
+}
+
+
+function toggleTheme(event) {
+    themeUserInteracted = true;
+
+    /*
+        Cada pulsación reinicia exactamente el mismo debounce.
+        No existe contador acumulativo ni cooldown creciente.
+    */
+    const wasDebouncing = resetThemeDebounce();
+
+    if (
+        themeTransitionInProgress ||
+        activeThemeTransition
+    ) {
+        return;
+    }
+
+    /*
+        Una ráfaga de clics antes de iniciar la transición se reduce
+        a uno solo. El siguiente cambio vuelve a estar disponible
+        THEME_CLICK_DEBOUNCE ms después de la última pulsación.
+    */
+    if (wasDebouncing) {
+        return;
+    }
+
+    if (themeWarmupTransition) {
+        queuedThemeRequest =
+            getThemeTransitionGeometry(event);
+
+        safelySkipThemeTransition(themeWarmupTransition);
+        return;
+    }
+
+    startThemeTransition(event);
+}
+
+
+function warmUpThemeTransitionEngine() {
+    if (
+        themeEngineWarmed ||
+        themeUserInteracted ||
+        themeTransitionInProgress ||
+        activeThemeTransition ||
+        themeWarmupTransition ||
+        reducedMotionQuery.matches ||
+        !document.startViewTransition ||
+        document.visibilityState !== "visible"
+    ) {
+        return;
+    }
+
+    root.classList.add("theme-transition-prewarm");
+
+    let transition;
+
+    try {
+        transition =
+            document.startViewTransition(() => {});
+    } catch {
+        cleanupThemeTransitionClasses();
+        themeEngineWarmed = true;
+        return;
+    }
+
+    themeWarmupTransition = transition;
+
+    /*
+        Al resolverse ready, Chrome ya creó las capturas y el árbol de
+        pseudoelementos. Se omite la animación porque las dos vistas son
+        idénticas; el usuario no ve ningún destello.
+    */
     transition.ready
         .then(() => {
-            const limitedHardware =
-                (
-                    Number.isFinite(navigator.hardwareConcurrency) &&
-                    navigator.hardwareConcurrency <= 4
-                ) ||
-                (
-                    Number.isFinite(navigator.deviceMemory) &&
-                    navigator.deviceMemory <= 4
-                );
-
-            const duration =
-                limitedHardware ? 620 : 540;
-
-            const revealAnimation = root.animate(
-                [
-                    {
-                        clipPath:
-                            `circle(1px at ${x}px ${y}px)`,
-                        offset: 0
-                    },
-                    {
-                        clipPath:
-                            `circle(${endRadius * 0.18}px at ${x}px ${y}px)`,
-                        offset: 0.2
-                    },
-                    {
-                        clipPath:
-                            `circle(${endRadius}px at ${x}px ${y}px)`,
-                        offset: 1
-                    }
-                ],
-                {
-                    duration,
-                    easing: "cubic-bezier(.22, 1, .36, 1)",
-                    fill: "both",
-                    pseudoElement:
-                        "::view-transition-new(root)"
-                }
-            );
-
-            return revealAnimation.finished.catch(() => {});
+            safelySkipThemeTransition(transition);
         })
         .catch(() => {});
 
     transition.finished
         .catch(() => {})
         .finally(() => {
-            themeTransitionWarmed = true;
-            finishThemeTransition(nextTheme);
+            if (themeWarmupTransition === transition) {
+                themeWarmupTransition = null;
+            }
+
+            cleanupThemeTransitionClasses();
+            themeEngineWarmed = true;
+
+            if (queuedThemeRequest) {
+                const request = queuedThemeRequest;
+                queuedThemeRequest = null;
+
+                window.requestAnimationFrame(() => {
+                    startThemeTransition(request);
+                });
+            }
         });
 }
+
+
+function scheduleThemeTransitionWarmup() {
+    const schedule = () => {
+        const run = () => {
+            warmUpThemeTransitionEngine();
+        };
+
+        if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(run, {
+                timeout: 900
+            });
+
+            return;
+        }
+
+        window.setTimeout(run, 500);
+    };
+
+    if (document.readyState === "complete") {
+        schedule();
+        return;
+    }
+
+    window.addEventListener("load", schedule, {
+        once: true
+    });
+}
+
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "hidden") {
+        return;
+    }
+
+    safelySkipThemeTransition(activeThemeTransition);
+    safelySkipThemeTransition(themeWarmupTransition);
+});
+
+
+window.addEventListener("pagehide", () => {
+    safelySkipThemeTransition(activeThemeTransition);
+    safelySkipThemeTransition(themeWarmupTransition);
+});
 
 
 scheduleThemeTransitionWarmup();
@@ -1904,18 +2142,6 @@ projectsViewport?.addEventListener(
     },
     { passive: true }
 );
-
-projectsViewport?.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollProjectCarousel(-1);
-    }
-
-    if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollProjectCarousel(1);
-    }
-});
 
 projectsPagination?.addEventListener("click", (event) => {
     const button = event.target.closest(
@@ -3067,45 +3293,12 @@ window.addEventListener(
 );
 
 /* =========================================================
-   RUEDA DEL MOUSE SOBRE EL CARRUSEL DE PROYECTOS
+   CARRUSEL DE PROYECTOS — NAVEGACIÓN SOLO CON BOTONES
 
-   El carrusel continúa respondiendo a gestos horizontales.
-   Los gestos verticales se envían a la página para que el
-   usuario no quede atrapado al pasar el cursor sobre las cards.
+   No se intercepta la rueda ni el trackpad. El desplazamiento
+   vertical permanece completamente nativo y las tarjetas solo
+   avanzan mediante las flechas del carrusel.
 ========================================================= */
-
-projectsViewport?.addEventListener(
-    "wheel",
-    (event) => {
-        const verticalMovement =
-            Math.abs(event.deltaY);
-
-        const horizontalMovement =
-            Math.abs(event.deltaX);
-
-        const isHorizontalGesture =
-            event.shiftKey ||
-            horizontalMovement > verticalMovement;
-
-        if (
-            isHorizontalGesture ||
-            verticalMovement === 0
-        ) {
-            return;
-        }
-
-        event.preventDefault();
-
-        window.scrollBy({
-            top: event.deltaY,
-            left: 0,
-            behavior: "auto"
-        });
-    },
-    {
-        passive: false
-    }
-);
 
 /* =========================================================
    SELECTOR DE CORREO

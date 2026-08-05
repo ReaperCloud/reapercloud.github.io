@@ -2041,14 +2041,15 @@ html[data-theme="dark"] .theme-icon-moon {
     min-block-size: 2.8em;
 }
 
-/* Transición nativa y profesional para tema e idioma. */
+/* Transiciones nativas del tema y del idioma. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     mix-blend-mode: normal;
 }
 
-html.theme-transition::view-transition-old(root),
-html.theme-transition::view-transition-new(root) {
+html.theme-transition::view-transition-group(root),
+html.theme-transition::view-transition-image-pair(root),
+html.theme-transition::view-transition-old(root) {
     animation: none;
 }
 
@@ -2056,28 +2057,96 @@ html.theme-transition::view-transition-old(root) {
     z-index: 1;
 }
 
-html.theme-transition::view-transition-new(root) {
-    z-index: 2;
+/*
+    Mientras dura la transición de tema, las propiedades de color
+    cambian al instante (sin su transición normal), así la "foto"
+    nueva que captura la View Transitions API siempre corresponde al
+    estado final, nunca a un fotograma intermedio.
+
+    Antes esto se lograba recorriendo document.getAnimations() en JS
+    y llamando finish() en cada transición nueva una por una: un
+    trabajo síncrono pesado justo en el instante más sensible, el
+    arranque de la animación, que era la causa del tirón inicial
+    (más notorio en laptop, con más elementos en pantalla).
+
+    Solo se apagan propiedades de color: el resto de transiciones
+    (carrusel, hover, menús, íconos) sigue funcionando con normalidad
+    durante los ~540ms de la animación del círculo.
+*/
+html.theme-transition * {
+    transition:
+        color 0s,
+        background-color 0s,
+        border-color 0s,
+        box-shadow 0s,
+        fill 0s,
+        stroke 0s,
+        outline-color 0s,
+        text-decoration-color 0s !important;
 }
 
 html.theme-transition::view-transition-new(root) {
+    z-index: 2;
+
     will-change: clip-path;
     backface-visibility: hidden;
     transform: translateZ(0);
+
+    /*
+        La animación del círculo se define aquí, en CSS puro, y no con
+        root.animate() en JavaScript. El navegador crea el pseudo-elemento
+        y esta animación en el MISMO paso síncrono; no existe ninguna
+        ventana de tiempo en la que el pseudo-elemento quede sin animación
+        asociada. Antes, al enganchar la animación desde un .then() de
+        transition.ready, esa ventana existía y el navegador a veces daba
+        por terminada la transición antes de que el círculo llegara a su
+        radio final (más notorio en laptop, con más elementos en pantalla
+        retrasando ese .then()).
+    */
+    animation:
+        theme-circle-reveal
+        var(--theme-transition-duration, 540ms)
+        cubic-bezier(.22, 1, .36, 1)
+        both;
 }
 
+@keyframes theme-circle-reveal {
+    0% {
+        clip-path: circle(
+            1px at var(--theme-vt-x, 50%) var(--theme-vt-y, 50%)
+        );
+    }
 
+    20% {
+        clip-path: circle(
+            var(--theme-vt-r-small, 10%) at var(--theme-vt-x, 50%) var(--theme-vt-y, 50%)
+        );
+    }
+
+    100% {
+        clip-path: circle(
+            var(--theme-vt-r, 150%) at var(--theme-vt-x, 50%) var(--theme-vt-y, 50%)
+        );
+    }
+}
+
+/*
+    Warm-up invisible de la API. Las dos capturas son idénticas y la
+    transición se omite apenas el árbol de pseudoelementos está listo.
+*/
+html.theme-transition-prewarm::view-transition-group(root),
+html.theme-transition-prewarm::view-transition-image-pair(root),
 html.theme-transition-prewarm::view-transition-old(root),
 html.theme-transition-prewarm::view-transition-new(root) {
     animation: none !important;
 }
 
 html.theme-transition-prewarm::view-transition-old(root) {
-    opacity: 0;
+    opacity: 1;
 }
 
 html.theme-transition-prewarm::view-transition-new(root) {
-    opacity: 1;
+    opacity: 0;
 }
 
 html.language-transition::view-transition-old(root) {
@@ -10997,15 +11066,17 @@ html[data-theme="dark"]
 
 .projects-viewport {
     /*
-        Conserva el espacio necesario para el movimiento hover,
-        pero evita que las sombras de las tarjetas se unan en una
-        franja gris detrás del carrusel.
+        Las tarjetas siguen moviéndose programáticamente al pulsar
+        las flechas, pero la rueda, el trackpad y los gestos táctiles
+        ya no desplazan el carrusel lateralmente.
     */
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+
     padding-bottom: 8px !important;
 
-    overscroll-behavior-x: contain;
-    overscroll-behavior-y: auto;
-    touch-action: pan-x pan-y;
+    overscroll-behavior: auto;
+    touch-action: pan-y;
 }
 
 .project-card,
@@ -13712,4 +13783,19 @@ html[data-theme="dark"]
     .project-gallery-dots {
         gap: 6px;
     }
+}
+
+
+/*
+    El interruptor no se deshabilita físicamente. Las pulsaciones
+    adicionales llegan al debounce interno, reinician su contador fijo
+    y nunca generan una segunda View Transition superpuesta.
+*/
+.theme-button[aria-busy="true"] {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.theme-button {
+    touch-action: manipulation;
 }
