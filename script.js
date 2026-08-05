@@ -801,10 +801,29 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
+let themeTransitionFinishing = false;
 let themeTransitionWarmupInProgress = false;
 let themeTransitionWarmed = false;
+let queuedThemeTogglePosition = null;
+
+let activeThemeTransitionId = 0;
+let themeTransitionWatchdogTimer = null;
+let themeButtonUnlockTimer = null;
 let fallbackThemeSwapTimer = null;
 let fallbackThemeFinishTimer = null;
+
+
+function setThemeButtonBusy(isBusy) {
+    if (!themeButton) {
+        return;
+    }
+
+    themeButton.disabled = isBusy;
+    themeButton.setAttribute(
+        "aria-busy",
+        isBusy ? "true" : "false"
+    );
+}
 
 
 function clearFallbackThemeTimers() {
@@ -816,14 +835,73 @@ function clearFallbackThemeTimers() {
 }
 
 
-function finishThemeTransition(nextTheme) {
+function clearThemeSafetyTimers() {
+    window.clearTimeout(themeTransitionWatchdogTimer);
+    window.clearTimeout(themeButtonUnlockTimer);
+
+    themeTransitionWatchdogTimer = null;
+    themeButtonUnlockTimer = null;
+}
+
+
+function beginThemeTransition() {
+    if (
+        themeTransitionInProgress ||
+        themeTransitionFinishing
+    ) {
+        return 0;
+    }
+
+    clearThemeSafetyTimers();
+
+    themeTransitionInProgress = true;
+    themeTransitionFinishing = false;
+    activeThemeTransitionId += 1;
+
+    const transitionId = activeThemeTransitionId;
+
+    setThemeButtonBusy(true);
+
+    /*
+        Protección de emergencia: si el navegador no resuelve una
+        View Transition por algún motivo, el botón vuelve a habilitarse.
+    */
+    themeTransitionWatchdogTimer = window.setTimeout(() => {
+        finishThemeTransition(
+            currentTheme(),
+            transitionId,
+            80
+        );
+    }, 1800);
+
+    return transitionId;
+}
+
+
+function finishThemeTransition(
+    nextTheme,
+    transitionId = activeThemeTransitionId,
+    unlockDelay = 240
+) {
+    if (
+        transitionId !== activeThemeTransitionId ||
+        themeTransitionFinishing
+    ) {
+        return;
+    }
+
+    themeTransitionFinishing = true;
+
     root.classList.remove(
         "theme-transition",
-        "theme-transition-prewarm"
+        "theme-transition-prewarm",
+        "theme-style-prewarm"
     );
 
     document.body.classList.remove("theme-animating");
-    themeTransitionInProgress = false;
+
+    window.clearTimeout(themeTransitionWatchdogTimer);
+    themeTransitionWatchdogTimer = null;
 
     const copy = currentCopy();
 
@@ -832,6 +910,80 @@ function finishThemeTransition(nextTheme) {
             ? copy.themeDarkAnnouncement
             : copy.themeLightAnnouncement
     );
+
+    /*
+        Se mantiene un pequeño cooldown después de la animación.
+        Así una ráfaga de clics no crea capturas consecutivas de
+        toda la página ni satura la memoria gráfica del navegador.
+    */
+    themeButtonUnlockTimer = window.setTimeout(() => {
+        if (transitionId !== activeThemeTransitionId) {
+            return;
+        }
+
+        themeTransitionInProgress = false;
+        themeTransitionFinishing = false;
+        setThemeButtonBusy(false);
+    }, unlockDelay);
+}
+
+
+function forceThemeStyleCalculation() {
+    void document.documentElement.offsetWidth;
+    void document.body.offsetHeight;
+
+    const warmElements = [
+        document.body,
+        siteHeader,
+        document.querySelector("main"),
+        themeButton,
+        document.querySelector(".project-card"),
+        document.querySelector(".section-heading")
+    ].filter(Boolean);
+
+    warmElements.forEach((element) => {
+        const computedStyle = window.getComputedStyle(element);
+
+        void computedStyle.color;
+        void computedStyle.backgroundColor;
+        void computedStyle.borderColor;
+        void computedStyle.boxShadow;
+    });
+}
+
+
+function warmUpBothThemeStyles() {
+    const initialTheme = currentTheme();
+    const oppositeTheme =
+        initialTheme === "dark" ? "light" : "dark";
+
+    root.classList.add("theme-style-prewarm");
+
+    root.dataset.theme = oppositeTheme;
+    forceThemeStyleCalculation();
+
+    root.dataset.theme = initialTheme;
+    forceThemeStyleCalculation();
+
+    root.classList.remove("theme-style-prewarm");
+    updateThemeButton(initialTheme);
+}
+
+
+function runQueuedThemeToggle() {
+    if (!queuedThemeTogglePosition) {
+        return;
+    }
+
+    const position = queuedThemeTogglePosition;
+    queuedThemeTogglePosition = null;
+
+    window.requestAnimationFrame(() => {
+        toggleTheme({
+            clientX: position.x,
+            clientY: position.y
+        });
+    });
 }
 
 
@@ -848,14 +1000,51 @@ function warmUpThemeTransition() {
     }
 
     themeTransitionWarmupInProgress = true;
+
+    warmUpBothThemeStyles();
     root.classList.add("theme-transition-prewarm");
 
-    /*
-        Esta transición no cambia nada visualmente. Solo permite que
-        Chrome prepare las capas y el compositor antes del primer clic.
-    */
-    const warmupTransition =
-        document.startViewTransition(() => {});
+    const buttonBounds = themeButton?.getBoundingClientRect();
+    const warmX = buttonBounds
+        ? buttonBounds.left + buttonBounds.width / 2
+        : window.innerWidth * 0.88;
+    const warmY = buttonBounds
+        ? buttonBounds.top + buttonBounds.height / 2
+        : 44;
+
+    let warmupTransition;
+
+    try {
+        warmupTransition =
+            document.startViewTransition(() => {});
+    } catch {
+        root.classList.remove("theme-transition-prewarm");
+        themeTransitionWarmupInProgress = false;
+        themeTransitionWarmed = true;
+        runQueuedThemeToggle();
+        return;
+    }
+
+    warmupTransition.ready
+        .then(() => {
+            const warmAnimation = root.animate(
+                {
+                    clipPath: [
+                        `circle(1px at ${warmX}px ${warmY}px)`,
+                        `circle(2px at ${warmX}px ${warmY}px)`
+                    ]
+                },
+                {
+                    duration: 1,
+                    fill: "both",
+                    pseudoElement:
+                        "::view-transition-new(root)"
+                }
+            );
+
+            return warmAnimation.finished.catch(() => {});
+        })
+        .catch(() => {});
 
     warmupTransition.finished
         .catch(() => {})
@@ -863,35 +1052,54 @@ function warmUpThemeTransition() {
             root.classList.remove("theme-transition-prewarm");
             themeTransitionWarmupInProgress = false;
             themeTransitionWarmed = true;
+            runQueuedThemeToggle();
         });
 }
 
 
 function scheduleThemeTransitionWarmup() {
-    const beginWarmup = () => {
-        if ("requestIdleCallback" in window) {
-            window.requestIdleCallback(
-                warmUpThemeTransition,
-                { timeout: 1600 }
-            );
-            return;
-        }
+    const schedule = () => {
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                if ("requestIdleCallback" in window) {
+                    window.requestIdleCallback(
+                        warmUpThemeTransition,
+                        { timeout: 220 }
+                    );
+                    return;
+                }
 
-        window.setTimeout(warmUpThemeTransition, 700);
+                window.setTimeout(warmUpThemeTransition, 40);
+            });
+        });
     };
 
-    if (document.readyState === "complete") {
-        beginWarmup();
+    if (document.visibilityState === "visible") {
+        schedule();
         return;
     }
 
-    window.addEventListener("load", beginWarmup, { once: true });
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+            if (document.visibilityState === "visible") {
+                schedule();
+            }
+        },
+        { once: true }
+    );
 }
 
 
 function playFallbackThemeAnimation(event, nextTheme) {
     if (!themeOverlay) {
         setTheme(nextTheme);
+        return;
+    }
+
+    const transitionId = beginThemeTransition();
+
+    if (!transitionId) {
         return;
     }
 
@@ -908,7 +1116,6 @@ function playFallbackThemeAnimation(event, nextTheme) {
     );
 
     clearFallbackThemeTimers();
-    themeTransitionInProgress = true;
 
     document.body.classList.remove("theme-animating");
     void themeOverlay.offsetWidth;
@@ -919,13 +1126,33 @@ function playFallbackThemeAnimation(event, nextTheme) {
     }, 80);
 
     fallbackThemeFinishTimer = window.setTimeout(() => {
-        finishThemeTransition(nextTheme);
+        finishThemeTransition(
+            nextTheme,
+            transitionId
+        );
     }, 650);
 }
 
 
 function toggleTheme(event) {
-    if (themeTransitionInProgress || themeTransitionWarmupInProgress) {
+    if (
+        themeTransitionInProgress ||
+        themeTransitionFinishing
+    ) {
+        return;
+    }
+
+    if (themeTransitionWarmupInProgress) {
+        /*
+            Durante el precalentamiento solo se conserva el primer clic.
+            Los clics adicionales se ignoran para impedir una cola de
+            cambios de tema.
+        */
+        if (!queuedThemeTogglePosition) {
+            const { x, y } = getEventPosition(event);
+            queuedThemeTogglePosition = { x, y };
+        }
+
         return;
     }
 
@@ -942,6 +1169,12 @@ function toggleTheme(event) {
         return;
     }
 
+    const transitionId = beginThemeTransition();
+
+    if (!transitionId) {
+        return;
+    }
+
     const { x, y } = getEventPosition(event);
 
     const endRadius =
@@ -950,18 +1183,23 @@ function toggleTheme(event) {
             Math.max(y, window.innerHeight - y)
         ) + 8;
 
-    themeTransitionInProgress = true;
     root.classList.add("theme-transition");
 
-    /*
-        No se aplica una regla universal a todos los elementos.
-        Esa recalculación era la principal causa del tirón inicial
-        en laptops. La captura se mantiene ligera y el reveal sigue
-        saliendo desde el botón.
-    */
-    const transition = document.startViewTransition(() => {
+    let transition;
+
+    try {
+        transition = document.startViewTransition(() => {
+            setTheme(nextTheme, false);
+        });
+    } catch {
         setTheme(nextTheme, false);
-    });
+        finishThemeTransition(
+            nextTheme,
+            transitionId,
+            100
+        );
+        return;
+    }
 
     transition.ready
         .then(() => {
@@ -1013,7 +1251,11 @@ function toggleTheme(event) {
         .catch(() => {})
         .finally(() => {
             themeTransitionWarmed = true;
-            finishThemeTransition(nextTheme);
+
+            finishThemeTransition(
+                nextTheme,
+                transitionId
+            );
         });
 }
 
@@ -1904,18 +2146,6 @@ projectsViewport?.addEventListener(
     },
     { passive: true }
 );
-
-projectsViewport?.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollProjectCarousel(-1);
-    }
-
-    if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollProjectCarousel(1);
-    }
-});
 
 projectsPagination?.addEventListener("click", (event) => {
     const button = event.target.closest(
@@ -3067,45 +3297,12 @@ window.addEventListener(
 );
 
 /* =========================================================
-   RUEDA DEL MOUSE SOBRE EL CARRUSEL DE PROYECTOS
+   CARRUSEL DE PROYECTOS — NAVEGACIÓN SOLO CON BOTONES
 
-   El carrusel continúa respondiendo a gestos horizontales.
-   Los gestos verticales se envían a la página para que el
-   usuario no quede atrapado al pasar el cursor sobre las cards.
+   No se intercepta la rueda ni el trackpad. El desplazamiento
+   vertical permanece completamente nativo y las tarjetas solo
+   avanzan mediante las flechas del carrusel.
 ========================================================= */
-
-projectsViewport?.addEventListener(
-    "wheel",
-    (event) => {
-        const verticalMovement =
-            Math.abs(event.deltaY);
-
-        const horizontalMovement =
-            Math.abs(event.deltaX);
-
-        const isHorizontalGesture =
-            event.shiftKey ||
-            horizontalMovement > verticalMovement;
-
-        if (
-            isHorizontalGesture ||
-            verticalMovement === 0
-        ) {
-            return;
-        }
-
-        event.preventDefault();
-
-        window.scrollBy({
-            top: event.deltaY,
-            left: 0,
-            behavior: "auto"
-        });
-    },
-    {
-        passive: false
-    }
-);
 
 /* =========================================================
    SELECTOR DE CORREO

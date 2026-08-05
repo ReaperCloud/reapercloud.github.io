@@ -2080,6 +2080,19 @@ html.theme-transition-prewarm::view-transition-new(root) {
     opacity: 1;
 }
 
+
+/*
+    Solo se usa durante el precalentamiento invisible del inicio.
+    Al ocurrir antes de la interacción, estas reglas no añaden trabajo
+    al clic real del interruptor.
+*/
+html.theme-style-prewarm *,
+html.theme-style-prewarm *::before,
+html.theme-style-prewarm *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
 html.language-transition::view-transition-old(root) {
     animation: languageViewOut 170ms ease both;
 }
@@ -10997,15 +11010,17 @@ html[data-theme="dark"]
 
 .projects-viewport {
     /*
-        Conserva el espacio necesario para el movimiento hover,
-        pero evita que las sombras de las tarjetas se unan en una
-        franja gris detrás del carrusel.
+        Las tarjetas siguen moviéndose programáticamente al pulsar
+        las flechas, pero la rueda, el trackpad y los gestos táctiles
+        ya no desplazan el carrusel lateralmente.
     */
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+
     padding-bottom: 8px !important;
 
-    overscroll-behavior-x: contain;
-    overscroll-behavior-y: auto;
-    touch-action: pan-x pan-y;
+    overscroll-behavior: auto;
+    touch-action: pan-y;
 }
 
 .project-card,
@@ -13712,4 +13727,21 @@ html[data-theme="dark"]
     .project-gallery-dots {
         gap: 6px;
     }
+}
+
+
+/*
+    El botón se bloquea mientras termina la captura del tema y durante
+    un cooldown corto. No cambia visualmente; únicamente evita clics
+    repetidos que podrían crear varias View Transitions consecutivas.
+*/
+.theme-button:disabled,
+.theme-button[aria-busy="true"] {
+    opacity: 1;
+    cursor: default;
+    pointer-events: none;
+}
+
+.theme-button {
+    touch-action: manipulation;
 }
