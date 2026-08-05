@@ -801,6 +801,8 @@ function getEventPosition(event) {
 
 
 let themeTransitionInProgress = false;
+let themeTransitionWarmupInProgress = false;
+let themeTransitionWarmed = false;
 let fallbackThemeSwapTimer = null;
 let fallbackThemeFinishTimer = null;
 
@@ -817,7 +819,7 @@ function clearFallbackThemeTimers() {
 function finishThemeTransition(nextTheme) {
     root.classList.remove(
         "theme-transition",
-        "theme-transition-capture"
+        "theme-transition-prewarm"
     );
 
     document.body.classList.remove("theme-animating");
@@ -830,6 +832,60 @@ function finishThemeTransition(nextTheme) {
             ? copy.themeDarkAnnouncement
             : copy.themeLightAnnouncement
     );
+}
+
+
+function warmUpThemeTransition() {
+    if (
+        themeTransitionWarmed ||
+        themeTransitionWarmupInProgress ||
+        themeTransitionInProgress ||
+        reducedMotionQuery.matches ||
+        !document.startViewTransition ||
+        document.visibilityState !== "visible"
+    ) {
+        return;
+    }
+
+    themeTransitionWarmupInProgress = true;
+    root.classList.add("theme-transition-prewarm");
+
+    /*
+        Esta transición no cambia nada visualmente. Solo permite que
+        Chrome prepare las capas y el compositor antes del primer clic.
+    */
+    const warmupTransition =
+        document.startViewTransition(() => {});
+
+    warmupTransition.finished
+        .catch(() => {})
+        .finally(() => {
+            root.classList.remove("theme-transition-prewarm");
+            themeTransitionWarmupInProgress = false;
+            themeTransitionWarmed = true;
+        });
+}
+
+
+function scheduleThemeTransitionWarmup() {
+    const beginWarmup = () => {
+        if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(
+                warmUpThemeTransition,
+                { timeout: 1600 }
+            );
+            return;
+        }
+
+        window.setTimeout(warmUpThemeTransition, 700);
+    };
+
+    if (document.readyState === "complete") {
+        beginWarmup();
+        return;
+    }
+
+    window.addEventListener("load", beginWarmup, { once: true });
 }
 
 
@@ -869,7 +925,7 @@ function playFallbackThemeAnimation(event, nextTheme) {
 
 
 function toggleTheme(event) {
-    if (themeTransitionInProgress) {
+    if (themeTransitionInProgress || themeTransitionWarmupInProgress) {
         return;
     }
 
@@ -892,31 +948,23 @@ function toggleTheme(event) {
         Math.hypot(
             Math.max(x, window.innerWidth - x),
             Math.max(y, window.innerHeight - y)
-        ) + 4;
+        ) + 8;
 
     themeTransitionInProgress = true;
+    root.classList.add("theme-transition");
 
     /*
-        theme-transition-capture desactiva por un instante las
-        transiciones internas de tarjetas, fondos e iconos. Así
-        el navegador captura directamente el estado final del tema
-        y no una imagen intermedia que después salte.
+        No se aplica una regla universal a todos los elementos.
+        Esa recalculación era la principal causa del tirón inicial
+        en laptops. La captura se mantiene ligera y el reveal sigue
+        saliendo desde el botón.
     */
-    root.classList.add(
-        "theme-transition",
-        "theme-transition-capture"
-    );
-
     const transition = document.startViewTransition(() => {
         setTheme(nextTheme, false);
     });
 
     transition.ready
         .then(() => {
-            root.classList.remove(
-                "theme-transition-capture"
-            );
-
             const limitedHardware =
                 (
                     Number.isFinite(navigator.hardwareConcurrency) &&
@@ -928,15 +976,26 @@ function toggleTheme(event) {
                 );
 
             const duration =
-                limitedHardware ? 470 : 540;
+                limitedHardware ? 620 : 540;
 
             const revealAnimation = root.animate(
-                {
-                    clipPath: [
-                        `circle(0px at ${x}px ${y}px)`,
-                        `circle(${endRadius}px at ${x}px ${y}px)`
-                    ]
-                },
+                [
+                    {
+                        clipPath:
+                            `circle(1px at ${x}px ${y}px)`,
+                        offset: 0
+                    },
+                    {
+                        clipPath:
+                            `circle(${endRadius * 0.18}px at ${x}px ${y}px)`,
+                        offset: 0.2
+                    },
+                    {
+                        clipPath:
+                            `circle(${endRadius}px at ${x}px ${y}px)`,
+                        offset: 1
+                    }
+                ],
                 {
                     duration,
                     easing: "cubic-bezier(.22, 1, .36, 1)",
@@ -948,18 +1007,18 @@ function toggleTheme(event) {
 
             return revealAnimation.finished.catch(() => {});
         })
-        .catch(() => {
-            root.classList.remove(
-                "theme-transition-capture"
-            );
-        });
+        .catch(() => {});
 
     transition.finished
         .catch(() => {})
         .finally(() => {
+            themeTransitionWarmed = true;
             finishThemeTransition(nextTheme);
         });
 }
+
+
+scheduleThemeTransitionWarmup();
 
 function updateHeader() {
     siteHeader?.classList.toggle("scrolled", window.scrollY > 16);

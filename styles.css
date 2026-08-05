@@ -2060,24 +2060,24 @@ html.theme-transition::view-transition-new(root) {
     z-index: 2;
 }
 
-
-/*
-    Durante la captura del nuevo tema se detienen solamente
-    transiciones y animaciones internas. Esto evita capturar
-    colores a medio cambiar y reduce el trabajo en laptops.
-*/
-html.theme-transition-capture *,
-html.theme-transition-capture *::before,
-html.theme-transition-capture *::after {
-    transition-duration: 0s !important;
-    transition-delay: 0s !important;
-    animation-play-state: paused !important;
-}
-
 html.theme-transition::view-transition-new(root) {
     will-change: clip-path;
     backface-visibility: hidden;
     transform: translateZ(0);
+}
+
+
+html.theme-transition-prewarm::view-transition-old(root),
+html.theme-transition-prewarm::view-transition-new(root) {
+    animation: none !important;
+}
+
+html.theme-transition-prewarm::view-transition-old(root) {
+    opacity: 0;
+}
+
+html.theme-transition-prewarm::view-transition-new(root) {
+    opacity: 1;
 }
 
 html.language-transition::view-transition-old(root) {
