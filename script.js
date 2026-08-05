@@ -1263,7 +1263,7 @@ let activeProjectImageResizeObserver = null;
     las capturas de los proyectos. Evita que una respuesta 404
     antigua quede guardada en caché después de publicar cambios.
 */
-const PORTFOLIO_ASSET_VERSION = "20260805-3";
+const PORTFOLIO_ASSET_VERSION = "__BUILD_VERSION__";
 
 function versionedPortfolioAsset(source) {
     if (
