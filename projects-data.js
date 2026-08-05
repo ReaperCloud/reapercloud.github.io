@@ -134,7 +134,7 @@ window.PORTFOLIO_PROJECTS = [
 
         images: [
             {
-                src: "./assets/images/projects/cc/screen-1.png",
+                src: "./assets/images/projects/cc/screen-1.PNG",
 
                 alt: {
                     es: "Pantalla de inicio de Change Collector",
@@ -142,7 +142,7 @@ window.PORTFOLIO_PROJECTS = [
                 }
             },
             {
-                src: "./assets/images/projects/cc/screen-2.png",
+                src: "./assets/images/projects/cc/screen-2.PNG",
 
                 alt: {
                     es: "Vista de organización de tareas",
@@ -150,7 +150,7 @@ window.PORTFOLIO_PROJECTS = [
                 }
             },
             {
-                src: "./assets/images/projects/cc/screen-3.png",
+                src: "./assets/images/projects/cc/screen-3.PNG",
 
                 alt: {
                     es: "Vista responsiva de Change Collector",
@@ -158,7 +158,7 @@ window.PORTFOLIO_PROJECTS = [
                 }
             },
             {
-                src: "./assets/images/projects/cc/screen-4.png",
+                src: "./assets/images/projects/cc/screen-4.PNG",
 
                 alt: {
                     es: "Vista responsiva de Change Collector",
@@ -166,7 +166,7 @@ window.PORTFOLIO_PROJECTS = [
                 }
             },
             {
-                src: "./assets/images/projects/cc/screen-5.png",
+                src: "./assets/images/projects/cc/screen-5.PNG",
 
                 alt: {
                     es: "Vista responsiva de Change Collector",
@@ -174,7 +174,7 @@ window.PORTFOLIO_PROJECTS = [
                 }
             },
             {
-                src: "./assets/images/projects/cc/screen-6.png",
+                src: "./assets/images/projects/cc/screen-6.PNG",
 
                 alt: {
                     es: "Vista responsiva de Change Collector",
