@@ -750,27 +750,37 @@
     }
 
 
-    function openDialog() {
-        if (!dialog) {
-            return;
-        }
+    const badgesReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
 
-        if (typeof dialog.showModal === "function") {
-            dialog.showModal();
-        } else {
-            dialog.setAttribute("open", "");
-        }
+    const BADGES_DIALOG_OPEN_DURATION = 320;
+    const BADGES_DIALOG_CLOSE_DURATION = 220;
 
-        document.body.classList.add(
-            "badges-dialog-open"
-        );
+    let badgesDialogOpenTimer = null;
+    let badgesDialogCloseTimer = null;
+
+
+    function clearBadgesDialogTimers() {
+        window.clearTimeout(badgesDialogOpenTimer);
+        window.clearTimeout(badgesDialogCloseTimer);
+
+        badgesDialogOpenTimer = null;
+        badgesDialogCloseTimer = null;
     }
 
 
-    function closeDialog() {
+    function finishBadgesDialogClose() {
         if (!dialog) {
             return;
         }
+
+        clearBadgesDialogTimers();
+
+        dialog.classList.remove(
+            "is-opening",
+            "is-closing"
+        );
 
         if (
             typeof dialog.close === "function"
@@ -783,6 +793,90 @@
 
         document.body.classList.remove(
             "badges-dialog-open"
+        );
+    }
+
+
+    function openDialog() {
+        if (!dialog) {
+            return;
+        }
+
+        clearBadgesDialogTimers();
+
+        if (!dialog.open) {
+            if (typeof dialog.showModal === "function") {
+                dialog.showModal();
+            } else {
+                dialog.setAttribute("open", "");
+            }
+        }
+
+        document.body.classList.add(
+            "badges-dialog-open"
+        );
+
+        const layout = dialog.querySelector(
+            ".badges-dialog-layout"
+        );
+
+        if (layout) {
+            layout.scrollTop = 0;
+        }
+
+        dialog.classList.remove(
+            "is-opening",
+            "is-closing"
+        );
+
+        if (badgesReducedMotion.matches) {
+            return;
+        }
+
+        /* Register the visible dialog before starting the entrance motion. */
+        void dialog.offsetWidth;
+
+        dialog.classList.add("is-opening");
+
+        badgesDialogOpenTimer = window.setTimeout(
+            () => {
+                dialog?.classList.remove("is-opening");
+                badgesDialogOpenTimer = null;
+            },
+            BADGES_DIALOG_OPEN_DURATION
+        );
+    }
+
+
+    function closeDialog() {
+        if (
+            !dialog
+            || (
+                !dialog.open
+                && !dialog.hasAttribute("open")
+            )
+            || dialog.classList.contains("is-closing")
+        ) {
+            return;
+        }
+
+        if (badgesDialogOpenTimer) {
+            window.clearTimeout(badgesDialogOpenTimer);
+            badgesDialogOpenTimer = null;
+        }
+
+        dialog.classList.remove("is-opening");
+
+        if (badgesReducedMotion.matches) {
+            finishBadgesDialogClose();
+            return;
+        }
+
+        dialog.classList.add("is-closing");
+
+        badgesDialogCloseTimer = window.setTimeout(
+            finishBadgesDialogClose,
+            BADGES_DIALOG_CLOSE_DURATION
         );
     }
 
@@ -803,7 +897,19 @@
         }
     });
 
+    dialog?.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeDialog();
+    });
+
     dialog?.addEventListener("close", () => {
+        clearBadgesDialogTimers();
+
+        dialog.classList.remove(
+            "is-opening",
+            "is-closing"
+        );
+
         document.body.classList.remove(
             "badges-dialog-open"
         );
@@ -830,6 +936,7 @@
             attributeFilter: ["lang"]
         }
     );
+
 
     featuredMobileQuery.addEventListener?.(
         "change",

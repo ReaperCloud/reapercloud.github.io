@@ -90,7 +90,7 @@ const projectImagePrevious = document.getElementById(
 );
 const projectImageNext = document.getElementById("project-image-next");
 
-const PROJECT_DIALOG_OPEN_DURATION = 280;
+const PROJECT_DIALOG_OPEN_DURATION = 320;
 const PROJECT_DIALOG_CLOSE_DURATION = 220;
 
 let projectDialogOpenTimer = null;
