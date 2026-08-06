@@ -327,6 +327,358 @@
     }
 
 
+    /* =====================================================
+       NAVEGACIÓN MÓVIL DE INSIGNIAS DESTACADAS
+       Dos credenciales por página, con el mismo lenguaje
+       visual de la navegación móvil de Proyectos.
+    ===================================================== */
+
+    const featuredMobileQuery = window.matchMedia(
+        "(max-width: 680px)"
+    );
+
+    let featuredNavigation = null;
+    let featuredCounter = null;
+    let featuredProgress = null;
+    let featuredPreviousButton = null;
+    let featuredNextButton = null;
+    let featuredScrollUpdatePending = false;
+
+    const featuredNavigationCopy = {
+        es: {
+            previous: "Insignias anteriores",
+            next: "Siguientes insignias",
+            page: "Ir al grupo de insignias"
+        },
+        en: {
+            previous: "Previous badges",
+            next: "Next badges",
+            page: "Go to badge group"
+        }
+    };
+
+
+    function featuredCards() {
+        return [
+            ...(featuredGrid?.querySelectorAll(
+                ".badge-card-real"
+            ) ?? [])
+        ];
+    }
+
+
+    function featuredPageCards() {
+        const cards = featuredCards();
+        const pageCards = [];
+
+        for (let index = 0; index < cards.length; index += 2) {
+            pageCards.push(cards[index]);
+        }
+
+        return pageCards;
+    }
+
+
+    function ensureFeaturedMobileNavigation() {
+        if (!featuredGrid || featuredNavigation) {
+            return;
+        }
+
+        featuredNavigation = document.createElement("div");
+        featuredNavigation.className = "badges-mobile-navigation";
+        featuredNavigation.hidden = true;
+
+        featuredCounter = document.createElement("span");
+        featuredCounter.className = "badges-mobile-counter";
+        featuredCounter.setAttribute("aria-live", "polite");
+
+        featuredProgress = document.createElement("div");
+        featuredProgress.className = "badges-mobile-progress";
+
+        const controls = document.createElement("div");
+        controls.className = "badges-mobile-controls";
+
+        featuredPreviousButton = document.createElement("button");
+        featuredPreviousButton.className =
+            "badges-mobile-button badges-mobile-previous";
+        featuredPreviousButton.type = "button";
+        featuredPreviousButton.innerHTML =
+            '<span aria-hidden="true">←</span>';
+
+        featuredNextButton = document.createElement("button");
+        featuredNextButton.className =
+            "badges-mobile-button badges-mobile-next";
+        featuredNextButton.type = "button";
+        featuredNextButton.innerHTML =
+            '<span aria-hidden="true">→</span>';
+
+        controls.append(
+            featuredPreviousButton,
+            featuredNextButton
+        );
+
+        featuredNavigation.append(
+            featuredCounter,
+            featuredProgress,
+            controls
+        );
+
+        featuredGrid.insertAdjacentElement(
+            "afterend",
+            featuredNavigation
+        );
+
+        featuredPreviousButton.addEventListener(
+            "click",
+            () => scrollFeaturedBadges(-1)
+        );
+
+        featuredNextButton.addEventListener(
+            "click",
+            () => scrollFeaturedBadges(1)
+        );
+
+        featuredProgress.addEventListener(
+            "click",
+            (event) => {
+                const button = event.target.closest(
+                    "[data-badge-page]"
+                );
+
+                if (!button) {
+                    return;
+                }
+
+                scrollFeaturedBadgesToPage(
+                    Number(button.dataset.badgePage)
+                );
+            }
+        );
+
+        featuredGrid.addEventListener(
+            "scroll",
+            () => {
+                if (featuredScrollUpdatePending) {
+                    return;
+                }
+
+                featuredScrollUpdatePending = true;
+
+                window.requestAnimationFrame(() => {
+                    updateFeaturedMobileNavigation();
+                    featuredScrollUpdatePending = false;
+                });
+            },
+            { passive: true }
+        );
+    }
+
+
+    function featuredPageIndex() {
+        if (!featuredGrid) {
+            return 0;
+        }
+
+        const pageCards = featuredPageCards();
+
+        if (pageCards.length === 0) {
+            return 0;
+        }
+
+        const gridLeft =
+            featuredGrid.getBoundingClientRect().left;
+
+        let nearestIndex = 0;
+        let nearestDistance = Infinity;
+
+        pageCards.forEach((card, index) => {
+            const distance = Math.abs(
+                card.getBoundingClientRect().left - gridLeft
+            );
+
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestIndex = index;
+            }
+        });
+
+        return nearestIndex;
+    }
+
+
+    function featuredPageScrollLeft(pageIndex) {
+        if (!featuredGrid) {
+            return 0;
+        }
+
+        const targetCard =
+            featuredPageCards()[pageIndex];
+
+        if (!targetCard) {
+            return 0;
+        }
+
+        const gridBounds =
+            featuredGrid.getBoundingClientRect();
+
+        const cardBounds =
+            targetCard.getBoundingClientRect();
+
+        return (
+            featuredGrid.scrollLeft +
+            cardBounds.left -
+            gridBounds.left
+        );
+    }
+
+
+    function scrollFeaturedBadgesToPage(pageIndex) {
+        if (!featuredGrid) {
+            return;
+        }
+
+        const pageCount = featuredPageCards().length;
+
+        if (pageCount === 0) {
+            return;
+        }
+
+        const safeIndex = Math.min(
+            Math.max(pageIndex, 0),
+            pageCount - 1
+        );
+
+        featuredGrid.scrollTo({
+            left: featuredPageScrollLeft(safeIndex),
+            behavior: window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches
+                ? "auto"
+                : "smooth"
+        });
+    }
+
+
+    function scrollFeaturedBadges(direction) {
+        scrollFeaturedBadgesToPage(
+            featuredPageIndex() + direction
+        );
+    }
+
+
+    function renderFeaturedProgress(pageCount, language) {
+        if (!featuredProgress) {
+            return;
+        }
+
+        featuredProgress.replaceChildren();
+
+        for (let index = 0; index < pageCount; index += 1) {
+            const button = document.createElement("button");
+
+            button.className =
+                "badges-mobile-progress-button";
+            button.type = "button";
+            button.dataset.badgePage = String(index);
+            button.setAttribute(
+                "aria-label",
+                `${featuredNavigationCopy[language].page} ${index + 1}`
+            );
+
+            featuredProgress.append(button);
+        }
+    }
+
+
+    function updateFeaturedMobileNavigation(
+        resetPosition = false
+    ) {
+        ensureFeaturedMobileNavigation();
+
+        if (
+            !featuredGrid ||
+            !featuredNavigation ||
+            !featuredCounter ||
+            !featuredProgress ||
+            !featuredPreviousButton ||
+            !featuredNextButton
+        ) {
+            return;
+        }
+
+        const language = currentLanguage();
+        const pageCount = featuredPageCards().length;
+        const isMobile = featuredMobileQuery.matches;
+        const shouldShow = isMobile && pageCount > 1;
+
+        featuredNavigation.hidden = !shouldShow;
+
+        featuredPreviousButton.setAttribute(
+            "aria-label",
+            featuredNavigationCopy[language].previous
+        );
+
+        featuredNextButton.setAttribute(
+            "aria-label",
+            featuredNavigationCopy[language].next
+        );
+
+        if (!shouldShow) {
+            return;
+        }
+
+        if (
+            featuredProgress.children.length !== pageCount
+        ) {
+            renderFeaturedProgress(pageCount, language);
+        } else {
+            [...featuredProgress.children].forEach(
+                (button, index) => {
+                    button.setAttribute(
+                        "aria-label",
+                        `${featuredNavigationCopy[language].page} ${index + 1}`
+                    );
+                }
+            );
+        }
+
+        if (resetPosition) {
+            featuredGrid.scrollLeft = 0;
+        }
+
+        const activeIndex = featuredPageIndex();
+
+        featuredCounter.textContent =
+            `${String(activeIndex + 1).padStart(2, "0")} / ` +
+            `${String(pageCount).padStart(2, "0")}`;
+
+        featuredPreviousButton.disabled = activeIndex <= 0;
+        featuredNextButton.disabled =
+            activeIndex >= pageCount - 1;
+
+        featuredProgress
+            .querySelectorAll("[data-badge-page]")
+            .forEach((button, index) => {
+                const isActive = index === activeIndex;
+
+                button.classList.toggle(
+                    "active",
+                    isActive
+                );
+
+                button.classList.toggle(
+                    "completed",
+                    index < activeIndex
+                );
+
+                button.setAttribute(
+                    "aria-current",
+                    isActive ? "true" : "false"
+                );
+            });
+    }
+
+
     function renderBadges() {
         if (!featuredGrid || !allGrid) {
             return;
@@ -391,6 +743,10 @@
             countLabel.textContent =
                 copy[language].count;
         }
+
+        window.requestAnimationFrame(() => {
+            updateFeaturedMobileNavigation(true);
+        });
     }
 
 
@@ -473,6 +829,25 @@
             attributes: true,
             attributeFilter: ["lang"]
         }
+    );
+
+    featuredMobileQuery.addEventListener?.(
+        "change",
+        () => {
+            window.requestAnimationFrame(() => {
+                updateFeaturedMobileNavigation(true);
+            });
+        }
+    );
+
+    window.addEventListener(
+        "resize",
+        () => {
+            window.requestAnimationFrame(() => {
+                updateFeaturedMobileNavigation(false);
+            });
+        },
+        { passive: true }
     );
 
     renderBadges();

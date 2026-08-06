@@ -15033,3 +15033,269 @@ html[data-theme="dark"]
         min-height: 37px !important;
     }
 }
+
+/* =========================================================
+   MOBILE FINAL POLISH — PROJECT COVERS + CV VIEWER
+   Solo teléfono. No altera tablet, laptop ni escritorio.
+========================================================= */
+
+@media (max-width: 680px) {
+    /* -----------------------------------------------------
+       PORTADAS DE PROYECTOS
+       Mantiene la portada completa y usa la propia imagen
+       como fondo ambiental cuando sobran franjas.
+    ----------------------------------------------------- */
+
+    .project-card-media {
+        position: relative;
+        aspect-ratio: 16 / 10 !important;
+        min-height: 0 !important;
+        overflow: hidden;
+
+        background: var(--surface-soft);
+    }
+
+    .project-card-media::before {
+        inset: -28px !important;
+        opacity: 0.34 !important;
+        filter: blur(26px) saturate(0.92) !important;
+        transform: scale(1.12) !important;
+    }
+
+    .project-card-media::after {
+        opacity: 0.48 !important;
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--surface-solid) 22%, transparent),
+                color-mix(in srgb, var(--surface-solid) 48%, transparent)
+            ) !important;
+    }
+
+    .project-card-media img,
+    .project-card-media.project-image-landscape img,
+    .project-card-media.project-image-portrait img {
+        position: relative;
+        z-index: 1;
+
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        padding: 0 !important;
+
+        object-fit: contain !important;
+        object-position: center !important;
+        box-shadow: none !important;
+    }
+
+    /* -----------------------------------------------------
+       VISOR DEL CV
+       Barra compacta tipo documento profesional.
+    ----------------------------------------------------- */
+
+    .cv-viewer-dialog {
+        width: calc(100% - 12px) !important;
+        height: calc(100dvh - 12px) !important;
+        max-height: calc(100dvh - 12px) !important;
+
+        border-radius: 20px !important;
+    }
+
+    .cv-viewer-shell {
+        grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .cv-viewer-header {
+        position: relative;
+        z-index: 5;
+
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px !important;
+
+        min-height: 62px !important;
+        padding:
+            max(8px, env(safe-area-inset-top))
+            9px
+            8px
+            11px !important;
+
+        border-bottom: 1px solid var(--border) !important;
+
+        background:
+            color-mix(
+                in srgb,
+                var(--surface-solid) 94%,
+                transparent
+            ) !important;
+
+        box-shadow: 0 8px 24px rgba(14, 15, 22, 0.055);
+    }
+
+    .cv-viewer-title-group {
+        min-width: 0;
+        gap: 10px !important;
+    }
+
+    .cv-viewer-file-icon {
+        width: 36px !important;
+        height: 36px !important;
+
+        border-radius: 11px !important;
+
+        font-size: 0.58rem !important;
+        letter-spacing: 0.06em;
+    }
+
+    .cv-viewer-title-group > div {
+        min-width: 0;
+    }
+
+    .cv-viewer-title-group span:not(.cv-viewer-file-icon) {
+        margin-bottom: 1px;
+
+        font-size: 0.56rem !important;
+        line-height: 1.15;
+    }
+
+    .cv-viewer-title-group h2 {
+        max-width: 100%;
+
+        font-size: 0.78rem !important;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .cv-viewer-header-actions {
+        display: grid !important;
+        grid-template-columns: repeat(3, 36px);
+        align-items: center;
+        gap: 3px !important;
+
+        padding: 3px;
+
+        border: 1px solid var(--border);
+        border-radius: 13px;
+
+        background: var(--surface-soft);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .cv-viewer-action,
+    .cv-viewer-close {
+        display: grid !important;
+        place-items: center;
+
+        width: 36px !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 10px !important;
+
+        color: var(--text-secondary) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+
+        transform: none !important;
+    }
+
+    .cv-viewer-action > span:first-child {
+        position: absolute !important;
+
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+
+        clip: rect(0 0 0 0) !important;
+        clip-path: inset(50%) !important;
+        white-space: nowrap !important;
+    }
+
+    .cv-viewer-action > span:last-child {
+        font-size: 0.98rem !important;
+        line-height: 1;
+    }
+
+    .cv-viewer-close {
+        font-size: 1.12rem !important;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .cv-viewer-action:hover,
+    .cv-viewer-action:active,
+    .cv-viewer-close:hover,
+    .cv-viewer-close:active {
+        color: var(--accent) !important;
+        background: var(--surface-solid) !important;
+    }
+
+    .cv-viewer-header-actions :focus-visible {
+        outline: 2px solid var(--focus) !important;
+        outline-offset: -2px !important;
+        box-shadow: none !important;
+    }
+
+    .cv-viewer-content {
+        min-height: 0;
+        padding: 7px !important;
+
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--accent-soft) 34%, var(--surface-soft)),
+                var(--surface-soft) 22%
+            ) !important;
+    }
+
+    .cv-viewer-pdf {
+        border-radius: 12px !important;
+        box-shadow: 0 12px 34px rgba(14, 15, 22, 0.08);
+    }
+
+    .cv-viewer-help {
+        display: none !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .cv-viewer-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 7px !important;
+        padding-inline: 8px !important;
+    }
+
+    .cv-viewer-file-icon {
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    .cv-viewer-title-group {
+        gap: 8px !important;
+    }
+
+    .cv-viewer-title-group span:not(.cv-viewer-file-icon) {
+        display: none !important;
+    }
+
+    .cv-viewer-title-group h2 {
+        font-size: 0.72rem !important;
+    }
+
+    .cv-viewer-header-actions {
+        grid-template-columns: repeat(3, 34px);
+    }
+
+    .cv-viewer-action,
+    .cv-viewer-close {
+        width: 34px !important;
+        min-width: 34px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+    }
+}

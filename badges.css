@@ -774,3 +774,336 @@ body.badges-dialog-open {
         font-size: 0.66rem !important;
     }
 }
+
+/* =========================================================
+   MOBILE FINAL — INSIGNIAS DESTACADAS CON NAVEGACIÓN
+   Dos credenciales por página, sin tarjetas cortadas.
+   Solo teléfono.
+========================================================= */
+
+.badges-mobile-navigation {
+    display: none;
+}
+
+@media (max-width: 680px) {
+    .badges-featured-grid {
+        display: grid !important;
+        grid-template-columns: none !important;
+        grid-template-rows: repeat(2, 146px) !important;
+        grid-auto-flow: column !important;
+        grid-auto-columns: 100% !important;
+        gap: 11px 14px !important;
+
+        width: 100% !important;
+        height: 303px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        scroll-snap-type: x mandatory !important;
+        scroll-padding-inline: 0 !important;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        touch-action: pan-y pinch-zoom;
+    }
+
+    .badges-featured-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .badges-featured-grid .badge-card-real {
+        display: grid !important;
+        grid-template-columns: 94px minmax(0, 1fr) !important;
+        align-items: center !important;
+        gap: 14px !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: 146px !important;
+        padding: 12px !important;
+
+        overflow: hidden !important;
+
+        border-radius: 20px !important;
+        box-shadow: 0 9px 24px rgba(16, 17, 24, 0.055) !important;
+
+        scroll-snap-align: none !important;
+        scroll-snap-stop: normal !important;
+    }
+
+    .badges-featured-grid .badge-card-real:nth-child(odd) {
+        scroll-snap-align: start !important;
+        scroll-snap-stop: always !important;
+    }
+
+    .badges-featured-grid .badge-card-real::before {
+        top: -54px !important;
+        right: -52px !important;
+
+        width: 150px !important;
+        height: 150px !important;
+
+        opacity: 0.52 !important;
+    }
+
+    .badges-featured-grid .badge-image-frame {
+        width: 94px !important;
+        min-width: 94px !important;
+        height: 122px !important;
+        min-height: 122px !important;
+        margin: 0 !important;
+        padding: 8px !important;
+
+        overflow: hidden;
+        border-radius: 16px !important;
+    }
+
+    .badges-featured-grid .badge-image {
+        width: 76px !important;
+        height: 76px !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+
+        object-fit: contain !important;
+    }
+
+    .badges-featured-grid .badge-card-content {
+        justify-content: center !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+    }
+
+    .badges-featured-grid .badge-issuer {
+        margin-bottom: 5px !important;
+
+        font-size: 0.53rem !important;
+        line-height: 1.25 !important;
+    }
+
+    .badges-featured-grid .badge-card-real h3 {
+        display: -webkit-box;
+        overflow: hidden;
+
+        margin: 0 !important;
+
+        font-size: 0.73rem !important;
+        line-height: 1.3 !important;
+
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .badges-featured-grid .badge-distinction {
+        align-self: flex-start !important;
+
+        min-height: 22px !important;
+        margin-top: 8px !important;
+        padding: 4px 7px !important;
+
+        font-size: 0.51rem !important;
+    }
+
+    .badges-featured-grid .badge-link-hint {
+        width: 100% !important;
+        margin-top: 8px !important;
+        padding-top: 7px !important;
+
+        border-top: 1px solid var(--border);
+
+        font-size: 0.51rem !important;
+    }
+
+    /* Navegación editorial, equivalente a la de Proyectos. */
+    .badges-mobile-navigation:not([hidden]) {
+        display: grid !important;
+        grid-template-columns: auto minmax(72px, 1fr) auto;
+        grid-template-areas: "counter progress controls";
+        align-items: center;
+        column-gap: 14px;
+
+        width: 100%;
+        margin-top: 17px;
+    }
+
+    .badges-mobile-counter {
+        grid-area: counter;
+
+        display: inline-flex;
+        align-items: center;
+        min-width: 46px;
+
+        color: var(--text-secondary);
+        font-size: 0.64rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 760;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+    }
+
+    .badges-mobile-progress {
+        grid-area: progress;
+
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        width: 100%;
+        min-width: 0;
+        padding-block: 7px;
+    }
+
+    .badges-mobile-progress-button {
+        width: auto;
+        height: 3px;
+        min-width: 8px;
+        padding: 0;
+        flex: 1 1 0;
+
+        border: 0;
+        border-radius: 999px;
+
+        background: var(--border-strong);
+        opacity: 0.72;
+        cursor: pointer;
+
+        transition:
+            background-color 180ms ease,
+            opacity 180ms ease,
+            transform 180ms ease;
+    }
+
+    .badges-mobile-progress-button.completed {
+        background:
+            color-mix(
+                in srgb,
+                var(--accent) 42%,
+                var(--border-strong)
+            );
+        opacity: 0.88;
+    }
+
+    .badges-mobile-progress-button.active {
+        background: var(--accent);
+        opacity: 1;
+        transform: scaleY(1.5);
+    }
+
+    .badges-mobile-progress-button:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 4px;
+    }
+
+    .badges-mobile-controls {
+        grid-area: controls;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 7px;
+    }
+
+    .badges-mobile-button {
+        display: grid;
+        place-items: center;
+
+        width: 39px;
+        height: 39px;
+        min-width: 39px;
+        min-height: 39px;
+        padding: 0;
+
+        border: 1px solid var(--border);
+        border-radius: 999px;
+
+        color: var(--text);
+        background: var(--surface-solid);
+        box-shadow: 0 7px 18px rgba(15, 16, 24, 0.07);
+
+        font-size: 0.92rem;
+        cursor: pointer;
+
+        transition:
+            color 160ms ease,
+            border-color 160ms ease,
+            background-color 160ms ease,
+            box-shadow 160ms ease,
+            opacity 160ms ease;
+    }
+
+    .badges-mobile-next:not(:disabled) {
+        border-color: var(--text);
+        color: var(--surface-solid);
+        background: var(--text);
+        box-shadow: 0 9px 22px rgba(15, 16, 24, 0.15);
+    }
+
+    .badges-mobile-previous:not(:disabled):hover,
+    .badges-mobile-previous:not(:disabled):focus-visible,
+    .badges-mobile-previous:not(:disabled):active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+    }
+
+    .badges-mobile-next:not(:disabled):hover,
+    .badges-mobile-next:not(:disabled):focus-visible,
+    .badges-mobile-next:not(:disabled):active {
+        border-color: var(--accent);
+        color: #ffffff;
+        background: var(--accent);
+    }
+
+    .badges-mobile-button:disabled {
+        border-color: var(--border);
+        color: var(--text-muted);
+        background: var(--surface-soft);
+        box-shadow: none;
+        opacity: 0.48;
+        cursor: default;
+    }
+}
+
+@media (max-width: 380px) {
+    .badges-featured-grid {
+        grid-template-rows: repeat(2, 138px) !important;
+        height: 287px !important;
+        gap: 11px 12px !important;
+    }
+
+    .badges-featured-grid .badge-card-real {
+        grid-template-columns: 80px minmax(0, 1fr) !important;
+        gap: 11px !important;
+        height: 138px !important;
+        padding: 10px !important;
+    }
+
+    .badges-featured-grid .badge-image-frame {
+        width: 80px !important;
+        min-width: 80px !important;
+        height: 116px !important;
+        min-height: 116px !important;
+    }
+
+    .badges-featured-grid .badge-image {
+        width: 64px !important;
+        height: 64px !important;
+    }
+
+    .badges-featured-grid .badge-card-real h3 {
+        font-size: 0.67rem !important;
+    }
+
+    .badges-mobile-navigation:not([hidden]) {
+        column-gap: 10px;
+    }
+
+    .badges-mobile-button {
+        width: 37px;
+        height: 37px;
+        min-width: 37px;
+        min-height: 37px;
+    }
+}
