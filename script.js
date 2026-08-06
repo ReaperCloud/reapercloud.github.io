@@ -1824,16 +1824,44 @@ function createProjectCard(project, language) {
 }
 
 
-function renderProjectPagination() {
+function renderProjectPagination(
+    projects = portfolioProjects(),
+    language = currentLanguage()
+) {
     if (!projectsPagination) {
         return;
     }
 
+    const copy = translations[language] ?? translations.es;
+
     projectsPagination.replaceChildren();
-    projectsPagination.hidden = true;
+
+    projects.forEach((project, index) => {
+        const button = document.createElement("button");
+
+        button.className = "projects-pagination-dot";
+        button.type = "button";
+        button.dataset.projectCarouselIndex = String(index);
+        button.setAttribute(
+            "aria-label",
+            `${copy["projects.goToProject"]} ${index + 1}: ${localizedProjectValue(
+                project.title,
+                language
+            )}`
+        );
+        button.classList.toggle("active", index === 0);
+        button.setAttribute(
+            "aria-current",
+            index === 0 ? "true" : "false"
+        );
+
+        projectsPagination.append(button);
+    });
+
+    projectsPagination.hidden = projects.length <= 1;
     projectsPagination.setAttribute(
         "aria-hidden",
-        "true"
+        projects.length <= 1 ? "true" : "false"
     );
 }
 
@@ -1935,37 +1963,70 @@ function updateProjectsCarouselState() {
         projectsCarouselToolbar.hidden = !hasOverflow;
     }
 
+    const activeIndex = nearestProjectCardIndex();
+    const totalProjects = projectCards().length;
+
+    projectsCarousel.dataset.current = String(
+        Math.min(activeIndex + 1, Math.max(totalProjects, 1))
+    ).padStart(2, "0");
+    projectsCarousel.dataset.total = String(
+        totalProjects
+    ).padStart(2, "0");
+
+    const usesMobileCarouselControls = window.matchMedia(
+        "(max-width: 680px)"
+    ).matches;
+
     if (projectsPagination) {
-        projectsPagination.hidden = true;
+        const showPagination =
+            hasOverflow && usesMobileCarouselControls;
+
+        projectsPagination.hidden = !showPagination;
         projectsPagination.setAttribute(
             "aria-hidden",
-            "true"
+            showPagination ? "false" : "true"
         );
+
+        projectsPagination
+            .querySelectorAll("[data-project-carousel-index]")
+            .forEach((button, index) => {
+                const isActive = index === activeIndex;
+
+                button.classList.toggle("active", isActive);
+                button.classList.toggle(
+                    "completed",
+                    index < activeIndex
+                );
+                button.setAttribute(
+                    "aria-current",
+                    isActive ? "true" : "false"
+                );
+            });
     }
 
     if (projectsPreviousButton) {
-        projectsPreviousButton.hidden =
-            !canMovePrevious;
+        const hidePrevious = usesMobileCarouselControls
+            ? !hasOverflow
+            : !canMovePrevious;
 
-        projectsPreviousButton.disabled =
-            !canMovePrevious;
-
+        projectsPreviousButton.hidden = hidePrevious;
+        projectsPreviousButton.disabled = !canMovePrevious;
         projectsPreviousButton.setAttribute(
             "aria-hidden",
-            canMovePrevious ? "false" : "true"
+            hidePrevious ? "true" : "false"
         );
     }
 
     if (projectsNextButton) {
-        projectsNextButton.hidden =
-            !canMoveNext;
+        const hideNext = usesMobileCarouselControls
+            ? !hasOverflow
+            : !canMoveNext;
 
-        projectsNextButton.disabled =
-            !canMoveNext;
-
+        projectsNextButton.hidden = hideNext;
+        projectsNextButton.disabled = !canMoveNext;
         projectsNextButton.setAttribute(
             "aria-hidden",
-            canMoveNext ? "false" : "true"
+            hideNext ? "true" : "false"
         );
     }
 }
