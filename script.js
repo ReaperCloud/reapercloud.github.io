@@ -1033,14 +1033,15 @@ function toggleTheme(event) {
     } = getEventPosition(event);
 
     /*
-        Se usa una longitud relativa al viewport en lugar de píxeles.
-        En algunas laptops Chrome escala internamente el snapshot de
-        View Transition y un radio calculado en px puede quedarse corto.
+        El porcentaje de circle() se calcula usando la caja real del
+        snapshot de View Transition, no el viewport que reporta JavaScript.
 
-        160vmax supera la diagonal máxima posible del viewport
-        (aprox. 141.5vmax), incluso si el círculo nace en una esquina.
+        Desde cualquier punto dentro de un rectángulo, 150% supera la
+        distancia máxima posible hasta la esquina opuesta. Por eso cubre
+        completamente el snapshot aunque Chrome use escalado, zoom,
+        scrollbars o una relación de aspecto diferente.
     */
-    const endRadius = "160vmax";
+    const endRadius = "150%";
 
     root.classList.add("theme-transition");
 
