@@ -3189,7 +3189,7 @@ window.addEventListener(
 ========================================================= */
 
 (() => {
-            const email = "alejandro@alejandrolira.dev";
+            const email = "contacto@alejandrolira.dev";
             const dialog = document.getElementById("email-choice-dialog");
             const gmailButton = document.getElementById("email-choice-gmail");
             const appButton = document.getElementById("email-choice-app");
