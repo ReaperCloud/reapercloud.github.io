@@ -2975,6 +2975,119 @@ updateActiveNavigation(true);
     const cvDialog = document.getElementById("cv-viewer-dialog");
     const cvCloseButton = document.getElementById("cv-viewer-close");
     const cvViewerPdf = document.getElementById("cv-viewer-pdf");
+    const cvDownloadButton = cvDialog?.querySelector(
+        '.cv-viewer-action[download]'
+    );
+
+    const mobileCvQuery = window.matchMedia(
+        "(max-width: 680px)"
+    );
+
+    let cvDownloadObjectUrl = null;
+    let cvDownloadPromise = null;
+
+    const cvDownloadFilename =
+        cvDownloadButton?.getAttribute("download")
+        || "Alejandro-Lira-CV.pdf";
+
+    if (cvDownloadButton) {
+        cvDownloadButton.dataset.originalHref =
+            cvDownloadButton.getAttribute("href") || "";
+    }
+
+    function originalCvDownloadUrl() {
+        const source =
+            cvDownloadButton?.dataset.originalHref;
+
+        if (!source) {
+            return "";
+        }
+
+        try {
+            return new URL(
+                source,
+                window.location.href
+            ).href;
+        } catch {
+            return source;
+        }
+    }
+
+    async function prepareMobileCvDownload() {
+        if (
+            !cvDownloadButton
+            || !mobileCvQuery.matches
+        ) {
+            return null;
+        }
+
+        if (cvDownloadObjectUrl) {
+            return cvDownloadObjectUrl;
+        }
+
+        if (cvDownloadPromise) {
+            return cvDownloadPromise;
+        }
+
+        const source = originalCvDownloadUrl();
+
+        if (!source) {
+            return null;
+        }
+
+        cvDownloadPromise = fetch(source, {
+            cache: "force-cache",
+            credentials: "same-origin"
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        `No se pudo preparar el CV (${response.status})`
+                    );
+                }
+
+                return response.blob();
+            })
+            .then((blob) => {
+                const pdfBlob =
+                    blob.type === "application/pdf"
+                        ? blob
+                        : new Blob(
+                            [blob],
+                            { type: "application/pdf" }
+                        );
+
+                cvDownloadObjectUrl =
+                    URL.createObjectURL(pdfBlob);
+
+                /*
+                    En Safari de iPhone, un enlace directo a un PDF puede
+                    abrir el visor nativo aunque tenga el atributo download.
+                    Al convertir primero el archivo a un Blob del mismo
+                    documento, Safari trata la acción como una descarga y
+                    permite guardarlo en Descargas/Archivos.
+                */
+                cvDownloadButton.href =
+                    cvDownloadObjectUrl;
+
+                cvDownloadButton.setAttribute(
+                    "download",
+                    cvDownloadFilename
+                );
+
+                cvDownloadButton.removeAttribute(
+                    "target"
+                );
+
+                return cvDownloadObjectUrl;
+            })
+            .catch(() => null)
+            .finally(() => {
+                cvDownloadPromise = null;
+            });
+
+        return cvDownloadPromise;
+    }
 
     const cvOpenButtons = [
         document.getElementById("cv-open-preview"),
@@ -3059,6 +3172,7 @@ updateActiveNavigation(true);
         window.requestAnimationFrame(() => {
             syncCvVisualViewport();
             loadCvInsideViewer();
+            prepareMobileCvDownload();
             window.setTimeout(syncCvVisualViewport, 120);
         });
     }
@@ -3089,6 +3203,58 @@ updateActiveNavigation(true);
         closeCvViewer
     );
 
+    cvDownloadButton?.addEventListener(
+        "click",
+        async (event) => {
+            if (!mobileCvQuery.matches) {
+                return;
+            }
+
+            /*
+                Si el Blob ya está preparado dejamos que el clic real del
+                usuario continúe normalmente. Es la ruta más fiable en iOS.
+            */
+            if (cvDownloadObjectUrl) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const objectUrl =
+                await prepareMobileCvDownload();
+
+            if (!objectUrl) {
+                /*
+                    No forzamos una pestaña nueva como fallback porque eso
+                    volvería al comportamiento que estamos corrigiendo.
+                    El usuario puede volver a tocar el botón para reintentar.
+                */
+                announce(
+                    currentLanguage() === "en"
+                        ? "The resume could not be prepared for download. Please try again."
+                        : "No se pudo preparar la descarga del CV. Intenta de nuevo."
+                );
+
+                return;
+            }
+
+            const temporaryDownload =
+                document.createElement("a");
+
+            temporaryDownload.href = objectUrl;
+            temporaryDownload.download =
+                cvDownloadFilename;
+            temporaryDownload.style.display = "none";
+
+            document.body.append(
+                temporaryDownload
+            );
+
+            temporaryDownload.click();
+            temporaryDownload.remove();
+        }
+    );
+
     cvDialog?.addEventListener("click", (event) => {
         if (event.target === cvDialog) {
             closeCvViewer();
@@ -3117,6 +3283,33 @@ updateActiveNavigation(true);
         "orientationchange",
         () => window.setTimeout(syncCvVisualViewport, 120),
         { passive: true }
+    );
+
+    /*
+        Preparamos la descarga desde que la página está lista en teléfono.
+        Así, cuando el usuario pulse Descargar dentro del visor, el clic
+        suele ser completamente síncrono y Safari no lo transforma en una
+        apertura del PDF.
+    */
+    if (mobileCvQuery.matches) {
+        window.setTimeout(
+            prepareMobileCvDownload,
+            350
+        );
+    }
+
+    window.addEventListener(
+        "pagehide",
+        () => {
+            if (cvDownloadObjectUrl) {
+                URL.revokeObjectURL(
+                    cvDownloadObjectUrl
+                );
+
+                cvDownloadObjectUrl = null;
+            }
+        },
+        { once: true }
     );
 })();
 
