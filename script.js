@@ -2998,8 +2998,12 @@ updateActiveNavigation(true);
             return;
         }
 
-        loadCvInsideViewer();
-
+        /*
+            Safari móvil es más estable si el <dialog> entra primero al
+            top-layer y el PDF se carga después. Cargar el PDF antes de
+            showModal() puede hacer que el visor nativo tome prioridad
+            visual y deje la barra de acciones fuera del viewport.
+        */
         if (typeof cvDialog.showModal === "function") {
             if (!cvDialog.open) {
                 cvDialog.showModal();
@@ -3009,6 +3013,11 @@ updateActiveNavigation(true);
         }
 
         document.body.classList.add("cv-dialog-open");
+        cvDialog.scrollTop = 0;
+
+        window.requestAnimationFrame(() => {
+            loadCvInsideViewer();
+        });
     }
 
     function closeCvViewer() {
