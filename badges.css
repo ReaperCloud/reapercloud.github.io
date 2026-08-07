@@ -1560,3 +1560,45 @@ body.badges-dialog-open {
         filter: none !important;
     }
 }
+
+
+@media (max-width: 680px) {
+    .badges-featured-grid {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory !important;
+        scroll-padding-inline: 0 !important;
+        overscroll-behavior-x: contain !important;
+        touch-action: pan-x pan-y pinch-zoom !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+    }
+
+    .badges-featured-grid::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .badges-featured-grid .badge-card-real:nth-child(odd) {
+        scroll-snap-align: start !important;
+        scroll-snap-stop: always !important;
+    }
+
+    .badges-mobile-navigation:not([hidden]) {
+        grid-template-columns: auto minmax(0, 1fr) !important;
+        grid-template-areas: "counter progress" !important;
+    }
+
+    .badges-mobile-controls,
+    .badges-mobile-button {
+        display: none !important;
+    }
+
+    .badges-mobile-progress,
+    .badges-mobile-progress-button {
+        pointer-events: none !important;
+    }
+
+    .badges-mobile-progress-button {
+        cursor: default !important;
+    }
+}

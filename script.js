@@ -2006,6 +2006,79 @@ projectsViewport?.addEventListener(
     { passive: true }
 );
 
+let projectsTouchStartX = null;
+let projectsTouchStartY = null;
+let projectsTouchWasHorizontal = false;
+let projectsTouchBlockClickUntil = 0;
+
+projectsViewport?.addEventListener(
+    "touchstart",
+    (event) => {
+        if (
+            window.innerWidth > 680 ||
+            event.touches.length !== 1
+        ) {
+            return;
+        }
+
+        projectsTouchStartX = event.touches[0].clientX;
+        projectsTouchStartY = event.touches[0].clientY;
+        projectsTouchWasHorizontal = false;
+    },
+    { passive: true }
+);
+
+projectsViewport?.addEventListener(
+    "touchmove",
+    (event) => {
+        if (
+            window.innerWidth > 680 ||
+            projectsTouchStartX === null ||
+            projectsTouchStartY === null ||
+            event.touches.length !== 1
+        ) {
+            return;
+        }
+
+        const deltaX =
+            event.touches[0].clientX - projectsTouchStartX;
+        const deltaY =
+            event.touches[0].clientY - projectsTouchStartY;
+
+        if (
+            Math.abs(deltaX) > 10 &&
+            Math.abs(deltaX) > Math.abs(deltaY) * 1.15
+        ) {
+            projectsTouchWasHorizontal = true;
+        }
+    },
+    { passive: true }
+);
+
+projectsViewport?.addEventListener(
+    "touchend",
+    () => {
+        if (projectsTouchWasHorizontal) {
+            projectsTouchBlockClickUntil = performance.now() + 350;
+        }
+
+        projectsTouchStartX = null;
+        projectsTouchStartY = null;
+        projectsTouchWasHorizontal = false;
+    },
+    { passive: true }
+);
+
+projectsViewport?.addEventListener(
+    "touchcancel",
+    () => {
+        projectsTouchStartX = null;
+        projectsTouchStartY = null;
+        projectsTouchWasHorizontal = false;
+    },
+    { passive: true }
+);
+
 projectsPagination?.addEventListener("click", (event) => {
     const button = event.target.closest(
         "[data-project-carousel-index]"
@@ -2031,6 +2104,14 @@ projectsPagination?.addEventListener("click", (event) => {
 });
 
 projectsTrack?.addEventListener("click", (event) => {
+    if (
+        window.innerWidth <= 680 &&
+        performance.now() < projectsTouchBlockClickUntil
+    ) {
+        event.preventDefault();
+        return;
+    }
+
     const card = event.target.closest(
         ".project-card-dynamic[data-open-project]"
     );

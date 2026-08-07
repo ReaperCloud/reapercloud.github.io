@@ -16148,3 +16148,51 @@ html[data-theme="dark"]
         filter: none !important;
     }
 }
+
+
+@media (max-width: 680px) {
+    .projects-carousel {
+        grid-template-columns: auto minmax(0, 1fr) !important;
+        grid-template-areas:
+            "viewport viewport"
+            "counter progress" !important;
+    }
+
+    .projects-viewport {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory !important;
+        scroll-padding-inline: 0 !important;
+        overscroll-behavior-x: contain !important;
+        touch-action: pan-x pan-y pinch-zoom !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+    }
+
+    .projects-viewport::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .project-card,
+    .project-card-dynamic {
+        scroll-snap-align: start !important;
+        scroll-snap-stop: always !important;
+    }
+
+    .projects-navigation,
+    .projects-carousel.has-overflow .projects-navigation,
+    .projects-carousel .carousel-button,
+    #projects-previous,
+    #projects-next {
+        display: none !important;
+    }
+
+    .projects-pagination,
+    .projects-pagination:not([hidden]) {
+        pointer-events: none !important;
+    }
+
+    .projects-pagination-dot {
+        cursor: default !important;
+    }
+}

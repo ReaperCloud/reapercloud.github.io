@@ -449,6 +449,93 @@
             },
             { passive: true }
         );
+
+        let featuredTouchStartX = null;
+        let featuredTouchStartY = null;
+        let featuredTouchWasHorizontal = false;
+        let featuredTouchBlockClickUntil = 0;
+
+        featuredGrid.addEventListener(
+            "touchstart",
+            (event) => {
+                if (
+                    !featuredMobileQuery.matches ||
+                    event.touches.length !== 1
+                ) {
+                    return;
+                }
+
+                featuredTouchStartX = event.touches[0].clientX;
+                featuredTouchStartY = event.touches[0].clientY;
+                featuredTouchWasHorizontal = false;
+            },
+            { passive: true }
+        );
+
+        featuredGrid.addEventListener(
+            "touchmove",
+            (event) => {
+                if (
+                    !featuredMobileQuery.matches ||
+                    featuredTouchStartX === null ||
+                    featuredTouchStartY === null ||
+                    event.touches.length !== 1
+                ) {
+                    return;
+                }
+
+                const deltaX =
+                    event.touches[0].clientX - featuredTouchStartX;
+                const deltaY =
+                    event.touches[0].clientY - featuredTouchStartY;
+
+                if (
+                    Math.abs(deltaX) > 10 &&
+                    Math.abs(deltaX) > Math.abs(deltaY) * 1.15
+                ) {
+                    featuredTouchWasHorizontal = true;
+                }
+            },
+            { passive: true }
+        );
+
+        featuredGrid.addEventListener(
+            "touchend",
+            () => {
+                if (featuredTouchWasHorizontal) {
+                    featuredTouchBlockClickUntil = performance.now() + 350;
+                }
+
+                featuredTouchStartX = null;
+                featuredTouchStartY = null;
+                featuredTouchWasHorizontal = false;
+            },
+            { passive: true }
+        );
+
+        featuredGrid.addEventListener(
+            "touchcancel",
+            () => {
+                featuredTouchStartX = null;
+                featuredTouchStartY = null;
+                featuredTouchWasHorizontal = false;
+            },
+            { passive: true }
+        );
+
+        featuredGrid.addEventListener(
+            "click",
+            (event) => {
+                if (
+                    featuredMobileQuery.matches &&
+                    performance.now() < featuredTouchBlockClickUntil
+                ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            },
+            true
+        );
     }
 
 
