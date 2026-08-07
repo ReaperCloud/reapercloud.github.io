@@ -2994,10 +2994,9 @@ updateActiveNavigation(true);
     }
 
     /*
-        iOS Safari puede expandir y contraer sus barras mientras el visor
-        nativo del PDF está activo. El <dialog> se sincroniza con el
-        VisualViewport real para que su dock de acciones permanezca dentro
-        del área visible, independientemente de la posición de la barra URL.
+        Safari iOS cambia el área visible cuando muestra u oculta sus barras.
+        Movemos el dialog completo —no los controles— dentro del VisualViewport.
+        Así el encabezado conserva su diseño normal y nunca queda detrás de la URL.
     */
     function syncCvVisualViewport() {
         if (!cvDialog) {
@@ -3060,8 +3059,6 @@ updateActiveNavigation(true);
         window.requestAnimationFrame(() => {
             syncCvVisualViewport();
             loadCvInsideViewer();
-
-            /* Safari termina de ajustar el chrome después del primer frame. */
             window.setTimeout(syncCvVisualViewport, 120);
         });
     }

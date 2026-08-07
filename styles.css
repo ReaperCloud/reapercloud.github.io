@@ -15923,24 +15923,22 @@ html[data-theme="dark"]
 }
 
 /* =========================================================
-   MOBILE FIX V11 — DOCK DEL CV SIEMPRE VISIBLE EN SAFARI
-   Solo teléfono. No modifica escritorio/laptop.
-
-   Safari puede desplegar su barra superior mientras el PDF nativo está
-   abierto. En móvil, las acciones del CV pasan a un dock inferior flotante
-   dentro del VisualViewport real, de modo que Abrir / Descargar / Cerrar
-   siguen accesibles aunque cambie el chrome del navegador.
+   MOBILE FIX V12 — CV ADAPTATIVO SIN DOCK FLOTANTE
+   Solo teléfono. Conserva la barra superior compacta/profesional.
+   El dialog completo se mueve dentro del VisualViewport de Safari,
+   así la barra URL nunca se coloca encima de Abrir/Descargar/Cerrar.
 ========================================================= */
 
 @media (max-width: 680px) {
     .cv-viewer-dialog {
-        top: calc(var(--cv-visual-top, 0px) + 6px) !important;
-        right: 6px !important;
+        position: fixed !important;
+        top: calc(var(--cv-visual-top, 0px) + 8px) !important;
+        right: 8px !important;
         bottom: auto !important;
-        left: 6px !important;
+        left: 8px !important;
 
         width: auto !important;
-        height: calc(var(--cv-visual-height, 100dvh) - 12px) !important;
+        height: calc(var(--cv-visual-height, 100dvh) - 16px) !important;
         max-width: none !important;
         max-height: none !important;
         margin: 0 !important;
@@ -15950,116 +15948,180 @@ html[data-theme="dark"]
     }
 
     .cv-viewer-shell {
-        position: relative !important;
+        display: grid !important;
         grid-template-rows: auto minmax(0, 1fr) !important;
+        width: 100% !important;
+        height: 100% !important;
         min-height: 0 !important;
+        overflow: hidden !important;
     }
 
-    /* El encabezado queda limpio; los controles viven en el dock inferior. */
+    /* Barra integrada al documento: no flotante, no superpuesta. */
     .cv-viewer-header {
         position: relative !important;
-        z-index: 20 !important;
+        z-index: 30 !important;
 
-        min-height: 58px !important;
-        padding: 9px 12px !important;
-    }
-
-    .cv-viewer-title-group {
-        width: 100% !important;
-        padding-right: 0 !important;
-    }
-
-    .cv-viewer-header-actions {
-        position: absolute !important;
-        z-index: 60 !important;
-        top: auto !important;
-        right: auto !important;
-        bottom: max(10px, env(safe-area-inset-bottom)) !important;
-        left: 50% !important;
-
-        display: flex !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
         align-items: center !important;
-        gap: 4px !important;
+        gap: 8px !important;
 
-        width: max-content !important;
-        max-width: calc(100% - 24px) !important;
-        padding: 5px !important;
-        overflow: visible !important;
-
-        border: 1px solid color-mix(
-            in srgb,
-            var(--border-strong) 72%,
-            transparent
-        ) !important;
-        border-radius: 17px !important;
+        min-height: 60px !important;
+        padding: 8px 8px 8px 10px !important;
+        overflow: hidden !important;
 
         background: color-mix(
             in srgb,
-            var(--surface-solid) 91%,
+            var(--surface-solid) 96%,
             transparent
         ) !important;
 
-        box-shadow:
-            0 14px 38px rgba(17, 18, 22, 0.16),
-            inset 0 1px 0 rgba(255, 255, 255, 0.48) !important;
+        border-bottom: 1px solid var(--border) !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+    }
 
-        backdrop-filter: blur(22px) saturate(1.18) !important;
-        -webkit-backdrop-filter: blur(22px) saturate(1.18) !important;
+    .cv-viewer-title-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
 
-        transform: translateX(-50%) !important;
+    .cv-viewer-file-icon {
+        width: 38px !important;
+        height: 38px !important;
+        flex: 0 0 38px !important;
+        border-radius: 11px !important;
+        font-size: 0.61rem !important;
+    }
+
+    .cv-viewer-title-group > div {
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .cv-viewer-title-group span:not(.cv-viewer-file-icon) {
+        display: none !important;
+    }
+
+    .cv-viewer-title-group h2 {
+        display: block !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+
+        font-size: 0.76rem !important;
+        line-height: 1.2 !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .cv-viewer-header-actions {
+        position: static !important;
+        z-index: auto !important;
+
+        display: flex !important;
+        align-items: center !important;
+        flex: 0 0 auto !important;
+        gap: 3px !important;
+
+        width: auto !important;
+        max-width: none !important;
+        padding: 3px !important;
+        overflow: hidden !important;
+
+        border: 1px solid var(--border) !important;
+        border-radius: 14px !important;
+        background: color-mix(
+            in srgb,
+            var(--surface-soft) 86%,
+            var(--surface-solid)
+        ) !important;
+
+        box-shadow: none !important;
+        transform: none !important;
         visibility: visible !important;
         opacity: 1 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 
     .cv-viewer-action,
     .cv-viewer-close {
-        width: 44px !important;
-        height: 44px !important;
-        min-width: 44px !important;
-        min-height: 44px !important;
-        flex: 0 0 44px !important;
+        display: inline-grid !important;
+        place-items: center !important;
 
-        border-radius: 12px !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        flex: 0 0 36px !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 10px !important;
         color: var(--text-secondary) !important;
         background: transparent !important;
+        box-shadow: none !important;
+        transform: none !important;
     }
 
-    /* Abrir queda como acción principal; descargar y cerrar son secundarias. */
-    .cv-viewer-header-actions > .cv-viewer-action:first-child {
-        color: #ffffff !important;
-        background: var(--accent) !important;
+    .cv-viewer-action > span:first-child {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        clip-path: inset(50%) !important;
+        white-space: nowrap !important;
     }
 
-    html[data-theme="dark"]
-    .cv-viewer-header-actions > .cv-viewer-action:first-child {
-        color: #111216 !important;
+    .cv-viewer-action > span:last-child {
+        display: block !important;
+        font-size: 1rem !important;
+        line-height: 1 !important;
     }
 
-    .cv-viewer-header-actions > .cv-viewer-action:first-child:active {
-        background: var(--accent-hover) !important;
+    .cv-viewer-close {
+        font-size: 1.18rem !important;
+        line-height: 1 !important;
     }
 
+    .cv-viewer-action:hover,
     .cv-viewer-action:active,
+    .cv-viewer-close:hover,
     .cv-viewer-close:active {
-        transform: scale(0.96) !important;
+        color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+        transform: none !important;
     }
 
     .cv-viewer-action:focus-visible,
     .cv-viewer-close:focus-visible {
         outline: 2px solid var(--focus) !important;
         outline-offset: -2px !important;
+        color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+        box-shadow: none !important;
     }
 
-    /* Reserva espacio para que el dock nunca tape el documento. */
     .cv-viewer-content {
+        min-width: 0 !important;
         min-height: 0 !important;
-        padding: 9px 9px 74px !important;
+        height: auto !important;
+        padding: 9px !important;
         overflow: hidden !important;
     }
 
     .cv-viewer-pdf {
+        min-width: 0 !important;
         min-height: 0 !important;
         height: 100% !important;
+        border-radius: 12px !important;
     }
 
     .cv-viewer-help {
