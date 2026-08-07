@@ -1506,3 +1506,25 @@ body.badges-dialog-open {
         transform: none !important;
     }
 }
+
+
+/* =========================================================
+   MOBILE FIX V14 — SEGUNDA INSIGNIA SIN RECORTE
+   Las dos filas suman 292px, más 11px de separación y 9px de
+   padding vertical. Safari estaba recortando la esquina inferior
+   porque el contenedor medía solo 303px. No cambia escritorio.
+========================================================= */
+
+@media (max-width: 680px) {
+    .badges-featured-grid {
+        height: 312px !important;
+        min-height: 312px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .badges-featured-grid {
+        height: 292px !important;
+        min-height: 292px !important;
+    }
+}

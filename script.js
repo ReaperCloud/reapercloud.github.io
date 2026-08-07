@@ -2983,7 +2983,8 @@ updateActiveNavigation(true);
         "(max-width: 680px)"
     );
 
-    let cvDownloadObjectUrl = null;
+    let cvDownloadBlob = null;
+    let cvDownloadFile = null;
     let cvDownloadPromise = null;
 
     const cvDownloadFilename =
@@ -3013,6 +3014,18 @@ updateActiveNavigation(true);
         }
     }
 
+    function isIosWebKit() {
+        const userAgent = navigator.userAgent || "";
+
+        return (
+            /iPad|iPhone|iPod/i.test(userAgent)
+            || (
+                navigator.platform === "MacIntel"
+                && navigator.maxTouchPoints > 1
+            )
+        );
+    }
+
     async function prepareMobileCvDownload() {
         if (
             !cvDownloadButton
@@ -3021,8 +3034,8 @@ updateActiveNavigation(true);
             return null;
         }
 
-        if (cvDownloadObjectUrl) {
-            return cvDownloadObjectUrl;
+        if (cvDownloadFile) {
+            return cvDownloadFile;
         }
 
         if (cvDownloadPromise) {
@@ -3049,7 +3062,7 @@ updateActiveNavigation(true);
                 return response.blob();
             })
             .then((blob) => {
-                const pdfBlob =
+                cvDownloadBlob =
                     blob.type === "application/pdf"
                         ? blob
                         : new Blob(
@@ -3057,29 +3070,17 @@ updateActiveNavigation(true);
                             { type: "application/pdf" }
                         );
 
-                cvDownloadObjectUrl =
-                    URL.createObjectURL(pdfBlob);
+                try {
+                    cvDownloadFile = new File(
+                        [cvDownloadBlob],
+                        cvDownloadFilename,
+                        { type: "application/pdf" }
+                    );
+                } catch {
+                    cvDownloadFile = null;
+                }
 
-                /*
-                    En Safari de iPhone, un enlace directo a un PDF puede
-                    abrir el visor nativo aunque tenga el atributo download.
-                    Al convertir primero el archivo a un Blob del mismo
-                    documento, Safari trata la acción como una descarga y
-                    permite guardarlo en Descargas/Archivos.
-                */
-                cvDownloadButton.href =
-                    cvDownloadObjectUrl;
-
-                cvDownloadButton.setAttribute(
-                    "download",
-                    cvDownloadFilename
-                );
-
-                cvDownloadButton.removeAttribute(
-                    "target"
-                );
-
-                return cvDownloadObjectUrl;
+                return cvDownloadFile || cvDownloadBlob;
             })
             .catch(() => null)
             .finally(() => {
@@ -3087,6 +3088,30 @@ updateActiveNavigation(true);
             });
 
         return cvDownloadPromise;
+    }
+
+    function fallbackCvDownload(blob) {
+        if (!blob) {
+            return false;
+        }
+
+        const objectUrl = URL.createObjectURL(blob);
+        const temporaryDownload =
+            document.createElement("a");
+
+        temporaryDownload.href = objectUrl;
+        temporaryDownload.download = cvDownloadFilename;
+        temporaryDownload.style.display = "none";
+
+        document.body.append(temporaryDownload);
+        temporaryDownload.click();
+        temporaryDownload.remove();
+
+        window.setTimeout(() => {
+            URL.revokeObjectURL(objectUrl);
+        }, 1200);
+
+        return true;
     }
 
     const cvOpenButtons = [
@@ -3210,48 +3235,64 @@ updateActiveNavigation(true);
                 return;
             }
 
-            /*
-                Si el Blob ya está preparado dejamos que el clic real del
-                usuario continúe normalmente. Es la ruta más fiable en iOS.
-            */
-            if (cvDownloadObjectUrl) {
-                return;
-            }
-
             event.preventDefault();
 
-            const objectUrl =
-                await prepareMobileCvDownload();
+            const prepared =
+                cvDownloadFile
+                || cvDownloadBlob
+                || await prepareMobileCvDownload();
 
-            if (!objectUrl) {
-                /*
-                    No forzamos una pestaña nueva como fallback porque eso
-                    volvería al comportamiento que estamos corrigiendo.
-                    El usuario puede volver a tocar el botón para reintentar.
-                */
+            if (!prepared) {
                 announce(
                     currentLanguage() === "en"
-                        ? "The resume could not be prepared for download. Please try again."
-                        : "No se pudo preparar la descarga del CV. Intenta de nuevo."
+                        ? "The resume could not be prepared. Please try again."
+                        : "No se pudo preparar el CV. Intenta de nuevo."
                 );
 
                 return;
             }
 
-            const temporaryDownload =
-                document.createElement("a");
+            /*
+                iOS Safari does not consistently honor the HTML download
+                attribute for PDFs: it can open the native PDF viewer instead.
+                On iPhone/iPad the reliable native path is the iOS share sheet,
+                where the user can choose “Save to Files”. This keeps the
+                visible Download control unchanged while using the platform's
+                proper file-saving flow.
+            */
+            if (isIosWebKit() && cvDownloadFile && navigator.share) {
+                let canShareFile = true;
 
-            temporaryDownload.href = objectUrl;
-            temporaryDownload.download =
-                cvDownloadFilename;
-            temporaryDownload.style.display = "none";
+                if (typeof navigator.canShare === "function") {
+                    try {
+                        canShareFile = navigator.canShare({
+                            files: [cvDownloadFile]
+                        });
+                    } catch {
+                        canShareFile = false;
+                    }
+                }
 
-            document.body.append(
-                temporaryDownload
+                if (canShareFile) {
+                    try {
+                        await navigator.share({
+                            files: [cvDownloadFile],
+                            title: cvDownloadFilename
+                        });
+
+                        return;
+                    } catch (error) {
+                        if (error?.name === "AbortError") {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            fallbackCvDownload(
+                cvDownloadBlob
+                || prepared
             );
-
-            temporaryDownload.click();
-            temporaryDownload.remove();
         }
     );
 
@@ -3286,10 +3327,9 @@ updateActiveNavigation(true);
     );
 
     /*
-        Preparamos la descarga desde que la página está lista en teléfono.
-        Así, cuando el usuario pulse Descargar dentro del visor, el clic
-        suele ser completamente síncrono y Safari no lo transforma en una
-        apertura del PDF.
+        Preparamos el archivo antes de que el usuario pulse Descargar.
+        En iOS esto permite abrir el panel nativo “Compartir” de inmediato
+        y elegir “Guardar en Archivos” sin mandar el PDF a otra pestaña.
     */
     if (mobileCvQuery.matches) {
         window.setTimeout(
@@ -3297,20 +3337,6 @@ updateActiveNavigation(true);
             350
         );
     }
-
-    window.addEventListener(
-        "pagehide",
-        () => {
-            if (cvDownloadObjectUrl) {
-                URL.revokeObjectURL(
-                    cvDownloadObjectUrl
-                );
-
-                cvDownloadObjectUrl = null;
-            }
-        },
-        { once: true }
-    );
 })();
 
 /* =========================================================
