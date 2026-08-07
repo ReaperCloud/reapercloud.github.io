@@ -8,11 +8,6 @@
 /*
     =========================================================
     COMPATIBILIDAD DE NOMBRES DE IMÁGENES
-
-    Prueba automáticamente:
-    - nombres limpios incluidos en el módulo;
-    - nombres originales descargados;
-    - distintas ubicaciones comunes de la carpeta badges.
     =========================================================
     */
 

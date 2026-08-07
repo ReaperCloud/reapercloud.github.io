@@ -58,12 +58,6 @@ function createProjectDescriptionScrollArea() {
     scrollArea.className =
         "project-description-scroll";
 
-    /*
-        Se conservan exactamente los mismos elementos:
-        título, descripción y tecnologías.
-        Únicamente se colocan dentro de un área desplazable.
-    */
-
     const currentContent = [
         ...projectShowcaseDescription.childNodes
     ];
@@ -704,11 +698,7 @@ function changeLanguage(language) {
 
     window.clearTimeout(languageApplyTimer);
     window.clearTimeout(languageFinishTimer);
-
-    /*
-        La pastilla comienza a deslizarse y el contenido cambia
-        a mitad del recorrido. No se anima ni se captura la página.
-    */
+    
     languageApplyTimer = window.setTimeout(() => {
         applyLanguage(safeLanguage, false);
     }, 105);
@@ -775,16 +765,6 @@ function setTheme(theme, shouldAnnounce = true) {
 
 
 function getEventPosition(event) {
-    /*
-        El origen visual siempre se obtiene del centro real del botón,
-        no de clientX/clientY. En algunas combinaciones de Chrome,
-        escalado de pantalla y View Transition, el clic y el snapshot
-        pueden terminar usando espacios de coordenadas distintos.
-
-        También guardamos porcentajes relativos al viewport. El clip
-        circular usa esos porcentajes para permanecer alineado aunque
-        Chrome escale internamente la captura.
-    */
     const buttonBounds = themeButton?.getBoundingClientRect();
 
     const viewportWidth =
@@ -842,10 +822,6 @@ function setThemeButtonBusy(isBusy) {
         return;
     }
 
-    /*
-        No se deshabilita físicamente. Las pulsaciones repetidas
-        siguen llegando para reiniciar el mismo debounce fijo.
-    */
     themeButton.setAttribute(
         "aria-busy",
         isBusy ? "true" : "false"
@@ -985,16 +961,7 @@ function playFallbackThemeAnimation(event, nextTheme, runId) {
 
 
 function toggleTheme(event) {
-    /*
-        Cada pulsación reinicia exactamente el mismo debounce.
-        El tiempo nunca se acumula ni aumenta.
-    */
     resetThemeDebounce();
-
-    /*
-        Mientras una transición está activa, las pulsaciones nuevas
-        se descartan. No forman cola y no crean otra captura.
-    */
     if (
         themeTransitionInProgress ||
         activeThemeTransition ||
@@ -1032,15 +999,6 @@ function toggleTheme(event) {
         yPercent
     } = getEventPosition(event);
 
-    /*
-        El porcentaje de circle() se calcula usando la caja real del
-        snapshot de View Transition, no el viewport que reporta JavaScript.
-
-        Desde cualquier punto dentro de un rectángulo, 150% supera la
-        distancia máxima posible hasta la esquina opuesta. Por eso cubre
-        completamente el snapshot aunque Chrome use escalado, zoom,
-        scrollbars o una relación de aspecto diferente.
-    */
     const endRadius = "150%";
 
     root.classList.add("theme-transition");
@@ -1048,11 +1006,6 @@ function toggleTheme(event) {
     let transition;
 
     try {
-        /*
-            Este es el comportamiento original: Chrome captura el
-            estado anterior, cambia el tema y revela la nueva captura.
-            No hay warm-up ni procesamiento adicional.
-        */
         transition = document.startViewTransition(() => {
             setTheme(nextTheme, false);
         });
@@ -1213,12 +1166,6 @@ function getNavigationOffset() {
 
 
 function getNavigationActivationMarker() {
-    /*
-        El enlace activo no se calcula justo debajo del header.
-        Se utiliza una línea situada aproximadamente al primer
-        tercio de la pantalla, donde el usuario ya percibe que
-        entró visualmente a la siguiente sección.
-    */
 
     const headerMarker =
         getNavigationOffset() + 2;
@@ -1250,22 +1197,12 @@ function calculateActiveSection() {
         const bounds =
             section.getBoundingClientRect();
 
-        /*
-            La última sección cuyo inicio haya cruzado la línea
-            de activación se considera la sección actual.
-        */
-
         if (bounds.top <= marker) {
             activeSectionId = section.id;
         } else {
             break;
         }
     }
-
-    /*
-        Al llegar al final de la página se fuerza la última sección,
-        incluso cuando su altura es menor que el viewport.
-    */
 
     const nearPageBottom =
         window.innerHeight + window.scrollY >=
@@ -1512,12 +1449,6 @@ let activeProjectId = null;
 let activeProjectImageIndex = 0;
 let projectCarouselUpdatePending = false;
 let activeProjectImageResizeObserver = null;
-
-/*
-    Cambiar este valor obliga al navegador a solicitar nuevamente
-    las capturas de los proyectos. Evita que una respuesta 404
-    antigua quede guardada en caché después de publicar cambios.
-*/
 const PORTFOLIO_ASSET_VERSION = "__BUILD_VERSION__";
 
 function versionedPortfolioAsset(source) {
@@ -1636,11 +1567,6 @@ function applyProjectImageOrientation(image) {
         `url("${safeImageSource}")`
     );
 
-    /*
-        En las tarjetas horizontales, el marco adopta la
-        proporción exacta de la portada.
-    */
-
     if (
         container.classList.contains(
             "project-card-media"
@@ -1648,11 +1574,6 @@ function applyProjectImageOrientation(image) {
     ) {
         return;
     }
-
-    /*
-        En la galería solo se modifica el marco cuando esta
-        imagen corresponde a la diapositiva activa.
-    */
 
     const slide = container.closest(
         ".project-gallery-slide"
@@ -2309,11 +2230,6 @@ function observeActiveProjectImage(image) {
             );
         });
 
-    /*
-        Se observa la captura visible. Este elemento contiene
-        el borde real que el usuario ve en pantalla.
-    */
-
     activeProjectImageResizeObserver.observe(image);
 }
 
@@ -2322,11 +2238,6 @@ function syncProjectDescriptionHeight() {
     if (!projectShowcaseDescription) {
         return;
     }
-
-    /*
-        En móvil el modal utiliza un flujo vertical y no necesita
-        una altura sincronizada.
-    */
 
     if (window.innerWidth <= 680) {
         projectShowcaseDescription.style.removeProperty(
@@ -2355,12 +2266,6 @@ function syncProjectDescriptionHeight() {
     ) {
         return;
     }
-
-    /*
-        offsetHeight representa exactamente el rectángulo visible
-        de la captura, incluyendo su borde. No incluye el espacio
-        transparente del área de galería ni la animación del modal.
-    */
 
     const imageHeight =
         Math.ceil(activeImage.offsetHeight);
@@ -2605,11 +2510,6 @@ function openProjectDialog(projectId) {
             syncProjectDescriptionHeight
         );
 
-        /*
-            Se repite después de finalizar la animación del dialog
-            para cubrir cualquier ajuste tardío del navegador.
-        */
-
         window.setTimeout(
             syncProjectDescriptionHeight,
             460
@@ -2620,11 +2520,6 @@ function openProjectDialog(projectId) {
         "is-opening",
         "is-closing"
     );
-
-    /*
-        Fuerza al navegador a registrar el estado inicial
-        antes de reproducir la animación de entrada.
-    */
 
     void projectDialog.offsetWidth;
 
@@ -2753,11 +2648,7 @@ projectImageNext?.addEventListener(
 
 
 /* =========================================================
-   GALERÍA DE PROYECTO — SWIPE EN MÓVIL
-   Bloqueo de eje: el scroll vertical conserva prioridad y solo
-   se activa el cambio de imagen cuando el gesto es claramente
-   horizontal. Así el usuario puede bajar por el modal sin pelear
-   contra la galería.
+   GALERÍA DE PROYECTO
 ========================================================= */
 
 const projectGalleryViewport = projectGallery?.querySelector(
@@ -2822,10 +2713,6 @@ projectGalleryViewport?.addEventListener(
         const horizontalDistance = Math.abs(deltaX);
         const verticalDistance = Math.abs(deltaY);
 
-        /*
-           No decidimos el eje durante los primeros píxeles. Esto evita
-           que el movimiento natural del dedo active una dirección falsa.
-        */
         if (!projectGalleryTouchAxis) {
             if (
                 verticalDistance >= 10 &&
@@ -2843,10 +2730,6 @@ projectGalleryViewport?.addEventListener(
             }
         }
 
-        /*
-           Solo un gesto ya confirmado como horizontal impide el scroll
-           vertical. Un gesto vertical nunca se cancela ni se ralentiza.
-        */
         if (projectGalleryTouchAxis === "horizontal") {
             event.preventDefault();
         }
@@ -2879,10 +2762,6 @@ projectGalleryViewport?.addEventListener(
         const horizontalDistance = Math.abs(deltaX);
         const verticalDistance = Math.abs(deltaY);
 
-        /*
-           Requiere intención horizontal clara. Esto elimina los cambios
-           accidentales de imagen mientras se desplaza el modal hacia abajo.
-        */
         if (
             axis !== "horizontal" ||
             horizontalDistance < 52 ||
@@ -2968,23 +2847,12 @@ updateActiveNavigation(true);
 
 /* =========================================================
    VISOR DEL CV
-   No depende de librerías externas ni de módulos adicionales.
 ========================================================= */
 
 (() => {
     const cvDialog = document.getElementById("cv-viewer-dialog");
     const cvCloseButton = document.getElementById("cv-viewer-close");
     const cvViewerPdf = document.getElementById("cv-viewer-pdf");
-
-    /*
-        Hay dos controles de descarga del mismo CV:
-        1. El botón "Descargar CV" de la tarjeta principal.
-        2. El botón ↓ dentro del visor.
-
-        Safari puede ignorar el atributo HTML `download` cuando el recurso
-        es un PDF y abrirlo en su visor. Por eso ambos controles comparten
-        exactamente la misma lógica de descarga.
-    */
     const cvDownloadButtons = [
         ...document.querySelectorAll(
             'a[download][href*="Alejandro-Lira-CV.pdf"]'
@@ -3130,7 +2998,6 @@ updateActiveNavigation(true);
         temporaryDownload.click();
         temporaryDownload.remove();
 
-        /* Safari puede tardar un poco en consumir el Blob. */
         window.setTimeout(() => {
             URL.revokeObjectURL(objectUrl);
         }, 5000);
@@ -3171,7 +3038,6 @@ updateActiveNavigation(true);
 
             return true;
         } catch (error) {
-            /* Cancelar la hoja de compartir no debe iniciar otra acción. */
             if (error?.name === "AbortError") {
                 return true;
             }
@@ -3184,11 +3050,6 @@ updateActiveNavigation(true);
         const useIosShare = isIosWebKit();
         const useSafariBlobDownload = isSafariDesktop();
 
-        /*
-            Chrome/Edge/Firefox mantienen el comportamiento HTML nativo.
-            Solo intervenimos donde Safari suele abrir el PDF en lugar de
-            descargarlo.
-        */
         if (!useIosShare && !useSafariBlobDownload) {
             return;
         }
@@ -3211,11 +3072,6 @@ updateActiveNavigation(true);
             return;
         }
 
-        /*
-            En iPhone/iPad la vía fiable es la hoja nativa de iOS, desde la
-            que se puede elegir “Guardar en Archivos”. El PDF ya se precarga
-            al entrar a la página para conservar la activación del usuario.
-        */
         if (useIosShare) {
             const shared = await shareCvOnIos();
 
@@ -3224,11 +3080,6 @@ updateActiveNavigation(true);
             }
         }
 
-        /*
-            Safari de macOS sí soporta descargar un Blob con nombre de archivo.
-            Usar un blob: URL evita que el servidor entregue el PDF como
-            contenido inline y lo mande al visor de Safari.
-        */
         fallbackCvDownload(
             cvDownloadBlob || prepared
         );
@@ -3251,11 +3102,6 @@ updateActiveNavigation(true);
         }
     }
 
-    /*
-        Safari iOS cambia el área visible cuando muestra u oculta sus barras.
-        Movemos el dialog completo —no los controles— dentro del VisualViewport.
-        Así el encabezado conserva su diseño normal y nunca queda detrás de la URL.
-    */
     function syncCvVisualViewport() {
         if (!cvDialog) {
             return;
@@ -3340,17 +3186,12 @@ updateActiveNavigation(true);
         closeCvViewer
     );
 
-    /*
-        Aplicamos la misma corrección tanto al botón grande “Descargar CV”
-        como al botón ↓ del visor. No se modifica su HTML ni su diseño.
-    */
     cvDownloadButtons.forEach((button) => {
         button.addEventListener(
             "click",
             handleCvDownload
         );
 
-        /* Precarga temprana al mostrar intención de uso. */
         ["pointerenter", "focus", "touchstart"].forEach((eventName) => {
             button.addEventListener(
                 eventName,
@@ -3390,11 +3231,6 @@ updateActiveNavigation(true);
         { passive: true }
     );
 
-    /*
-        El PDF es pequeño y se prepara en segundo plano. Esto hace que iOS
-        pueda abrir la hoja de compartir inmediatamente desde cualquiera de
-        los dos botones de descarga y que Safari de macOS tenga el Blob listo.
-    */
     window.setTimeout(
         prepareCvDownload,
         350
@@ -3402,8 +3238,7 @@ updateActiveNavigation(true);
 })();
 
 /* =========================================================
-   PROFILE TOOLS PAGINATION
-   Navegación animada de Herramientas.
+   PROFILE TOOLS NAVIGATION
 ========================================================= */
 
 (() => {
@@ -3452,13 +3287,6 @@ updateActiveNavigation(true);
 
 
     function profileToolsPageSize() {
-        /*
-            En móvil se conservan páginas más pequeñas para evitar
-            una sección excesivamente larga.
-
-            En tableta y escritorio se muestran nueve herramientas:
-            tres columnas por tres filas cuando el ancho lo permite.
-        */
 
         if (window.innerWidth <= 560) {
             return 4;
@@ -3742,18 +3570,11 @@ window.addEventListener(
 );
 
 /* =========================================================
-   CARRUSEL DE PROYECTOS — NAVEGACIÓN SOLO CON BOTONES
-
-   No se intercepta la rueda ni el trackpad. El desplazamiento
-   vertical permanece completamente nativo y las tarjetas solo
-   avanzan mediante las flechas del carrusel.
+   CARRUSEL DE PROYECTOS
 ========================================================= */
 
 /* =========================================================
    SELECTOR DE CORREO
-
-   Movido desde index.html para mantener la lógica del sitio
-   dentro de script.js. El comportamiento no fue alterado.
 ========================================================= */
 
 (() => {

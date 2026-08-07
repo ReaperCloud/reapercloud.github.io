@@ -3,17 +3,7 @@
 /*
 ========================================================
 INSIGNIAS DEL PORTAFOLIO
-========================================================
-
-- featured: true
-  Muestra la insignia en la selección principal.
-
-- url:
-  Pega aquí el enlace público de la insignia en Credly.
-  Cuando tenga un enlace, toda la tarjeta será clicable.
-
-- Para cambiar el orden, mueve el objeto completo.
-*/
+========================================================*/
 
 window.PORTFOLIO_BADGES = [
     {
