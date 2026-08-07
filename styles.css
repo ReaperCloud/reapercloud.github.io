@@ -15921,3 +15921,148 @@ html[data-theme="dark"]
         height: 100% !important;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V11 — DOCK DEL CV SIEMPRE VISIBLE EN SAFARI
+   Solo teléfono. No modifica escritorio/laptop.
+
+   Safari puede desplegar su barra superior mientras el PDF nativo está
+   abierto. En móvil, las acciones del CV pasan a un dock inferior flotante
+   dentro del VisualViewport real, de modo que Abrir / Descargar / Cerrar
+   siguen accesibles aunque cambie el chrome del navegador.
+========================================================= */
+
+@media (max-width: 680px) {
+    .cv-viewer-dialog {
+        top: calc(var(--cv-visual-top, 0px) + 6px) !important;
+        right: 6px !important;
+        bottom: auto !important;
+        left: 6px !important;
+
+        width: auto !important;
+        height: calc(var(--cv-visual-height, 100dvh) - 12px) !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+
+        overflow: hidden !important;
+        border-radius: 18px !important;
+    }
+
+    .cv-viewer-shell {
+        position: relative !important;
+        grid-template-rows: auto minmax(0, 1fr) !important;
+        min-height: 0 !important;
+    }
+
+    /* El encabezado queda limpio; los controles viven en el dock inferior. */
+    .cv-viewer-header {
+        position: relative !important;
+        z-index: 20 !important;
+
+        min-height: 58px !important;
+        padding: 9px 12px !important;
+    }
+
+    .cv-viewer-title-group {
+        width: 100% !important;
+        padding-right: 0 !important;
+    }
+
+    .cv-viewer-header-actions {
+        position: absolute !important;
+        z-index: 60 !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: max(10px, env(safe-area-inset-bottom)) !important;
+        left: 50% !important;
+
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+
+        width: max-content !important;
+        max-width: calc(100% - 24px) !important;
+        padding: 5px !important;
+        overflow: visible !important;
+
+        border: 1px solid color-mix(
+            in srgb,
+            var(--border-strong) 72%,
+            transparent
+        ) !important;
+        border-radius: 17px !important;
+
+        background: color-mix(
+            in srgb,
+            var(--surface-solid) 91%,
+            transparent
+        ) !important;
+
+        box-shadow:
+            0 14px 38px rgba(17, 18, 22, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.48) !important;
+
+        backdrop-filter: blur(22px) saturate(1.18) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(1.18) !important;
+
+        transform: translateX(-50%) !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .cv-viewer-action,
+    .cv-viewer-close {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        flex: 0 0 44px !important;
+
+        border-radius: 12px !important;
+        color: var(--text-secondary) !important;
+        background: transparent !important;
+    }
+
+    /* Abrir queda como acción principal; descargar y cerrar son secundarias. */
+    .cv-viewer-header-actions > .cv-viewer-action:first-child {
+        color: #ffffff !important;
+        background: var(--accent) !important;
+    }
+
+    html[data-theme="dark"]
+    .cv-viewer-header-actions > .cv-viewer-action:first-child {
+        color: #111216 !important;
+    }
+
+    .cv-viewer-header-actions > .cv-viewer-action:first-child:active {
+        background: var(--accent-hover) !important;
+    }
+
+    .cv-viewer-action:active,
+    .cv-viewer-close:active {
+        transform: scale(0.96) !important;
+    }
+
+    .cv-viewer-action:focus-visible,
+    .cv-viewer-close:focus-visible {
+        outline: 2px solid var(--focus) !important;
+        outline-offset: -2px !important;
+    }
+
+    /* Reserva espacio para que el dock nunca tape el documento. */
+    .cv-viewer-content {
+        min-height: 0 !important;
+        padding: 9px 9px 74px !important;
+        overflow: hidden !important;
+    }
+
+    .cv-viewer-pdf {
+        min-height: 0 !important;
+        height: 100% !important;
+    }
+
+    .cv-viewer-help {
+        display: none !important;
+    }
+}

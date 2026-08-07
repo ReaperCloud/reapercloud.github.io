@@ -2993,6 +2993,46 @@ updateActiveNavigation(true);
         }
     }
 
+    /*
+        iOS Safari puede expandir y contraer sus barras mientras el visor
+        nativo del PDF está activo. El <dialog> se sincroniza con el
+        VisualViewport real para que su dock de acciones permanezca dentro
+        del área visible, independientemente de la posición de la barra URL.
+    */
+    function syncCvVisualViewport() {
+        if (!cvDialog) {
+            return;
+        }
+
+        const isMobile = window.matchMedia(
+            "(max-width: 680px)"
+        ).matches;
+
+        if (!isMobile) {
+            cvDialog.style.removeProperty("--cv-visual-top");
+            cvDialog.style.removeProperty("--cv-visual-height");
+            return;
+        }
+
+        const viewport = window.visualViewport;
+        const top = viewport
+            ? Math.max(0, viewport.offsetTop)
+            : 0;
+        const height = viewport
+            ? viewport.height
+            : window.innerHeight;
+
+        cvDialog.style.setProperty(
+            "--cv-visual-top",
+            `${Math.round(top)}px`
+        );
+
+        cvDialog.style.setProperty(
+            "--cv-visual-height",
+            `${Math.max(320, Math.round(height))}px`
+        );
+    }
+
     function openCvViewer() {
         if (!cvDialog) {
             return;
@@ -3015,8 +3055,14 @@ updateActiveNavigation(true);
         document.body.classList.add("cv-dialog-open");
         cvDialog.scrollTop = 0;
 
+        syncCvVisualViewport();
+
         window.requestAnimationFrame(() => {
+            syncCvVisualViewport();
             loadCvInsideViewer();
+
+            /* Safari termina de ajustar el chrome después del primer frame. */
+            window.setTimeout(syncCvVisualViewport, 120);
         });
     }
 
@@ -3054,7 +3100,27 @@ updateActiveNavigation(true);
 
     cvDialog?.addEventListener("close", () => {
         document.body.classList.remove("cv-dialog-open");
+        cvDialog.style.removeProperty("--cv-visual-top");
+        cvDialog.style.removeProperty("--cv-visual-height");
     });
+
+    window.visualViewport?.addEventListener(
+        "resize",
+        syncCvVisualViewport,
+        { passive: true }
+    );
+
+    window.visualViewport?.addEventListener(
+        "scroll",
+        syncCvVisualViewport,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "orientationchange",
+        () => window.setTimeout(syncCvVisualViewport, 120),
+        { passive: true }
+    );
 })();
 
 /* =========================================================
