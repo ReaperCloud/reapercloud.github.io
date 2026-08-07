@@ -15787,3 +15787,42 @@ html[data-theme="dark"]
         transform: none !important;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V8 — CLIP LIMPIO + SWIPE CON INTENCIÓN
+   Ajustes aislados para teléfono. No modifica escritorio/laptop.
+========================================================= */
+
+@media (max-width: 680px) {
+    /*
+       Safari puede mostrar el rectángulo de composición de un pseudo-elemento
+       con blur aunque el padre tenga border-radius + overflow:hidden.
+       En móvil integramos el brillo directamente en el background del card.
+    */
+    .profile-rework-about {
+        background:
+            radial-gradient(
+                circle at 96% 2%,
+                var(--accent-soft) 0,
+                transparent 43%
+            ),
+            var(--surface) !important;
+
+        background-clip: padding-box !important;
+    }
+
+    .profile-rework-about::before {
+        display: none !important;
+        content: none !important;
+        filter: none !important;
+    }
+
+    /*
+       El viewport sigue permitiendo scroll vertical con total naturalidad.
+       El JS solo bloquea el gesto cuando detecta una intención horizontal clara.
+    */
+    .project-showcase-dialog .project-gallery-viewport {
+        touch-action: pan-y pinch-zoom !important;
+        overscroll-behavior-x: contain !important;
+    }
+}

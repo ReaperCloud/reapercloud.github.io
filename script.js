@@ -2754,9 +2754,10 @@ projectImageNext?.addEventListener(
 
 /* =========================================================
    GALERÍA DE PROYECTO — SWIPE EN MÓVIL
-   En pantallas de hasta 680 px las flechas se ocultan mediante CSS.
-   Un gesto horizontal cambia de imagen mientras un gesto vertical
-   continúa desplazando normalmente el contenido del modal.
+   Bloqueo de eje: el scroll vertical conserva prioridad y solo
+   se activa el cambio de imagen cuando el gesto es claramente
+   horizontal. Así el usuario puede bajar por el modal sin pelear
+   contra la galería.
 ========================================================= */
 
 const projectGalleryViewport = projectGallery?.querySelector(
@@ -2765,10 +2766,16 @@ const projectGalleryViewport = projectGallery?.querySelector(
 
 let projectGalleryTouchStartX = null;
 let projectGalleryTouchStartY = null;
+let projectGalleryTouchLastX = null;
+let projectGalleryTouchLastY = null;
+let projectGalleryTouchAxis = null;
 
 function resetProjectGalleryTouch() {
     projectGalleryTouchStartX = null;
     projectGalleryTouchStartY = null;
+    projectGalleryTouchLastX = null;
+    projectGalleryTouchLastY = null;
+    projectGalleryTouchAxis = null;
 }
 
 projectGalleryViewport?.addEventListener(
@@ -2786,8 +2793,65 @@ projectGalleryViewport?.addEventListener(
 
         projectGalleryTouchStartX = touch.clientX;
         projectGalleryTouchStartY = touch.clientY;
+        projectGalleryTouchLastX = touch.clientX;
+        projectGalleryTouchLastY = touch.clientY;
+        projectGalleryTouchAxis = null;
     },
     { passive: true }
+);
+
+projectGalleryViewport?.addEventListener(
+    "touchmove",
+    (event) => {
+        if (
+            window.innerWidth > 680 ||
+            projectGalleryTouchStartX === null ||
+            projectGalleryTouchStartY === null ||
+            event.touches.length !== 1
+        ) {
+            return;
+        }
+
+        const touch = event.touches[0];
+        const deltaX = touch.clientX - projectGalleryTouchStartX;
+        const deltaY = touch.clientY - projectGalleryTouchStartY;
+
+        projectGalleryTouchLastX = touch.clientX;
+        projectGalleryTouchLastY = touch.clientY;
+
+        const horizontalDistance = Math.abs(deltaX);
+        const verticalDistance = Math.abs(deltaY);
+
+        /*
+           No decidimos el eje durante los primeros píxeles. Esto evita
+           que el movimiento natural del dedo active una dirección falsa.
+        */
+        if (!projectGalleryTouchAxis) {
+            if (
+                verticalDistance >= 10 &&
+                verticalDistance > horizontalDistance * 1.12
+            ) {
+                projectGalleryTouchAxis = "vertical";
+                return;
+            }
+
+            if (
+                horizontalDistance >= 14 &&
+                horizontalDistance > verticalDistance * 1.45
+            ) {
+                projectGalleryTouchAxis = "horizontal";
+            }
+        }
+
+        /*
+           Solo un gesto ya confirmado como horizontal impide el scroll
+           vertical. Un gesto vertical nunca se cancela ni se ralentiza.
+        */
+        if (projectGalleryTouchAxis === "horizontal") {
+            event.preventDefault();
+        }
+    },
+    { passive: false }
 );
 
 projectGalleryViewport?.addEventListener(
@@ -2804,19 +2868,25 @@ projectGalleryViewport?.addEventListener(
         }
 
         const touch = event.changedTouches[0];
-        const deltaX = touch.clientX - projectGalleryTouchStartX;
-        const deltaY = touch.clientY - projectGalleryTouchStartY;
+        const finalX = projectGalleryTouchLastX ?? touch.clientX;
+        const finalY = projectGalleryTouchLastY ?? touch.clientY;
+        const deltaX = finalX - projectGalleryTouchStartX;
+        const deltaY = finalY - projectGalleryTouchStartY;
+        const axis = projectGalleryTouchAxis;
 
         resetProjectGalleryTouch();
 
         const horizontalDistance = Math.abs(deltaX);
         const verticalDistance = Math.abs(deltaY);
 
-        /* Evita interpretar pequeños movimientos o scroll vertical
-           como un cambio intencional de imagen. */
+        /*
+           Requiere intención horizontal clara. Esto elimina los cambios
+           accidentales de imagen mientras se desplaza el modal hacia abajo.
+        */
         if (
-            horizontalDistance < 44 ||
-            horizontalDistance <= verticalDistance * 1.15
+            axis !== "horizontal" ||
+            horizontalDistance < 52 ||
+            horizontalDistance <= verticalDistance * 1.45
         ) {
             return;
         }

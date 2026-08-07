@@ -1405,3 +1405,41 @@ body.badges-dialog-open {
         transform: none !important;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V8 — BORDES LIMPIOS EN INSIGNIAS
+   Evita artefactos rectangulares de Safari producidos por blur
+   dentro de tarjetas redondeadas. Solo teléfono.
+========================================================= */
+
+@media (max-width: 680px) {
+    .badge-card-real,
+    .badges-featured-grid .badge-card-real,
+    .badges-all-grid .badge-card-real {
+        background:
+            radial-gradient(
+                circle at 96% 2%,
+                var(--accent-soft) 0,
+                transparent 42%
+            ),
+            linear-gradient(
+                155deg,
+                var(--surface-solid),
+                color-mix(
+                    in srgb,
+                    var(--accent-soft) 28%,
+                    var(--surface-solid)
+                )
+            ) !important;
+
+        background-clip: padding-box !important;
+    }
+
+    .badge-card-real::before,
+    .badges-featured-grid .badge-card-real::before,
+    .badges-all-grid .badge-card-real::before {
+        display: none !important;
+        content: none !important;
+        filter: none !important;
+    }
+}
