@@ -1443,3 +1443,66 @@ body.badges-dialog-open {
         filter: none !important;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V9 — INSIGNIAS CONTROLADAS SOLO POR BOTONES
+   Igual que Proyectos: las flechas cambian de página y el gesto
+   horizontal del dedo no mueve el carrusel. El scroll vertical de
+   la página sigue funcionando con normalidad.
+========================================================= */
+
+@media (max-width: 680px) {
+    .badges-featured-grid {
+        /* Sigue siendo un contenedor desplazable internamente para que
+           JavaScript pueda animarlo con los botones, pero el usuario no
+           puede arrastrarlo horizontalmente. */
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+        scroll-snap-type: none !important;
+        overscroll-behavior-inline: none !important;
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: auto !important;
+    }
+
+    .badges-featured-grid .badge-card-real,
+    .badges-featured-grid .badge-card-real:hover,
+    .badges-featured-grid .badge-card-real:active,
+    .badges-featured-grid .badge-card-real:focus-visible {
+        transform: none !important;
+        translate: none !important;
+    }
+
+    /* En Safari/iPhone un enlace tocado puede conservar :hover/:focus.
+       Conservamos una indicación de foco discreta sin levantar la tarjeta. */
+    .badges-featured-grid .badge-card-real:focus-visible {
+        outline: none !important;
+        border-color: var(--border) !important;
+        box-shadow:
+            inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent),
+            var(--shadow-small) !important;
+    }
+
+    /* Las barras son indicadores, no controles. La navegación se hace
+       exclusivamente con las flechas, igual que pidió el usuario. */
+    .badges-mobile-progress,
+    .badges-mobile-progress-button {
+        pointer-events: none !important;
+    }
+
+    .badges-mobile-progress-button {
+        cursor: default !important;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) and (max-width: 680px) {
+    .badges-featured-grid .badge-card-real:hover,
+    .badges-featured-grid .badge-card-real:active {
+        border-color: var(--border) !important;
+        box-shadow: var(--shadow-small) !important;
+    }
+
+    .badges-featured-grid .badge-card-real:hover .badge-image,
+    .badges-featured-grid .badge-card-real:active .badge-image {
+        transform: none !important;
+    }
+}

@@ -438,23 +438,6 @@
             () => scrollFeaturedBadges(1)
         );
 
-        featuredProgress.addEventListener(
-            "click",
-            (event) => {
-                const button = event.target.closest(
-                    "[data-badge-page]"
-                );
-
-                if (!button) {
-                    return;
-                }
-
-                scrollFeaturedBadgesToPage(
-                    Number(button.dataset.badgePage)
-                );
-            }
-        );
-
         featuredGrid.addEventListener(
             "scroll",
             () => {
@@ -574,18 +557,14 @@
         featuredProgress.replaceChildren();
 
         for (let index = 0; index < pageCount; index += 1) {
-            const button = document.createElement("button");
+            const indicator = document.createElement("span");
 
-            button.className =
+            indicator.className =
                 "badges-mobile-progress-button";
-            button.type = "button";
-            button.dataset.badgePage = String(index);
-            button.setAttribute(
-                "aria-label",
-                `${featuredNavigationCopy[language].page} ${index + 1}`
-            );
+            indicator.dataset.badgePage = String(index);
+            indicator.setAttribute("aria-hidden", "true");
 
-            featuredProgress.append(button);
+            featuredProgress.append(indicator);
         }
     }
 
@@ -631,15 +610,6 @@
             featuredProgress.children.length !== pageCount
         ) {
             renderFeaturedProgress(pageCount, language);
-        } else {
-            [...featuredProgress.children].forEach(
-                (button, index) => {
-                    button.setAttribute(
-                        "aria-label",
-                        `${featuredNavigationCopy[language].page} ${index + 1}`
-                    );
-                }
-            );
         }
 
         if (resetPosition) {
