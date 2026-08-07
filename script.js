@@ -2751,6 +2751,90 @@ projectImageNext?.addEventListener(
     )
 );
 
+
+/* =========================================================
+   GALERÍA DE PROYECTO — SWIPE EN MÓVIL
+   En pantallas de hasta 680 px las flechas se ocultan mediante CSS.
+   Un gesto horizontal cambia de imagen mientras un gesto vertical
+   continúa desplazando normalmente el contenido del modal.
+========================================================= */
+
+const projectGalleryViewport = projectGallery?.querySelector(
+    ".project-gallery-viewport"
+);
+
+let projectGalleryTouchStartX = null;
+let projectGalleryTouchStartY = null;
+
+function resetProjectGalleryTouch() {
+    projectGalleryTouchStartX = null;
+    projectGalleryTouchStartY = null;
+}
+
+projectGalleryViewport?.addEventListener(
+    "touchstart",
+    (event) => {
+        if (
+            window.innerWidth > 680 ||
+            event.touches.length !== 1
+        ) {
+            resetProjectGalleryTouch();
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        projectGalleryTouchStartX = touch.clientX;
+        projectGalleryTouchStartY = touch.clientY;
+    },
+    { passive: true }
+);
+
+projectGalleryViewport?.addEventListener(
+    "touchend",
+    (event) => {
+        if (
+            window.innerWidth > 680 ||
+            projectGalleryTouchStartX === null ||
+            projectGalleryTouchStartY === null ||
+            event.changedTouches.length !== 1
+        ) {
+            resetProjectGalleryTouch();
+            return;
+        }
+
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - projectGalleryTouchStartX;
+        const deltaY = touch.clientY - projectGalleryTouchStartY;
+
+        resetProjectGalleryTouch();
+
+        const horizontalDistance = Math.abs(deltaX);
+        const verticalDistance = Math.abs(deltaY);
+
+        /* Evita interpretar pequeños movimientos o scroll vertical
+           como un cambio intencional de imagen. */
+        if (
+            horizontalDistance < 44 ||
+            horizontalDistance <= verticalDistance * 1.15
+        ) {
+            return;
+        }
+
+        showProjectImage(
+            activeProjectImageIndex + (deltaX < 0 ? 1 : -1)
+        );
+    },
+    { passive: true }
+);
+
+projectGalleryViewport?.addEventListener(
+    "touchcancel",
+    resetProjectGalleryTouch,
+    { passive: true }
+);
+
+
 projectGalleryPagination?.addEventListener(
     "click",
     (event) => {

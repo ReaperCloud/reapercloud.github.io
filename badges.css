@@ -1375,3 +1375,33 @@ body.badges-dialog-open {
         cursor: default;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V7 — PÁGINAS DE INSIGNIAS SIN "PEEK"
+   Cada página ocupa exactamente el ancho disponible. Se siguen
+   mostrando dos credenciales (una arriba y una abajo), pero ya no
+   asoma una franja rectangular de la página siguiente.
+========================================================= */
+
+@media (max-width: 680px) {
+    .badges-featured-grid {
+        grid-auto-columns: 100% !important;
+
+        margin-inline: 0 !important;
+        padding-inline: 0 !important;
+
+        scroll-padding-inline: 0 !important;
+    }
+
+    .badges-featured-grid .badge-card-real {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        background-clip: padding-box !important;
+    }
+
+    .badges-featured-grid .badge-card-real:hover,
+    .badges-featured-grid .badge-card-real:active {
+        transform: none !important;
+    }
+}

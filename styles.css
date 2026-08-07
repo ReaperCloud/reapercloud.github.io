@@ -15582,3 +15582,208 @@ html[data-theme="dark"]
         transform: none !important;
     }
 }
+
+/* =========================================================
+   MOBILE FIX V7 — INTERACCIÓN TÁCTIL + VISOR CV + GALERÍA
+   1) Evita hover/active "pegajoso" en tarjetas de proyecto.
+   2) Mantiene el foco dentro del borde sin levantar la tarjeta.
+   3) En móvil, la galería del proyecto se navega por swipe.
+   4) Compacta el toolbar del CV para mostrar Abrir/Descargar/Cerrar.
+========================================================= */
+
+@media (max-width: 680px) {
+    /* -----------------------------------------------------
+       PROYECTOS — NO LEVANTAR TARJETAS EN PANTALLAS TÁCTILES
+       Safari puede conservar :hover después de tocar un elemento.
+       La tarjeta ya no sube ni escala, por lo que sus esquinas no
+       quedan recortadas por el viewport del carrusel.
+    ----------------------------------------------------- */
+    #proyectos .project-card,
+    #proyectos .project-card-dynamic {
+        transform: none !important;
+        -webkit-tap-highlight-color: transparent;
+        background-clip: padding-box;
+    }
+
+    #proyectos .project-card:hover,
+    #proyectos .project-card:active,
+    #proyectos .project-card-dynamic:hover,
+    #proyectos .project-card-dynamic:active {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    #proyectos .project-card:hover .project-card-media img,
+    #proyectos .project-card:active .project-card-media img,
+    #proyectos .project-card-dynamic:hover .project-card-media img,
+    #proyectos .project-card-dynamic:active .project-card-media img {
+        transform: none !important;
+    }
+
+    /* Foco accesible, pero dibujado hacia dentro para que nunca se corte. */
+    #proyectos .project-card-dynamic:focus-visible {
+        outline: 2px solid var(--focus) !important;
+        outline-offset: -2px !important;
+        border-color: var(--accent) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    /* -----------------------------------------------------
+       DETALLE DE PROYECTO — SWIPE EN VEZ DE FLECHAS
+       Los puntos siguen indicando la posición y siguen siendo
+       clicables; las flechas se conservan en escritorio.
+    ----------------------------------------------------- */
+    .project-showcase-dialog .project-gallery-button,
+    .project-showcase-dialog .project-gallery-previous,
+    .project-showcase-dialog .project-gallery-next {
+        display: none !important;
+    }
+
+    .project-showcase-dialog .project-gallery-viewport {
+        touch-action: pan-y !important;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    .project-showcase-dialog .project-gallery-pagination {
+        margin-top: 4px !important;
+    }
+
+    /* -----------------------------------------------------
+       VISOR DEL CV — TOOLBAR MÓVIL COMPACTO
+       Los tres controles siempre caben: abrir, descargar y cerrar.
+    ----------------------------------------------------- */
+    .cv-viewer-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+
+        min-height: 62px !important;
+        padding: 8px 8px 8px 10px !important;
+        overflow: visible !important;
+    }
+
+    .cv-viewer-title-group {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        gap: 8px !important;
+    }
+
+    .cv-viewer-file-icon {
+        width: 38px !important;
+        height: 38px !important;
+        flex: 0 0 38px !important;
+        border-radius: 11px !important;
+        font-size: 0.61rem !important;
+    }
+
+    .cv-viewer-title-group > div {
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .cv-viewer-title-group span:not(.cv-viewer-file-icon) {
+        display: none !important;
+    }
+
+    .cv-viewer-title-group h2 {
+        display: block !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+
+        font-size: 0.76rem !important;
+        line-height: 1.2 !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .cv-viewer-header-actions {
+        display: flex !important;
+        align-items: center !important;
+        flex: 0 0 auto !important;
+        gap: 3px !important;
+
+        padding: 3px !important;
+        overflow: visible !important;
+
+        border: 1px solid var(--border) !important;
+        border-radius: 14px !important;
+        background: color-mix(in srgb, var(--surface-soft) 86%, var(--surface-solid)) !important;
+    }
+
+    .cv-viewer-action,
+    .cv-viewer-close {
+        display: inline-grid !important;
+        place-items: center !important;
+
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        padding: 0 !important;
+        flex: 0 0 36px !important;
+
+        border: 0 !important;
+        border-radius: 10px !important;
+        color: var(--text-secondary) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .cv-viewer-action > span:first-child {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        clip-path: inset(50%) !important;
+        white-space: nowrap !important;
+    }
+
+    .cv-viewer-action > span:last-child {
+        display: block !important;
+        font-size: 1rem !important;
+        line-height: 1 !important;
+    }
+
+    .cv-viewer-close {
+        font-size: 1.18rem !important;
+        line-height: 1 !important;
+    }
+
+    .cv-viewer-action:hover,
+    .cv-viewer-action:active,
+    .cv-viewer-close:hover,
+    .cv-viewer-close:active {
+        transform: none !important;
+        color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+    }
+
+    .cv-viewer-action:focus-visible,
+    .cv-viewer-close:focus-visible {
+        outline: 2px solid var(--focus) !important;
+        outline-offset: -2px !important;
+        color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+        box-shadow: none !important;
+    }
+}
+
+/* El estado hover que sí levanta la tarjeta se reserva a ratón real. */
+@media (hover: none), (pointer: coarse) {
+    #proyectos .project-card:hover,
+    #proyectos .project-card-dynamic:hover,
+    #proyectos .project-card-dynamic:active {
+        transform: none !important;
+    }
+
+    #proyectos .project-card:hover .project-card-media img,
+    #proyectos .project-card-dynamic:hover .project-card-media img {
+        transform: none !important;
+    }
+}
