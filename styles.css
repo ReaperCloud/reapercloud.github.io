@@ -16128,3 +16128,23 @@ html[data-theme="dark"]
         display: none !important;
     }
 }
+
+/* SAFARI: BORDES REDONDEADOS */
+@media (min-width: 681px) {
+    .profile-rework-about {
+        background:
+            radial-gradient(
+                circle at 96% 2%,
+                var(--accent-soft) 0,
+                transparent 43%
+            ),
+            var(--surface) !important;
+        background-clip: padding-box !important;
+    }
+
+    .profile-rework-about::before {
+        display: none !important;
+        content: none !important;
+        filter: none !important;
+    }
+}
