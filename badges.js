@@ -160,7 +160,7 @@
     const copy = {
         es: {
             eyebrow: "Certificaciones",
-            titleMain: "Formación que respalda",
+            titleMain: "Formación que complementa",
             titleAccent: "mi perfil técnico.",
             description:
                 "Una selección de las certificaciones más alineadas con mi perfil de desarrollo de software.",
@@ -178,7 +178,7 @@
 
         en: {
             eyebrow: "Certifications",
-            titleMain: "Education that supports",
+            titleMain: "Education that complements",
             titleAccent: "my technical profile.",
             description:
                 "A selection of the certifications most closely aligned with my software development profile.",

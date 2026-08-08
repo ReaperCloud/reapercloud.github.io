@@ -261,6 +261,14 @@ body.theme-animating .theme-transition-overlay {
     margin-bottom: 42px;
 }
 
+.section-heading-single {
+    grid-template-columns: 1fr;
+}
+
+.section-heading-single > div {
+    max-width: 980px;
+}
+
 .section-heading h2,
 .contact-card h2 {
     margin-top: 10px;
