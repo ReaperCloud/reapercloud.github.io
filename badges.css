@@ -1,17 +1,3 @@
-/* =========================================================
-   INSIGNIAS REALES DE CREDLY
-========================================================= */
-
-.badges-section-description {
-    max-width: 590px;
-    margin-top: 19px;
-
-    color: var(--text-secondary);
-
-    font-size: 0.88rem;
-    line-height: 1.75;
-}
-
 .badges-open-button {
     appearance: none;
 
@@ -54,25 +40,6 @@
     text-decoration: none;
 
     isolation: isolate;
-}
-
-.badge-card-real::before {
-    content: "";
-
-    position: absolute;
-    z-index: -1;
-    top: -90px;
-    right: -90px;
-
-    width: 210px;
-    height: 210px;
-
-    border-radius: 50%;
-
-    background: var(--accent-soft);
-    filter: blur(12px);
-
-    opacity: 0.7;
 }
 
 .badge-image-frame {
@@ -194,10 +161,6 @@
 .badge-link-hint > span:last-child {
     color: var(--accent);
 }
-
-/* =========================================================
-   DIÁLOGO CON LAS 28 INSIGNIAS
-========================================================= */
 
 body.badges-dialog-open {
     overflow: hidden;
@@ -335,10 +298,6 @@ body.badges-dialog-open {
     font-size: 0.57rem;
 }
 
-/* =========================================================
-   RESPONSIVE DE INSIGNIAS
-========================================================= */
-
 @media (max-width: 1020px) {
     .badges-featured-grid,
     .badges-all-grid {
@@ -431,10 +390,6 @@ body.badges-dialog-open {
         transition: none;
     }
 }
-/* =========================================================
-   LAYOUT DEL ENCABEZADO DE INSIGNIAS
-   El espaciado entre líneas se hereda de styles.css.
-========================================================= */
 
 .badges-section-heading {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -453,10 +408,7 @@ body.badges-dialog-open {
     font-size: clamp(3rem, 5.1vw, 5.2rem);
 }
 
-.badges-section-heading .badges-section-description {
-    max-width: 690px;
-    margin-top: 24px;
-}
+.badges-section-heading 
 
 .badges-section-heading .badges-open-button {
     justify-self: end;
@@ -495,144 +447,8 @@ body.badges-dialog-open {
         font-size: clamp(2.7rem, 12vw, 3.8rem);
     }
 
-    .badges-section-heading .badges-section-description {
-        margin-top: 19px;
-    }
+    .badges-section-heading 
 }
-
-/* =========================================================
-   MOBILE REFINEMENT V2 — INSIGNIAS DESTACADAS
-   Carrusel horizontal de tarjetas compactas en teléfono.
-========================================================= */
-
-@media (max-width: 520px) {
-    .badges-featured-grid {
-        display: grid !important;
-        grid-template-columns: none !important;
-        grid-auto-flow: column;
-        grid-auto-columns: min(360px, calc(100% - 30px));
-        gap: 12px;
-
-        margin-inline: -14px;
-        padding: 2px 14px 10px;
-        overflow-x: auto;
-        overflow-y: hidden;
-
-        scroll-snap-type: x mandatory;
-        scroll-padding-inline: 14px;
-        overscroll-behavior-inline: contain;
-        scrollbar-width: none;
-    }
-
-    .badges-featured-grid::-webkit-scrollbar {
-        display: none;
-    }
-
-    .badges-featured-grid .badge-card-real {
-        display: grid;
-        grid-template-columns: 108px minmax(0, 1fr);
-        align-items: stretch;
-        gap: 15px;
-
-        min-height: 176px;
-        padding: 14px;
-
-        border-radius: 22px;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-    }
-
-    .badges-featured-grid .badge-card-real::before {
-        top: -72px;
-        right: -76px;
-
-        width: 165px;
-        height: 165px;
-    }
-
-    .badges-featured-grid .badge-image-frame {
-        width: 108px;
-        min-height: 0;
-        height: 100%;
-        padding: 8px;
-        margin: 0;
-
-        border-radius: 16px;
-    }
-
-    .badges-featured-grid .badge-image {
-        width: 88px;
-        height: 88px;
-    }
-
-    .badges-featured-grid .badge-card-content {
-        justify-content: center;
-        padding-block: 2px;
-    }
-
-    .badges-featured-grid .badge-issuer {
-        margin-bottom: 6px;
-
-        font-size: 0.55rem;
-        line-height: 1.3;
-    }
-
-    .badges-featured-grid .badge-card-real h3 {
-        font-size: 0.78rem;
-        line-height: 1.3;
-    }
-
-    .badges-featured-grid .badge-distinction {
-        align-self: flex-start;
-
-        min-height: 23px;
-        padding: 4px 8px;
-        margin-top: 10px;
-
-        font-size: 0.54rem;
-    }
-
-    .badges-featured-grid .badge-link-hint {
-        margin-top: 12px;
-        padding-top: 10px;
-
-        border-top: 1px solid var(--border);
-
-        font-size: 0.57rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .badges-featured-grid {
-        grid-auto-columns: calc(100% - 22px);
-    }
-
-    .badges-featured-grid .badge-card-real {
-        grid-template-columns: 88px minmax(0, 1fr);
-        gap: 12px;
-        min-height: 164px;
-        padding: 12px;
-    }
-
-    .badges-featured-grid .badge-image-frame {
-        width: 88px;
-    }
-
-    .badges-featured-grid .badge-image {
-        width: 72px;
-        height: 72px;
-    }
-
-    .badges-featured-grid .badge-card-real h3 {
-        font-size: 0.72rem;
-    }
-}
-
-/* =========================================================
-   MOBILE REFINEMENT V3 — INSIGNIAS EN PARES
-   Cada desplazamiento horizontal muestra dos credenciales:
-   una tarjeta arriba y otra abajo.
-========================================================= */
 
 @media (max-width: 680px) {
     .badges-featured-grid {
@@ -681,12 +497,7 @@ body.badges-dialog-open {
         scroll-snap-stop: always !important;
     }
 
-    .badges-featured-grid .badge-card-real::before {
-        top: -72px !important;
-        right: -74px !important;
-        width: 148px !important;
-        height: 148px !important;
-    }
+    .badges-featured-grid 
 
     .badges-featured-grid .badge-image-frame {
         width: 88px !important;
@@ -774,13 +585,6 @@ body.badges-dialog-open {
         font-size: 0.66rem !important;
     }
 }
-
-/* =========================================================
-   FINAL POLISH — ALL BADGES DIALOG
-   Desktop: refined credential gallery.
-   Mobile: compact, scannable credential list.
-   Includes open/close motion on both.
-========================================================= */
 
 .badges-dialog {
     width: min(calc(100% - 36px), 1120px) !important;
@@ -953,7 +757,6 @@ body.badges-dialog-open {
     font-size: 0.61rem !important;
 }
 
-/* Dialog motion. JS keeps the dialog open until the closing motion ends. */
 .badges-dialog.is-opening {
     animation: badgesDialogOpenPolished 300ms cubic-bezier(.22, 1, .36, 1) both !important;
 }
@@ -1069,8 +872,6 @@ body.badges-dialog-open {
         font-size: 0.59rem !important;
     }
 
-    /* One compact horizontal credential per row is substantially
-       easier to scan than squeezing full cards into two columns. */
     .badges-all-grid {
         grid-template-columns: 1fr !important;
         gap: 9px !important;
@@ -1090,13 +891,7 @@ body.badges-dialog-open {
         border-radius: 18px !important;
     }
 
-    .badges-all-grid .badge-card-real::before {
-        top: -58px !important;
-        right: -58px !important;
-        width: 126px !important;
-        height: 126px !important;
-        opacity: 0.45 !important;
-    }
+    .badges-all-grid 
 
     .badges-all-grid .badge-image-frame {
         width: 86px !important;
@@ -1215,12 +1010,6 @@ body.badges-dialog-open {
     }
 }
 
-
-/* =========================================================
-   MOBILE FIX V6 — NAVEGACIÓN DE INSIGNIAS DESTACADAS
-   Restaura contador + progreso + flechas debajo del carrusel.
-========================================================= */
-
 .badges-mobile-navigation[hidden] {
     display: none !important;
 }
@@ -1228,8 +1017,8 @@ body.badges-dialog-open {
 @media (max-width: 680px) {
     .badges-mobile-navigation:not([hidden]) {
         display: grid !important;
-        grid-template-columns: auto minmax(72px, 1fr) auto;
-        grid-template-areas: "counter progress controls";
+        grid-template-columns: auto minmax(72px, 1fr) !important;
+        grid-template-areas: "counter progress" !important;
         align-items: center;
         column-gap: 14px;
 
@@ -1263,6 +1052,8 @@ body.badges-dialog-open {
         width: 100%;
         min-width: 0;
         padding-block: 7px;
+
+        pointer-events: none !important;
     }
 
     .badges-mobile-progress-button {
@@ -1277,7 +1068,8 @@ body.badges-dialog-open {
 
         background: var(--border-strong);
         opacity: 0.72;
-        cursor: pointer;
+        cursor: default !important;
+        pointer-events: none !important;
 
         transition:
             background-color 180ms ease,
@@ -1301,87 +1093,11 @@ body.badges-dialog-open {
         transform: scaleY(1.5);
     }
 
-    .badges-mobile-progress-button:focus-visible {
-        outline: 2px solid var(--focus);
-        outline-offset: 4px;
-    }
-
-    .badges-mobile-controls {
-        grid-area: controls;
-
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 7px;
-    }
-
+    .badges-mobile-controls,
     .badges-mobile-button {
-        display: grid;
-        place-items: center;
-
-        width: 39px;
-        height: 39px;
-        min-width: 39px;
-        min-height: 39px;
-        padding: 0;
-
-        border: 1px solid var(--border);
-        border-radius: 999px;
-
-        color: var(--text);
-        background: var(--surface-solid);
-        box-shadow: 0 7px 18px rgba(15, 16, 24, 0.07);
-
-        font-size: 0.92rem;
-        cursor: pointer;
-
-        transition:
-            color 160ms ease,
-            border-color 160ms ease,
-            background-color 160ms ease,
-            box-shadow 160ms ease,
-            opacity 160ms ease;
-    }
-
-    .badges-mobile-next:not(:disabled) {
-        border-color: var(--text);
-        color: var(--surface-solid);
-        background: var(--text);
-        box-shadow: 0 9px 22px rgba(15, 16, 24, 0.15);
-    }
-
-    .badges-mobile-previous:not(:disabled):hover,
-    .badges-mobile-previous:not(:disabled):focus-visible,
-    .badges-mobile-previous:not(:disabled):active {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: var(--accent-soft);
-    }
-
-    .badges-mobile-next:not(:disabled):hover,
-    .badges-mobile-next:not(:disabled):focus-visible,
-    .badges-mobile-next:not(:disabled):active {
-        border-color: var(--accent);
-        color: #ffffff;
-        background: var(--accent);
-    }
-
-    .badges-mobile-button:disabled {
-        border-color: var(--border);
-        color: var(--text-muted);
-        background: var(--surface-soft);
-        box-shadow: none;
-        opacity: 0.48;
-        cursor: default;
+        display: none !important;
     }
 }
-
-/* =========================================================
-   MOBILE FIX V7 — PÁGINAS DE INSIGNIAS SIN "PEEK"
-   Cada página ocupa exactamente el ancho disponible. Se siguen
-   mostrando dos credenciales (una arriba y una abajo), pero ya no
-   asoma una franja rectangular de la página siguiente.
-========================================================= */
 
 @media (max-width: 680px) {
     .badges-featured-grid {
@@ -1406,12 +1122,6 @@ body.badges-dialog-open {
     }
 }
 
-/* =========================================================
-   MOBILE FIX V8 — BORDES LIMPIOS EN INSIGNIAS
-   Evita artefactos rectangulares de Safari producidos por blur
-   dentro de tarjetas redondeadas. Solo teléfono.
-========================================================= */
-
 @media (max-width: 680px) {
     .badge-card-real,
     .badges-featured-grid .badge-card-real,
@@ -1437,83 +1147,8 @@ body.badges-dialog-open {
 
     .badge-card-real::before,
     .badges-featured-grid .badge-card-real::before,
-    .badges-all-grid .badge-card-real::before {
-        display: none !important;
-        content: none !important;
-        filter: none !important;
-    }
+    .badges-all-grid 
 }
-
-/* =========================================================
-   MOBILE FIX V9 — INSIGNIAS CONTROLADAS SOLO POR BOTONES
-   Igual que Proyectos: las flechas cambian de página y el gesto
-   horizontal del dedo no mueve el carrusel. El scroll vertical de
-   la página sigue funcionando con normalidad.
-========================================================= */
-
-@media (max-width: 680px) {
-    .badges-featured-grid {
-        /* Sigue siendo un contenedor desplazable internamente para que
-           JavaScript pueda animarlo con los botones, pero el usuario no
-           puede arrastrarlo horizontalmente. */
-        overflow-x: hidden !important;
-        overflow-y: hidden !important;
-        scroll-snap-type: none !important;
-        overscroll-behavior-inline: none !important;
-        touch-action: pan-y !important;
-        -webkit-overflow-scrolling: auto !important;
-    }
-
-    .badges-featured-grid .badge-card-real,
-    .badges-featured-grid .badge-card-real:hover,
-    .badges-featured-grid .badge-card-real:active,
-    .badges-featured-grid .badge-card-real:focus-visible {
-        transform: none !important;
-        translate: none !important;
-    }
-
-    /* En Safari/iPhone un enlace tocado puede conservar :hover/:focus.
-       Conservamos una indicación de foco discreta sin levantar la tarjeta. */
-    .badges-featured-grid .badge-card-real:focus-visible {
-        outline: none !important;
-        border-color: var(--border) !important;
-        box-shadow:
-            inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent),
-            var(--shadow-small) !important;
-    }
-
-    /* Las barras son indicadores, no controles. La navegación se hace
-       exclusivamente con las flechas, igual que pidió el usuario. */
-    .badges-mobile-progress,
-    .badges-mobile-progress-button {
-        pointer-events: none !important;
-    }
-
-    .badges-mobile-progress-button {
-        cursor: default !important;
-    }
-}
-
-@media (hover: none) and (pointer: coarse) and (max-width: 680px) {
-    .badges-featured-grid .badge-card-real:hover,
-    .badges-featured-grid .badge-card-real:active {
-        border-color: var(--border) !important;
-        box-shadow: var(--shadow-small) !important;
-    }
-
-    .badges-featured-grid .badge-card-real:hover .badge-image,
-    .badges-featured-grid .badge-card-real:active .badge-image {
-        transform: none !important;
-    }
-}
-
-
-/* =========================================================
-   MOBILE FIX V14 — SEGUNDA INSIGNIA SIN RECORTE
-   Las dos filas suman 292px, más 11px de separación y 9px de
-   padding vertical. Safari estaba recortando la esquina inferior
-   porque el contenedor medía solo 303px. No cambia escritorio.
-========================================================= */
 
 @media (max-width: 680px) {
     .badges-featured-grid {
@@ -1529,7 +1164,6 @@ body.badges-dialog-open {
     }
 }
 
-/* SAFARI: BORDES REDONDEADOS */
 @media (min-width: 681px) {
     .badge-card-real,
     .badges-featured-grid .badge-card-real,
@@ -1554,13 +1188,8 @@ body.badges-dialog-open {
 
     .badge-card-real::before,
     .badges-featured-grid .badge-card-real::before,
-    .badges-all-grid .badge-card-real::before {
-        display: none !important;
-        content: none !important;
-        filter: none !important;
-    }
+    .badges-all-grid 
 }
-
 
 @media (max-width: 680px) {
     .badges-featured-grid {
@@ -1605,25 +1234,8 @@ body.badges-dialog-open {
 
 @media (min-width: 1080px) {
     .badges-section-heading {
-        align-items: end !important;
-    }
-
-    .badges-section-heading .badges-open-button {
-        align-self: end !important;
-        margin-top: 0 !important;
-        margin-bottom: 8px !important;
-    }
-}
-
-@media (min-width: 1080px) {
-    .badges-section-heading {
-        margin-bottom: 58px !important;
-    }
-}
-
-@media (min-width: 1080px) {
-    .badges-section-heading {
         position: relative !important;
+        align-items: end !important;
         margin-bottom: 58px !important;
     }
 

@@ -166,7 +166,7 @@ const translations = {
         "actions.viewCaseStudy": "Ver caso de estudio",
         "actions.viewDetails": "Ver detalles",
         "actions.sendEmail": "Enviar correo",
-        "actions.contactMe": "Contactarme",
+        "actions.contactMe": "Cóntactame",
         "actions.backToTop": "Volver arriba",
 
         "projects.eyebrow": "Proyectos destacados",
