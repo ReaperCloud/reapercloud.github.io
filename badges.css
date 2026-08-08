@@ -1602,3 +1602,35 @@ body.badges-dialog-open {
         cursor: default !important;
     }
 }
+
+@media (min-width: 1080px) {
+    .badges-section-heading {
+        align-items: end !important;
+    }
+
+    .badges-section-heading .badges-open-button {
+        align-self: end !important;
+        margin-top: 0 !important;
+        margin-bottom: 8px !important;
+    }
+}
+
+@media (min-width: 1080px) {
+    .badges-section-heading {
+        margin-bottom: 58px !important;
+    }
+}
+
+@media (min-width: 1080px) {
+    .badges-section-heading {
+        position: relative !important;
+        margin-bottom: 58px !important;
+    }
+
+    .badges-section-heading .badges-open-button {
+        position: absolute !important;
+        right: 0 !important;
+        bottom: -42px !important;
+        margin: 0 !important;
+    }
+}
