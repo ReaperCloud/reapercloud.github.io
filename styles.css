@@ -3023,6 +3023,15 @@ html[data-theme="dark"] .cv-preview {
     font-weight: 820;
 }
 
+.contact-social-icon-image {
+    display: block;
+
+    width: 28px;
+    height: 28px;
+
+    object-fit: contain;
+}
+
 .contact-social-card div {
     display: grid;
     gap: 2px;
