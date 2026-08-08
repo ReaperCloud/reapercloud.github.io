@@ -5,12 +5,6 @@
         ? window.PORTFOLIO_BADGES
         : [];
 
-/*
-    =========================================================
-    COMPATIBILIDAD DE NOMBRES DE IMÁGENES
-    =========================================================
-    */
-
     const badgeFilenameAliases = {
         "programming-fundamentals.png": "fundamentos-de-programacion-sobresaliente(1).png",
         "network-management.png": "gestion-de-redes(1).png",
@@ -42,11 +36,9 @@
         "introduction-data-science.png": "introduction-to-data-science(1).png"
     };
 
-
     function uniqueValues(values) {
         return [...new Set(values.filter(Boolean))];
     }
-
 
     function badgeImageCandidates(imagePath) {
         const cleanPath = String(imagePath ?? "").trim();
@@ -91,7 +83,6 @@
                 : ""
         ]);
     }
-
 
     function loadBadgeImageWithFallback(
         image,
@@ -195,13 +186,11 @@
         }
     };
 
-
     function currentLanguage() {
         return document.documentElement.lang === "en"
             ? "en"
             : "es";
     }
-
 
     function localizedValue(value, language) {
         if (typeof value === "string") {
@@ -219,7 +208,6 @@
             ?? ""
         );
     }
-
 
     function createBadgeCard(
         badge,
@@ -321,13 +309,6 @@
         return card;
     }
 
-
-    /* =====================================================
-       NAVEGACIÓN MÓVIL DE INSIGNIAS DESTACADAS
-       Dos credenciales por página, con el mismo lenguaje
-       visual de la navegación móvil de Proyectos.
-    ===================================================== */
-
     const featuredMobileQuery = window.matchMedia(
         "(max-width: 680px)"
     );
@@ -335,23 +316,7 @@
     let featuredNavigation = null;
     let featuredCounter = null;
     let featuredProgress = null;
-    let featuredPreviousButton = null;
-    let featuredNextButton = null;
     let featuredScrollUpdatePending = false;
-
-    const featuredNavigationCopy = {
-        es: {
-            previous: "Insignias anteriores",
-            next: "Siguientes insignias",
-            page: "Ir al grupo de insignias"
-        },
-        en: {
-            previous: "Previous badges",
-            next: "Next badges",
-            page: "Go to badge group"
-        }
-    };
-
 
     function featuredCards() {
         return [
@@ -360,7 +325,6 @@
             ) ?? [])
         ];
     }
-
 
     function featuredPageCards() {
         const cards = featuredCards();
@@ -372,7 +336,6 @@
 
         return pageCards;
     }
-
 
     function ensureFeaturedMobileNavigation() {
         if (!featuredGrid || featuredNavigation) {
@@ -390,47 +353,14 @@
         featuredProgress = document.createElement("div");
         featuredProgress.className = "badges-mobile-progress";
 
-        const controls = document.createElement("div");
-        controls.className = "badges-mobile-controls";
-
-        featuredPreviousButton = document.createElement("button");
-        featuredPreviousButton.className =
-            "badges-mobile-button badges-mobile-previous";
-        featuredPreviousButton.type = "button";
-        featuredPreviousButton.innerHTML =
-            '<span aria-hidden="true">←</span>';
-
-        featuredNextButton = document.createElement("button");
-        featuredNextButton.className =
-            "badges-mobile-button badges-mobile-next";
-        featuredNextButton.type = "button";
-        featuredNextButton.innerHTML =
-            '<span aria-hidden="true">→</span>';
-
-        controls.append(
-            featuredPreviousButton,
-            featuredNextButton
-        );
-
         featuredNavigation.append(
             featuredCounter,
-            featuredProgress,
-            controls
+            featuredProgress
         );
 
         featuredGrid.insertAdjacentElement(
             "afterend",
             featuredNavigation
-        );
-
-        featuredPreviousButton.addEventListener(
-            "click",
-            () => scrollFeaturedBadges(-1)
-        );
-
-        featuredNextButton.addEventListener(
-            "click",
-            () => scrollFeaturedBadges(1)
         );
 
         featuredGrid.addEventListener(
@@ -538,7 +468,6 @@
         );
     }
 
-
     function featuredPageIndex() {
         if (!featuredGrid) {
             return 0;
@@ -570,68 +499,7 @@
         return nearestIndex;
     }
 
-
-    function featuredPageScrollLeft(pageIndex) {
-        if (!featuredGrid) {
-            return 0;
-        }
-
-        const targetCard =
-            featuredPageCards()[pageIndex];
-
-        if (!targetCard) {
-            return 0;
-        }
-
-        const gridBounds =
-            featuredGrid.getBoundingClientRect();
-
-        const cardBounds =
-            targetCard.getBoundingClientRect();
-
-        return (
-            featuredGrid.scrollLeft +
-            cardBounds.left -
-            gridBounds.left
-        );
-    }
-
-
-    function scrollFeaturedBadgesToPage(pageIndex) {
-        if (!featuredGrid) {
-            return;
-        }
-
-        const pageCount = featuredPageCards().length;
-
-        if (pageCount === 0) {
-            return;
-        }
-
-        const safeIndex = Math.min(
-            Math.max(pageIndex, 0),
-            pageCount - 1
-        );
-
-        featuredGrid.scrollTo({
-            left: featuredPageScrollLeft(safeIndex),
-            behavior: window.matchMedia(
-                "(prefers-reduced-motion: reduce)"
-            ).matches
-                ? "auto"
-                : "smooth"
-        });
-    }
-
-
-    function scrollFeaturedBadges(direction) {
-        scrollFeaturedBadgesToPage(
-            featuredPageIndex() + direction
-        );
-    }
-
-
-    function renderFeaturedProgress(pageCount, language) {
+    function renderFeaturedProgress(pageCount) {
         if (!featuredProgress) {
             return;
         }
@@ -650,7 +518,6 @@
         }
     }
 
-
     function updateFeaturedMobileNavigation(
         resetPosition = false
     ) {
@@ -660,29 +527,17 @@
             !featuredGrid ||
             !featuredNavigation ||
             !featuredCounter ||
-            !featuredProgress ||
-            !featuredPreviousButton ||
-            !featuredNextButton
+            !featuredProgress
         ) {
             return;
         }
 
-        const language = currentLanguage();
         const pageCount = featuredPageCards().length;
-        const isMobile = featuredMobileQuery.matches;
-        const shouldShow = isMobile && pageCount > 1;
+        const shouldShow =
+            featuredMobileQuery.matches &&
+            pageCount > 1;
 
         featuredNavigation.hidden = !shouldShow;
-
-        featuredPreviousButton.setAttribute(
-            "aria-label",
-            featuredNavigationCopy[language].previous
-        );
-
-        featuredNextButton.setAttribute(
-            "aria-label",
-            featuredNavigationCopy[language].next
-        );
 
         if (!shouldShow) {
             return;
@@ -691,7 +546,7 @@
         if (
             featuredProgress.children.length !== pageCount
         ) {
-            renderFeaturedProgress(pageCount, language);
+            renderFeaturedProgress(pageCount);
         }
 
         if (resetPosition) {
@@ -704,32 +559,27 @@
             `${String(activeIndex + 1).padStart(2, "0")} / ` +
             `${String(pageCount).padStart(2, "0")}`;
 
-        featuredPreviousButton.disabled = activeIndex <= 0;
-        featuredNextButton.disabled =
-            activeIndex >= pageCount - 1;
-
         featuredProgress
             .querySelectorAll("[data-badge-page]")
-            .forEach((button, index) => {
+            .forEach((indicator, index) => {
                 const isActive = index === activeIndex;
 
-                button.classList.toggle(
+                indicator.classList.toggle(
                     "active",
                     isActive
                 );
 
-                button.classList.toggle(
+                indicator.classList.toggle(
                     "completed",
                     index < activeIndex
                 );
 
-                button.setAttribute(
+                indicator.setAttribute(
                     "aria-current",
                     isActive ? "true" : "false"
                 );
             });
     }
-
 
     function renderBadges() {
         if (!featuredGrid || !allGrid) {
@@ -801,7 +651,6 @@
         });
     }
 
-
     const badgesReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
     );
@@ -812,7 +661,6 @@
     let badgesDialogOpenTimer = null;
     let badgesDialogCloseTimer = null;
 
-
     function clearBadgesDialogTimers() {
         window.clearTimeout(badgesDialogOpenTimer);
         window.clearTimeout(badgesDialogCloseTimer);
@@ -820,7 +668,6 @@
         badgesDialogOpenTimer = null;
         badgesDialogCloseTimer = null;
     }
-
 
     function finishBadgesDialogClose() {
         if (!dialog) {
@@ -847,7 +694,6 @@
             "badges-dialog-open"
         );
     }
-
 
     function openDialog() {
         if (!dialog) {
@@ -885,7 +731,6 @@
             return;
         }
 
-        /* Register the visible dialog before starting the entrance motion. */
         void dialog.offsetWidth;
 
         dialog.classList.add("is-opening");
@@ -898,7 +743,6 @@
             BADGES_DIALOG_OPEN_DURATION
         );
     }
-
 
     function closeDialog() {
         if (
@@ -931,7 +775,6 @@
             BADGES_DIALOG_CLOSE_DURATION
         );
     }
-
 
     openButton?.addEventListener(
         "click",
@@ -989,7 +832,6 @@
         }
     );
 
-
     featuredMobileQuery.addEventListener?.(
         "change",
         () => {
@@ -1012,5 +854,3 @@
     renderBadges();
 }
 )();
-
-
