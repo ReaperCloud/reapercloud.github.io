@@ -637,6 +637,53 @@
             });
     }
 
+    let allBadgesRendered = false;
+
+    function badgeCardsFragment(
+        items,
+        language,
+        compact
+    ) {
+        const fragment =
+            document.createDocumentFragment();
+
+        items.forEach((badge) => {
+            fragment.append(
+                createBadgeCard(
+                    badge,
+                    language,
+                    compact
+                )
+            );
+        });
+
+        return fragment;
+    }
+
+    function renderAllBadges(
+        language = currentLanguage()
+    ) {
+        if (!allGrid) {
+            return;
+        }
+
+        allGrid.replaceChildren(
+            badgeCardsFragment(
+                badges,
+                language,
+                true
+            )
+        );
+
+        allBadgesRendered = true;
+    }
+
+    function ensureAllBadgesRendered() {
+        if (!allBadgesRendered) {
+            renderAllBadges();
+        }
+    }
+
     function renderBadges() {
         if (!featuredGrid || !allGrid) {
             return;
@@ -648,28 +695,17 @@
             (badge) => badge.featured
         );
 
-        featuredGrid.replaceChildren();
-        allGrid.replaceChildren();
+        featuredGrid.replaceChildren(
+            badgeCardsFragment(
+                featured,
+                language,
+                false
+            )
+        );
 
-        featured.forEach((badge) => {
-            featuredGrid.append(
-                createBadgeCard(
-                    badge,
-                    language,
-                    false
-                )
-            );
-        });
-
-        badges.forEach((badge) => {
-            allGrid.append(
-                createBadgeCard(
-                    badge,
-                    language,
-                    true
-                )
-            );
-        });
+        if (allBadgesRendered) {
+            renderAllBadges(language);
+        }
 
         document
             .querySelectorAll("[data-badges-copy]")
@@ -756,6 +792,7 @@
             return;
         }
 
+        ensureAllBadgesRendered();
         clearBadgesDialogTimers();
 
         if (!dialog.open) {
@@ -833,6 +870,30 @@
             BADGES_DIALOG_CLOSE_DURATION
         );
     }
+
+    openButton?.addEventListener(
+        "pointerenter",
+        ensureAllBadgesRendered,
+        {
+            passive: true,
+            once: true
+        }
+    );
+
+    openButton?.addEventListener(
+        "touchstart",
+        ensureAllBadgesRendered,
+        {
+            passive: true,
+            once: true
+        }
+    );
+
+    openButton?.addEventListener(
+        "focus",
+        ensureAllBadgesRendered,
+        { once: true }
+    );
 
     openButton?.addEventListener(
         "click",

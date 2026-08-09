@@ -1812,13 +1812,16 @@ function renderProjects(language = currentLanguage()) {
 
     const projects = portfolioProjects();
 
-    projectsTrack.replaceChildren();
+    const fragment =
+        document.createDocumentFragment();
 
-    projects.forEach((project, index) => {
-        projectsTrack.append(
+    projects.forEach((project) => {
+        fragment.append(
             createProjectCard(project, language)
         );
     });
+
+    projectsTrack.replaceChildren(fragment);
 
     renderProjectPagination(projects, language);
 
@@ -3055,6 +3058,114 @@ updateMenuButtonLabel();
 updateHeader();
 updateActiveNavigation(true);
 
+(() => {
+    const previewRenderer = document.getElementById(
+        "cv-preview-renderer"
+    );
+
+    const cvSection = document.getElementById("cv");
+
+    if (!previewRenderer || !cvSection) {
+        return;
+    }
+
+    let moduleRequested = false;
+    let observer = null;
+
+    function showLoadError() {
+        document.getElementById(
+            "cv-live-preview-loading"
+        )?.setAttribute("hidden", "");
+
+        document.getElementById(
+            "cv-live-preview-error"
+        )?.removeAttribute("hidden");
+
+        previewRenderer.classList.add(
+            "cv-preview-failed"
+        );
+    }
+
+    function loadThumbnailModule() {
+        if (moduleRequested) {
+            return;
+        }
+
+        moduleRequested = true;
+        observer?.disconnect();
+        observer = null;
+
+        const moduleScript =
+            document.createElement("script");
+
+        moduleScript.type = "module";
+        moduleScript.src = versionedPortfolioAsset(
+            "./cv-thumbnail.mjs"
+        );
+
+        moduleScript.addEventListener(
+            "error",
+            () => {
+                moduleRequested = false;
+                showLoadError();
+            },
+            { once: true }
+        );
+
+        document.head.append(moduleScript);
+    }
+
+    if ("IntersectionObserver" in window) {
+        observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries.some(
+                        (entry) => entry.isIntersecting
+                    )
+                ) {
+                    loadThumbnailModule();
+                }
+            },
+            {
+                rootMargin: "1000px 0px",
+                threshold: 0.01
+            }
+        );
+
+        observer.observe(cvSection);
+    } else {
+        window.addEventListener(
+            "load",
+            loadThumbnailModule,
+            { once: true }
+        );
+    }
+
+    cvSection.addEventListener(
+        "pointerenter",
+        loadThumbnailModule,
+        {
+            passive: true,
+            once: true
+        }
+    );
+
+    cvSection.addEventListener(
+        "touchstart",
+        loadThumbnailModule,
+        {
+            passive: true,
+            once: true
+        }
+    );
+
+    cvSection.addEventListener(
+        "focusin",
+        loadThumbnailModule,
+        { once: true }
+    );
+})();
+
 
 /* =========================================================
    VISOR DEL CV
@@ -3069,10 +3180,6 @@ updateActiveNavigation(true);
             'a[download][href*="Alejandro-Lira-CV.pdf"]'
         )
     ];
-
-    const cvViewerDownloadButton = cvDialog?.querySelector(
-        '.cv-viewer-action[download]'
-    );
 
     const mobileCvQuery = window.matchMedia(
         "(max-width: 680px)"
@@ -3358,6 +3465,8 @@ updateActiveNavigation(true);
             cvDialog.setAttribute("open", "");
         }
 
+        focusDialogContainer(cvDialog);
+
         document.body.classList.add("cv-dialog-open");
         cvDialog.scrollTop = 0;
 
@@ -3366,7 +3475,6 @@ updateActiveNavigation(true);
         window.requestAnimationFrame(() => {
             syncCvVisualViewport();
             loadCvInsideViewer();
-            prepareCvDownload();
             window.setTimeout(syncCvVisualViewport, 120);
         });
     }
@@ -3442,10 +3550,6 @@ updateActiveNavigation(true);
         { passive: true }
     );
 
-    window.setTimeout(
-        prepareCvDownload,
-        350
-    );
 })();
 
 /* =========================================================
