@@ -1433,3 +1433,73 @@ body.badges-dialog-open {
         margin: 0 !important;
     }
 }
+
+.badges-dialog-close {
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+
+    border: 1px solid var(--border) !important;
+    border-radius: 999px !important;
+
+    color: var(--text-secondary) !important;
+    background:
+        color-mix(
+            in srgb,
+            var(--surface-soft) 88%,
+            var(--surface-solid)
+        ) !important;
+
+    box-shadow:
+        0 8px 24px rgba(18, 19, 25, 0.07) !important;
+
+    transform: none !important;
+}
+
+.badges-dialog-close:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--accent) 55%,
+            var(--border)
+        ) !important;
+
+    color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.badges-dialog-close:focus-visible {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--accent) 55%,
+            var(--border)
+        ) !important;
+
+    color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+
+    outline:
+        2px solid
+        color-mix(
+            in srgb,
+            var(--accent) 55%,
+            transparent
+        ) !important;
+    outline-offset: 2px !important;
+
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.badges-dialog:focus,
+.badges-dialog:focus-visible {
+    outline: none !important;
+    box-shadow:
+        0 38px 130px rgba(0, 0, 0, 0.32),
+        0 1px 0 rgba(255, 255, 255, 0.08) inset !important;
+}

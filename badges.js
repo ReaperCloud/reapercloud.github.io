@@ -192,6 +192,22 @@
             : "es";
     }
 
+    function focusBadgesDialogContainer() {
+        if (!dialog) {
+            return;
+        }
+
+        dialog.tabIndex = -1;
+
+        try {
+            dialog.focus({
+                preventScroll: true
+            });
+        } catch {
+            dialog.focus();
+        }
+    }
+
     function localizedValue(value, language) {
         if (typeof value === "string") {
             return value;
@@ -207,6 +223,39 @@
             ?? value.en
             ?? ""
         );
+    }
+
+
+    function isSafariBrowser() {
+        const userAgent = navigator.userAgent || "";
+
+        return (
+            /Safari/i.test(userAgent)
+            && !/Chrome|Chromium|CriOS|Edg|EdgiOS|OPR|FxiOS|Firefox/i.test(
+                userAgent
+            )
+        );
+    }
+
+    const safariBrowser = isSafariBrowser();
+
+    function openSafariCredential(url) {
+        const credentialWindow = window.open(
+            "",
+            "portfolioCredlyCredential"
+        );
+
+        if (!credentialWindow) {
+            window.location.assign(url);
+            return;
+        }
+
+        try {
+            credentialWindow.opener = null;
+        } catch {
+        }
+
+        credentialWindow.location.replace(url);
     }
 
     function createBadgeCard(
@@ -236,6 +285,13 @@
                 `${copy[language].openCredential}: `
                 + localizedValue(badge.title, language)
             );
+
+            if (safariBrowser) {
+                card.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    openSafariCredential(badge.url);
+                });
+            }
         }
 
         const media = document.createElement("div");
@@ -709,6 +765,8 @@
                 dialog.setAttribute("open", "");
             }
         }
+
+        focusBadgesDialogContainer();
 
         document.body.classList.add(
             "badges-dialog-open"

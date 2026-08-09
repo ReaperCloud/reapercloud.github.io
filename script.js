@@ -104,6 +104,22 @@ const reducedMotionQuery = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
 );
 
+function focusDialogContainer(dialog) {
+    if (!dialog) {
+        return;
+    }
+
+    dialog.tabIndex = -1;
+
+    try {
+        dialog.focus({
+            preventScroll: true
+        });
+    } catch {
+        dialog.focus();
+    }
+}
+
 const translations = {
     es: {
         documentTitle: "Alejandro Lira | Desarrollo de Software",
@@ -1449,6 +1465,8 @@ let activeProjectId = null;
 let activeProjectImageIndex = 0;
 let projectCarouselUpdatePending = false;
 let activeProjectImageResizeObserver = null;
+let pointerOpenedProjectCard = null;
+let projectCardReleaseArmed = false;
 const PORTFOLIO_ASSET_VERSION = "__BUILD_VERSION__";
 
 function versionedPortfolioAsset(source) {
@@ -2103,6 +2121,113 @@ projectsPagination?.addEventListener("click", (event) => {
     });
 });
 
+function releasePointerOpenedProjectCard() {
+    pointerOpenedProjectCard?.classList.remove(
+        "project-card-pointer-opened"
+    );
+
+    pointerOpenedProjectCard = null;
+    projectCardReleaseArmed = false;
+}
+
+function holdPointerOpenedProjectCard(card) {
+    if (
+        !window.matchMedia(
+            "(hover: hover) and (pointer: fine)"
+        ).matches
+    ) {
+        return;
+    }
+
+    if (
+        pointerOpenedProjectCard &&
+        pointerOpenedProjectCard !== card
+    ) {
+        pointerOpenedProjectCard.classList.remove(
+            "project-card-pointer-opened"
+        );
+    }
+
+    pointerOpenedProjectCard = card;
+    projectCardReleaseArmed = false;
+
+    card.classList.add(
+        "project-card-pointer-opened"
+    );
+
+    card.blur();
+}
+
+function armPointerOpenedProjectCardRelease() {
+    if (
+        !pointerOpenedProjectCard ||
+        projectCardReleaseArmed
+    ) {
+        return;
+    }
+
+    projectCardReleaseArmed = true;
+
+    const release = () => {
+        window.removeEventListener(
+            "pointermove",
+            release
+        );
+
+        window.removeEventListener(
+            "mousemove",
+            release
+        );
+
+        window.removeEventListener(
+            "keydown",
+            release
+        );
+
+        window.removeEventListener(
+            "wheel",
+            release
+        );
+
+        releasePointerOpenedProjectCard();
+    };
+
+    if ("PointerEvent" in window) {
+        window.addEventListener(
+            "pointermove",
+            release,
+            {
+                passive: true,
+                once: true
+            }
+        );
+    } else {
+        window.addEventListener(
+            "mousemove",
+            release,
+            {
+                passive: true,
+                once: true
+            }
+        );
+    }
+
+    window.addEventListener(
+        "keydown",
+        release,
+        { once: true }
+    );
+
+    window.addEventListener(
+        "wheel",
+        release,
+        {
+            passive: true,
+            once: true
+        }
+    );
+}
+
 projectsTrack?.addEventListener("click", (event) => {
     if (
         window.innerWidth <= 680 &&
@@ -2120,6 +2245,7 @@ projectsTrack?.addEventListener("click", (event) => {
         return;
     }
 
+    holdPointerOpenedProjectCard(card);
     openProjectDialog(card.dataset.openProject);
 });
 
@@ -2540,6 +2666,7 @@ function finishProjectDialogClose() {
     activeProjectImageResizeObserver = null;
 
     activeProjectId = null;
+    armPointerOpenedProjectCardRelease();
 }
 
 
@@ -2577,6 +2704,8 @@ function openProjectDialog(projectId) {
             );
         }
     }
+
+    focusDialogContainer(projectDialog);
 
     document.body.classList.add(
         "project-dialog-open"
@@ -2711,6 +2840,7 @@ projectDialog?.addEventListener("close", () => {
     );
 
     activeProjectId = null;
+    armPointerOpenedProjectCardRelease();
 });
 
 projectImagePrevious?.addEventListener(
@@ -3792,6 +3922,7 @@ window.addEventListener(
 
                     if (typeof dialog.showModal === "function") {
                         dialog.showModal();
+                        focusDialogContainer(dialog);
                     } else {
                         openGmail();
                     }
