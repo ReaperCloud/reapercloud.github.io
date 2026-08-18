@@ -15637,3 +15637,216 @@ html[data-theme="dark"] .cv-overview-copy small {
     }
 }
 
+@media (min-width: 1081px) {
+    .cv-card.cv-rework-card.cv-profile-restored {
+        grid-template-columns:
+            minmax(410px, 0.78fr)
+            minmax(650px, 1.22fr) !important;
+        align-items: center !important;
+        gap: clamp(38px, 4vw, 54px) !important;
+
+        min-height: 0 !important;
+        padding: 42px 46px !important;
+    }
+
+    .cv-profile-restored .cv-rework-copy {
+        justify-content: center !important;
+
+        width: 100%;
+        max-width: 480px !important;
+    }
+
+    .cv-profile-restored .cv-rework-copy h3 {
+        max-width: 470px !important;
+
+        font-size: clamp(3rem, 3.65vw, 3.8rem) !important;
+        line-height: 0.98 !important;
+    }
+
+    .cv-profile-restored .cv-rework-copy > p {
+        max-width: 455px !important;
+
+        margin-top: 22px !important;
+    }
+
+    .cv-overview-grid {
+        max-width: 455px;
+        margin-top: 24px;
+    }
+
+    .cv-profile-restored
+    .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
+        grid-template-columns:
+            minmax(275px, 0.88fr)
+            minmax(310px, 1.12fr) !important;
+        place-items: stretch !important;
+        align-items: center !important;
+        gap: clamp(30px, 3vw, 40px) !important;
+
+        min-height: 0 !important;
+        height: auto !important;
+        padding: 34px 36px !important;
+    }
+
+    .cv-profile-restored .cv-preview-column {
+        align-self: center !important;
+        justify-content: center !important;
+
+        gap: 17px;
+    }
+
+    .cv-profile-restored
+    .cv-preview-column
+    .cv-thumbnail-frame.cv-rework-document-frame {
+        width: min(100%, 282px) !important;
+    }
+
+    .cv-profile-restored .cv-preview-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+
+        width: min(100%, 282px) !important;
+        margin: 0 auto !important;
+    }
+
+    .cv-profile-restored .cv-preview-actions .primary-button,
+    .cv-profile-restored .cv-preview-actions .secondary-button {
+        min-height: 43px !important;
+        padding: 9px 11px !important;
+
+        font-size: 0.69rem !important;
+    }
+
+    .cv-profile-restored
+    .cv-rework-information,
+    .cv-profile-restored
+    .cv-compact-information {
+        align-self: center !important;
+        align-content: center !important;
+
+        padding-top: 0 !important;
+    }
+
+    .cv-profile-restored .cv-rework-profile-heading h4 {
+        font-size: clamp(1.85rem, 2.3vw, 2.35rem) !important;
+    }
+
+    .cv-profile-restored .cv-compact-description {
+        margin-top: 16px !important;
+
+        font-size: 0.83rem !important;
+        line-height: 1.68 !important;
+    }
+
+    .cv-profile-restored .cv-profile-highlights {
+        margin-top: 12px !important;
+    }
+
+    .cv-profile-restored .cv-profile-highlights li {
+        min-height: 40px !important;
+        padding-block: 8px !important;
+    }
+
+    .cv-profile-restored .cv-profile-highlights strong {
+        font-size: 0.74rem !important;
+    }
+}
+
+@media (min-width: 1081px) {
+    .cv-profile-restored
+    .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
+        align-items: start !important;
+    }
+
+    .cv-profile-restored .cv-preview-column {
+        align-self: start !important;
+    }
+
+    .cv-profile-restored
+    .cv-rework-information,
+    .cv-profile-restored
+    .cv-compact-information {
+        align-self: start !important;
+        align-content: start !important;
+        padding-top: 2px !important;
+    }
+}
+
+@media (min-width: 1081px) {
+    .cv-profile-restored
+    .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
+        grid-template-columns:
+            minmax(250px, 0.90fr)
+            minmax(0, 1.10fr) !important;
+
+        gap: clamp(24px, 2.2vw, 32px) !important;
+        overflow: hidden !important;
+    }
+
+    .cv-profile-restored
+    .cv-rework-information,
+    .cv-profile-restored
+    .cv-compact-information {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .cv-profile-restored
+    .cv-rework-profile-heading,
+    .cv-profile-restored
+    .cv-rework-profile-heading h4,
+    .cv-profile-restored
+    .cv-profile-role,
+    .cv-profile-restored
+    .cv-compact-description,
+    .cv-profile-restored
+    .cv-profile-highlights,
+    .cv-profile-restored
+    .cv-profile-highlights li,
+    .cv-profile-restored
+    .cv-profile-highlights strong {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .cv-profile-restored
+    .cv-compact-description,
+    .cv-profile-restored
+    .cv-profile-highlights strong {
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+    }
+
+    .cv-profile-restored .cv-compact-description {
+        padding-right: 8px !important;
+
+        font-size: 0.80rem !important;
+        line-height: 1.62 !important;
+    }
+
+    .cv-profile-restored .cv-rework-profile-heading h4 {
+        font-size: clamp(1.75rem, 2.05vw, 2.2rem) !important;
+    }
+}
+
+@media (min-width: 1081px) {
+    .cv-profile-restored
+    .cv-rework-information,
+    .cv-profile-restored
+    .cv-compact-information {
+        overflow: visible !important;
+    }
+
+    .cv-profile-restored .cv-profile-highlights li {
+        grid-template-columns: 18px minmax(0, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .cv-profile-restored .cv-profile-highlights li > span {
+        justify-self: center !important;
+        flex-shrink: 0 !important;
+    }
+}
+
