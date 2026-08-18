@@ -287,13 +287,22 @@ const translations = {
         "cv.titleAccent": "académico y técnico.",
         "cv.introduction": "Consulta mi formación, proyectos, tecnologías y certificaciones en un currículum claro y directo.",
         "cv.quickView": "Sobre mi CV",
-        "cv.cardTitle": "Mi formación reunida en un solo documento.",
-        "cv.cardDescription": "Conoce mi formación en Desarrollo de Software, los proyectos que he desarrollado y las habilidades técnicas que forman parte de mi perfil.",
+        "cv.cardTitle": "Mi trayectoria, reunida en un solo documento.",
+        "cv.cardDescription": "Aquí encontrarás mi preparación en Desarrollo de Software, los proyectos que he construido y las tecnologías que utilizo para crear soluciones funcionales.",
         "cv.summaryEducation": "Formación",
         "cv.summaryProjects": "Proyectos",
         "cv.summarySkills": "Tecnologías",
         "cv.summaryCertifications": "Certificaciones",
         "cv.summaryLanguages": "Idiomas",
+        "cv.overviewAria": "Resumen del currículum",
+        "cv.overviewEducationTitle": "Educación",
+        "cv.overviewEducationCopy": "Carrera y etapa académica.",
+        "cv.overviewProjectsTitle": "Proyectos",
+        "cv.overviewProjectsCopy": "Aplicaciones y soluciones desarrolladas.",
+        "cv.overviewStackTitle": "Stack técnico",
+        "cv.overviewStackCopy": "Lenguajes, herramientas y tecnologías.",
+        "cv.overviewLanguagesTitle": "Idiomas",
+        "cv.overviewLanguagesCopy": "Español e inglés técnico.",
         "cv.previewPage": "Perfil profesional",
         "cv.previewHint": "Haz clic para abrir el currículum",
         "cv.documentLabel": "Currículum",
@@ -519,13 +528,22 @@ const translations = {
         "cv.titleAccent": "and technical profile.",
         "cv.introduction": "Review my education, projects, technologies and certifications in a clear and focused resume.",
         "cv.quickView": "About my resume",
-        "cv.cardTitle": "My education, all in one document.",
-        "cv.cardDescription": "Explore my Software Development education, the projects I have built, and the technical skills that are part of my profile.",
+        "cv.cardTitle": "My journey, all in one document.",
+        "cv.cardDescription": "Here you will find my Software Development background, the projects I have built, and the technologies I use to create functional solutions.",
         "cv.summaryEducation": "Education",
         "cv.summaryProjects": "Projects",
         "cv.summarySkills": "Technologies",
         "cv.summaryCertifications": "Certifications",
         "cv.summaryLanguages": "Languages",
+        "cv.overviewAria": "Resume overview",
+        "cv.overviewEducationTitle": "Education",
+        "cv.overviewEducationCopy": "Degree and current academic stage.",
+        "cv.overviewProjectsTitle": "Projects",
+        "cv.overviewProjectsCopy": "Applications and solutions I have built.",
+        "cv.overviewStackTitle": "Technical stack",
+        "cv.overviewStackCopy": "Languages, tools and technologies.",
+        "cv.overviewLanguagesTitle": "Languages",
+        "cv.overviewLanguagesCopy": "Spanish and technical English.",
         "cv.previewPage": "Professional profile",
         "cv.previewHint": "Click to open the resume",
         "cv.documentLabel": "Resume",
@@ -614,7 +632,6 @@ function saveLanguage(language) {
     try {
         localStorage.setItem("portfolio-language", language);
     } catch {
-        // La página continúa aunque el navegador no permita guardar preferencias.
     }
 }
 
@@ -714,7 +731,7 @@ function changeLanguage(language) {
 
     window.clearTimeout(languageApplyTimer);
     window.clearTimeout(languageFinishTimer);
-    
+
     languageApplyTimer = window.setTimeout(() => {
         applyLanguage(safeLanguage, false);
     }, 105);
@@ -738,7 +755,6 @@ function saveTheme(theme) {
     try {
         localStorage.setItem("portfolio-theme", theme);
     } catch {
-        // La página continúa aunque localStorage no esté disponible.
     }
 }
 
@@ -892,7 +908,7 @@ function cancelActiveThemeAnimation() {
     try {
         activeThemeAnimation?.cancel();
     } catch {
-        /* La animación ya pudo haber terminado. */
+
     }
 
     activeThemeAnimation = null;
@@ -905,7 +921,7 @@ function safelySkipThemeTransition(
     try {
         transition?.skipTransition();
     } catch {
-        /* La transición ya pudo haber terminado. */
+
     }
 }
 
@@ -1425,11 +1441,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 
-
-/* =========================================================
-   FOTO PRINCIPAL
-========================================================= */
-
 function updateHeroPhotoState() {
     if (!heroPhoto || !heroPhotoFrame) {
         return;
@@ -1456,10 +1467,6 @@ heroPhoto?.addEventListener("error", () => {
 
 updateHeroPhotoState();
 
-
-/* =========================================================
-   PROYECTOS DEFINIDOS EN projects-data.js
-========================================================= */
 
 let activeProjectId = null;
 let activeProjectImageIndex = 0;
@@ -2285,10 +2292,6 @@ if (projectsViewport) {
 }
 
 
-/* =========================================================
-   VENTANA Y SLIDER DE IMÁGENES DEL PROYECTO
-========================================================= */
-
 function currentProject() {
     return activeProjectId
         ? projectById(activeProjectId)
@@ -2417,10 +2420,6 @@ function renderProjectGallery(project, language) {
 }
 
 
-/* =========================================================
-   ALTURA DE INFORMACIÓN SEGÚN LA IMAGEN ACTIVA
-========================================================= */
-
 function observeActiveProjectImage(image) {
     activeProjectImageResizeObserver?.disconnect();
 
@@ -2453,6 +2452,9 @@ function syncProjectDescriptionHeight() {
         projectShowcaseDescription.style.removeProperty(
             "--project-active-image-height"
         );
+        projectShowcaseDescription.style.removeProperty(
+            "--project-active-image-offset"
+        );
 
         return;
     }
@@ -2484,9 +2486,34 @@ function syncProjectDescriptionHeight() {
         return;
     }
 
+    const content =
+        projectShowcaseDescription.parentElement;
+
+    const imageRect =
+        activeImage.getBoundingClientRect();
+
+    const contentRect =
+        content?.getBoundingClientRect();
+
+    const imageOffset =
+        contentRect
+            ? Math.max(
+                0,
+                Math.round(
+                    imageRect.top -
+                    contentRect.top
+                )
+            )
+            : 0;
+
     projectShowcaseDescription.style.setProperty(
         "--project-active-image-height",
         `${imageHeight}px`
+    );
+
+    projectShowcaseDescription.style.setProperty(
+        "--project-active-image-offset",
+        `${imageOffset}px`
     );
 }
 
@@ -2861,10 +2888,6 @@ projectImageNext?.addEventListener(
 );
 
 
-/* =========================================================
-   GALERÍA DE PROYECTO
-========================================================= */
-
 const projectGalleryViewport = projectGallery?.querySelector(
     ".project-gallery-viewport"
 );
@@ -3166,10 +3189,6 @@ updateActiveNavigation(true);
     );
 })();
 
-
-/* =========================================================
-   VISOR DEL CV
-========================================================= */
 
 (() => {
     const cvDialog = document.getElementById("cv-viewer-dialog");
@@ -3552,9 +3571,6 @@ updateActiveNavigation(true);
 
 })();
 
-/* =========================================================
-   PROFILE TOOLS NAVIGATION
-========================================================= */
 
 (() => {
     const carousel = document.querySelector(
@@ -3884,13 +3900,6 @@ window.addEventListener(
     }
 );
 
-/* =========================================================
-   CARRUSEL DE PROYECTOS
-========================================================= */
-
-/* =========================================================
-   SELECTOR DE CORREO
-========================================================= */
 
 (() => {
             const email = "contacto@alejandrolira.dev";
@@ -3997,7 +4006,6 @@ window.addEventListener(
                     try {
                         newTab.opener = null;
                     } catch {
-                        // Algunos navegadores restringen opener.
                     }
 
                     closeDialog();

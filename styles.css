@@ -362,9 +362,6 @@ html[data-theme="dark"] .primary-button {
     color: var(--accent);
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
 
 .site-header {
     position: fixed;
@@ -593,9 +590,6 @@ html[data-theme="dark"] .contact-pill {
     background: var(--accent-soft);
 }
 
-/* =========================================================
-   HERO
-========================================================= */
 
 .hero-section {
     padding-top: calc(var(--header-height) + 64px);
@@ -776,9 +770,6 @@ html[data-theme="dark"] .contact-pill {
     object-fit: cover;
 }
 
-/* =========================================================
-   PROJECTS
-========================================================= */
 
 .projects-grid {
     display: grid;
@@ -948,9 +939,6 @@ html[data-theme="dark"] .contact-pill {
     color: var(--accent);
 }
 
-/* =========================================================
-   BADGES
-========================================================= */
 
 .badges-grid {
     display: grid;
@@ -1033,9 +1021,6 @@ html[data-theme="dark"] .contact-pill {
     font-weight: 300;
 }
 
-/* =========================================================
-   PROFILE
-========================================================= */
 
 .profile-grid {
     display: grid;
@@ -1164,9 +1149,6 @@ html[data-theme="dark"] .contact-pill {
     font-size: 0.77rem;
 }
 
-/* =========================================================
-   CONTACT
-========================================================= */
 
 .contact-section {
     padding-bottom: 86px;
@@ -1236,9 +1218,6 @@ html[data-theme="dark"] .contact-pill {
     background: rgba(255, 255, 255, 0.14);
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
 
 .site-footer {
     padding: 0 0 36px;
@@ -1264,9 +1243,6 @@ html[data-theme="dark"] .contact-pill {
     font-weight: 680;
 }
 
-/* =========================================================
-   DIALOG
-========================================================= */
 
 .project-dialog {
     width: min(calc(100% - 32px), 680px);
@@ -1360,9 +1336,6 @@ html[data-theme="dark"] .contact-pill {
     margin-top: 31px;
 }
 
-/* =========================================================
-   REVEAL
-========================================================= */
 
 .reveal {
     opacity: 0;
@@ -1378,9 +1351,6 @@ html[data-theme="dark"] .contact-pill {
     transform: translateY(0);
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 980px) {
     .desktop-nav,
@@ -1560,10 +1530,6 @@ html[data-theme="dark"] .contact-pill {
     }
 }
 
-
-/* =========================================================
-   ACTUALIZACIÓN: IDIOMA, NAVEGACIÓN ACTIVA Y CV
-========================================================= */
 
 .language-button {
     display: grid;
@@ -1860,11 +1826,7 @@ html[data-theme="dark"] .contact-pill {
     }
 }
 
-/* =========================================================
-   REFINAMIENTO: IDIOMA, TEMA, NAVEGACIÓN Y CV
-========================================================= */
 
-/* El selector muestra el idioma ACTUAL, no el idioma de destino. */
 .language-switch {
     position: relative;
     isolation: isolate;
@@ -1884,7 +1846,7 @@ html[data-theme="dark"] .contact-pill {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Indicador neutro deslizante, inspirado en un control segmentado. */
+
 .language-switch::before {
     content: "";
 
@@ -1960,7 +1922,7 @@ html[data-theme="dark"] .language-switch::before {
     box-shadow: none;
 }
 
-/* El ícono representa el modo ACTUAL: sol = claro, luna = oscuro. */
+
 .theme-button {
     position: relative;
     overflow: hidden;
@@ -2003,7 +1965,7 @@ html[data-theme="dark"] .theme-icon-moon {
     transform: rotate(0deg) scale(1);
 }
 
-/* Ancho estable para que la navegación no salte al cambiar de idioma. */
+
 .desktop-nav a {
     display: inline-flex;
     align-items: center;
@@ -2018,7 +1980,7 @@ html[data-theme="dark"] .theme-icon-moon {
     min-width: 84px;
 }
 
-/* Alturas mínimas para reducir el reacomodo entre español e inglés. */
+
 .hero-copy h1 {
     min-block-size: 1.82em;
     text-wrap: balance;
@@ -2049,7 +2011,7 @@ html[data-theme="dark"] .theme-icon-moon {
     min-block-size: 2.8em;
 }
 
-/* Transición circular original del tema. */
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
     mix-blend-mode: normal;
@@ -2113,7 +2075,7 @@ main,
         transform 180ms ease;
 }
 
-/* Barra de herramientas funcional dentro de la previsualización del CV. */
+
 .cv-preview-toolbar {
     display: flex;
     align-items: center;
@@ -2189,7 +2151,7 @@ main,
     stroke-linejoin: round;
 }
 
-/* Contacto contextual: aparece justo después de que el reclutador revisa el CV. */
+
 .cv-contact-box {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -2329,11 +2291,6 @@ main,
 }
 
 
-/* =========================================================
-   AJUSTE PUNTUAL: CV COMPACTO Y CONTACTO SIN REDUNDANCIAS
-   No modifica idioma, tema ni animaciones generales.
-========================================================= */
-
 .cv-card {
     grid-template-columns: minmax(250px, 0.58fr) minmax(0, 1.42fr);
     gap: 44px;
@@ -2439,7 +2396,7 @@ main,
     min-height: 430px;
 }
 
-/* El contacto queda dedicado exclusivamente a iniciar una conversación. */
+
 .contact-card {
     align-items: stretch;
 }
@@ -2588,12 +2545,6 @@ main,
     }
 }
 
-/* =========================================================
-   REFINAMIENTO VISUAL EXCLUSIVO: CV Y CONTACTO
-   El resto de la interfaz, idiomas, tema y animaciones no cambia.
-========================================================= */
-
-/* ---------- CV: visor tipo documento, no pantalla completa ---------- */
 
 .cv-card {
     grid-template-columns: minmax(245px, 0.52fr) minmax(0, 1.48fr);
@@ -2702,7 +2653,7 @@ main,
     clip-path: none;
 }
 
-/* El documento debe verse como una hoja limpia, no con las esquinas recortadas. */
+
 .cv-preview[type="application/pdf"] {
     background: #ffffff;
 }
@@ -2718,7 +2669,6 @@ html[data-theme="dark"] .cv-preview {
     min-height: 100%;
 }
 
-/* ---------- Contacto: CTA principal + accesos profesionales ---------- */
 
 .contact-card {
     position: relative;
@@ -3144,11 +3094,6 @@ html[data-theme="dark"] .cv-preview {
 }
 
 
-/* =========================================================
-   AJUSTE DEL BORDE DEL VISOR PDF
-   Oculta el borde negro del lector nativo y usa los colores del sitio.
-========================================================= */
-
 .cv-document-frame {
     position: relative;
 
@@ -3169,10 +3114,7 @@ html[data-theme="dark"] .cv-preview {
         0 4px 14px rgba(18, 19, 25, 0.06);
 }
 
-/*
-    El lector PDF de algunos navegadores dibuja su propio contorno negro.
-    Se amplía dos píxeles y se recorta dentro del marco para ocultarlo.
-*/
+
 .cv-document-frame .cv-preview {
     width: calc(100% + 4px);
     height: calc(100% + 4px);
@@ -3210,11 +3152,6 @@ html[data-theme="dark"] .cv-document-frame {
     }
 }
 
-
-/* =========================================================
-   VISOR DE CV RENDERIZADO CON PDF.JS
-   Sustituye el lector PDF nativo por un canvas totalmente estilizable.
-========================================================= */
 
 .cv-preview-viewport {
     position: relative;
@@ -3539,11 +3476,6 @@ html[data-theme="dark"] .cv-preview-loading {
 }
 
 
-/* =========================================================
-   CV COMPACTO + VISOR MODAL
-   Sustituye la hoja enorme por una tarjeta de documento.
-========================================================= */
-
 .cv-compact-panel {
     display: grid;
     grid-template-columns: minmax(150px, 0.72fr) minmax(210px, 1.28fr);
@@ -3841,7 +3773,6 @@ html[data-theme="dark"] .cv-preview-loading {
     width: auto;
 }
 
-/* ---------- Modal del CV ---------- */
 
 body.cv-dialog-open {
     overflow: hidden;
@@ -4205,12 +4136,6 @@ body.cv-dialog-open {
 }
 
 
-/* =========================================================
-   CV FUNCIONAL SIN PDF.JS
-   La miniatura y el modal cargan el PDF directamente.
-========================================================= */
-
-/* Oculta los elementos antiguos de carga si quedaron reglas previas. */
 .cv-preview-canvas,
 .cv-preview-fallback-image,
 .cv-preview-loading,
@@ -4219,7 +4144,7 @@ body.cv-dialog-open {
     display: none !important;
 }
 
-/* Miniatura real del PDF. */
+
 .cv-thumbnail-frame {
     isolation: isolate;
 }
@@ -4238,16 +4163,13 @@ body.cv-dialog-open {
     pointer-events: none;
 }
 
-/*
-    El pequeño zoom evita que se vea el marco negro que algunos
-    navegadores agregan alrededor del lector PDF.
-*/
+
 .cv-thumbnail-pdf {
     transform: scale(1.018);
     transform-origin: center;
 }
 
-/* Visor principal dentro del modal. */
+
 .cv-viewer-content {
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -4305,11 +4227,6 @@ html[data-theme="dark"] .cv-viewer-pdf {
     }
 }
 
-
-/* =========================================================
-   PORTADA PROFESIONAL DEL CV
-   Evita mostrar el lector PDF reducido antes de abrir el modal.
-========================================================= */
 
 .cv-thumbnail-pdf {
     display: none !important;
@@ -4590,11 +4507,6 @@ html[data-theme="dark"] .cv-cover-preview {
 }
 
 
-/* =========================================================
-   MINIATURA REAL DEL PDF
-   Renderiza la primera página sin mostrar la interfaz del navegador.
-========================================================= */
-
 .cv-cover-preview {
     display: none !important;
 }
@@ -4765,10 +4677,6 @@ html[data-theme="dark"] .cv-live-preview {
 }
 
 
-/* =========================================================
-   FOTO PRINCIPAL REAL
-========================================================= */
-
 .hero-photo-frame {
     position: relative;
 
@@ -4881,10 +4789,6 @@ html[data-theme="dark"] .cv-live-preview {
     opacity: 1;
 }
 
-
-/* =========================================================
-   CARRUSEL DE PROYECTOS
-========================================================= */
 
 .projects-carousel {
     position: relative;
@@ -5110,10 +5014,6 @@ html[data-theme="dark"] .cv-live-preview {
 }
 
 
-/* =========================================================
-   PROYECTO ABIERTO: TÍTULO, GALERÍA Y DESCRIPCIÓN
-========================================================= */
-
 body.project-dialog-open {
     overflow: hidden;
 }
@@ -5241,10 +5141,6 @@ body.project-dialog-open {
 }
 
 
-/* =========================================================
-   RESPONSIVE DE PROYECTOS
-========================================================= */
-
 @media (max-width: 980px) {
     .hero-photo-frame {
         min-height: 400px;
@@ -5352,16 +5248,11 @@ body.project-dialog-open {
 }
 
 
-/* =========================================================
-   REFINAMIENTO DEL CARRUSEL Y MODAL DE PROYECTOS
-========================================================= */
-
-/* El punto de la fotografía era decorativo y se elimina. */
 .hero-photo-accent {
     display: none !important;
 }
 
-/* No mostrar contador ni espacios vacíos cuando no hay overflow. */
+
 .projects-counter {
     display: none !important;
 }
@@ -5387,7 +5278,6 @@ body.project-dialog-open {
     margin-top: -7px;
 }
 
-/* ---------- Modal profesional sin barra visible ---------- */
 
 .project-showcase-dialog {
     width: min(calc(100% - 32px), 1120px);
@@ -5644,7 +5534,7 @@ body.project-dialog-open {
     box-shadow: 0 8px 24px rgba(18, 19, 25, 0.08);
 }
 
-/* En modo oscuro la descripción conserva profundidad. */
+
 html[data-theme="dark"] .project-showcase-description {
     background:
         linear-gradient(
@@ -5658,7 +5548,6 @@ html[data-theme="dark"] .project-showcase-description {
         );
 }
 
-/* ---------- Tableta ---------- */
 
 @media (max-width: 900px) {
     .project-showcase-dialog {
@@ -5675,7 +5564,6 @@ html[data-theme="dark"] .project-showcase-description {
     }
 }
 
-/* ---------- Teléfono ---------- */
 
 @media (max-width: 680px) {
     .projects-carousel-toolbar {
@@ -5774,17 +5662,6 @@ html[data-theme="dark"] .project-showcase-description {
 }
 
 
-/* =========================================================
-   CORRECCIÓN PUNTUAL
-   - La galería usa todo el espacio disponible.
-   - Las tarjetas ya no se recortan durante el hover.
-========================================================= */
-
-/*
-    La galería conservaba una cuadrícula anterior de tres columnas.
-    Esto comprimía la imagen a la izquierda y producía el gran
-    espacio vacío del centro.
-*/
 .project-showcase-content {
     grid-template-columns:
         minmax(0, 1.78fr)
@@ -5814,16 +5691,13 @@ html[data-theme="dark"] .project-showcase-description {
     padding: 26px;
 }
 
-/*
-    La tarjeta sube 6px al hacer hover. Este espacio superior
-    permite que la animación se vea completa sin recortarse.
-*/
+
 .projects-viewport {
     margin-top: -10px;
     padding-top: 11px;
 }
 
-/* Mantiene las tarjetas alineadas aunque exista el espacio de hover. */
+
 .projects-track {
     align-items: stretch;
 }
@@ -5832,7 +5706,7 @@ html[data-theme="dark"] .project-showcase-description {
     height: 100%;
 }
 
-/* Tableta: la galería vuelve a ocupar todo el ancho. */
+
 @media (max-width: 900px) {
     .project-showcase-content {
         grid-template-columns: minmax(0, 1fr);
@@ -5840,7 +5714,7 @@ html[data-theme="dark"] .project-showcase-description {
     }
 }
 
-/* Teléfono: evita alterar el espaciado compacto existente. */
+
 @media (max-width: 680px) {
     .projects-viewport {
         margin-top: -8px;
@@ -5851,10 +5725,7 @@ html[data-theme="dark"] .project-showcase-description {
         grid-template-columns: minmax(0, 1fr);
     }
 }
-/* =========================================================
-   CV RETRABAJADO
-   Solo modifica la presentación de la sección del currículum.
-========================================================= */
+
 
 .cv-compact-panel {
     grid-template-columns:
@@ -6051,9 +5922,7 @@ html[data-theme="dark"] .project-showcase-description {
         transition: none;
     }
 }
-/* =========================================================
-   COLUMNA IZQUIERDA DEL CV SIMPLIFICADA
-========================================================= */
+
 
 .cv-section .cv-card {
     grid-template-columns:
@@ -6163,9 +6032,7 @@ html[data-theme="dark"] .project-showcase-description {
         font-size: 0.64rem;
     }
 }
-/* =========================================================
-   TARJETAS DE PROYECTO COMPLETAMENTE CLICABLES
-========================================================= */
+
 
 .project-card-dynamic {
     display: flex;
@@ -6202,11 +6069,7 @@ html[data-theme="dark"] .project-showcase-description {
     transform: translateY(-2px) scale(0.995);
 }
 
-/*
-    El botón anterior ya no se genera.
-    Esta regla evita que aparezca si quedara alguno
-    guardado por caché durante una recarga.
-*/
+
 .project-card-dynamic .project-button {
     display: none !important;
 }
@@ -6222,10 +6085,7 @@ html[data-theme="dark"] .project-showcase-description {
         transform: none;
     }
 }
-/* =========================================================
-   ESPACIADO UNIFICADO DE ENCABEZADOS
-   Proyectos, Insignias, Perfil y CV
-========================================================= */
+
 
 .section-heading h2 {
     display: grid;
@@ -6253,12 +6113,7 @@ html[data-theme="dark"] .project-showcase-description {
         line-height: 1.02;
     }
 }
-/* =========================================================
-   IMÁGENES DE PROYECTOS SIN RECORTE NI ESPACIO MUERTO
 
-   - Horizontales: el marco adopta la proporción real.
-   - Verticales: permanecen completas, centradas y con fondo.
-========================================================= */
 
 .project-card-media,
 .project-gallery-media {
@@ -6271,7 +6126,6 @@ html[data-theme="dark"] .project-showcase-description {
     isolation: isolate;
 }
 
-/* ---------- Fondo para capturas verticales ---------- */
 
 .project-card-media::before,
 .project-gallery-media::before {
@@ -6324,7 +6178,6 @@ html[data-theme="dark"] .project-showcase-description {
     opacity: 0.78;
 }
 
-/* ---------- Imágenes generales ---------- */
 
 .project-card-media img,
 .project-gallery-media img {
@@ -6342,15 +6195,6 @@ html[data-theme="dark"] .project-showcase-description {
     transform: none !important;
 }
 
-/* =========================================================
-   PORTADAS DE LAS TARJETAS
-========================================================= */
-
-/*
-    Las portadas horizontales definen la altura del marco
-    mediante su proporción real. Ya no quedan franjas arriba
-    o abajo.
-*/
 
 .project-card-media.project-image-landscape {
     width: 100%;
@@ -6368,10 +6212,6 @@ html[data-theme="dark"] .project-showcase-description {
     object-fit: contain;
 }
 
-/*
-    Las portadas verticales conservan una altura estable
-    para evitar tarjetas excesivamente largas.
-*/
 
 .project-card-media.project-image-portrait {
     width: 100%;
@@ -6393,9 +6233,6 @@ html[data-theme="dark"] .project-showcase-description {
     transform: none !important;
 }
 
-/* =========================================================
-   GALERÍA DEL PROYECTO ABIERTO
-========================================================= */
 
 .project-showcase-content {
     align-items: start;
@@ -6411,10 +6248,6 @@ html[data-theme="dark"] .project-showcase-description {
     grid-template-rows: auto auto;
 }
 
-/*
-    Las capturas horizontales hacen que el visor adopte su
-    proporción real. Así llenan exactamente el marco.
-*/
 
 .project-gallery-viewport.project-frame-landscape {
     width: 100%;
@@ -6425,10 +6258,6 @@ html[data-theme="dark"] .project-showcase-description {
         var(--project-image-ratio, 16 / 9);
 }
 
-/*
-    Las capturas verticales mantienen un visor estable para
-    que la ventana no se vuelva demasiado alta.
-*/
 
 .project-gallery-viewport.project-frame-portrait {
     width: 100%;
@@ -6463,7 +6292,6 @@ html[data-theme="dark"] .project-showcase-description {
         0 18px 48px rgba(8, 9, 13, 0.14);
 }
 
-/* La numeración continúa eliminada. */
 
 .project-card-index {
     display: none !important;
@@ -6490,11 +6318,6 @@ html[data-theme="dark"] .project-showcase-description {
     }
 }
 
-/* =========================================================
-   ANIMACIÓN DE APERTURA Y CIERRE DEL PROYECTO
-
-   No modifica el tamaño, contenido ni distribución del modal.
-========================================================= */
 
 .project-showcase-dialog {
     transform-origin: center;
@@ -6603,20 +6426,11 @@ html[data-theme="dark"] .project-showcase-description {
     }
 }
 
-/* =========================================================
-   NAVEGACIÓN PROFESIONAL DEL CARRUSEL DE PROYECTOS
-========================================================= */
-
-/*
-    Reserva permanentemente el ancho de la barra de scroll.
-    Así el contenido no se desplaza al abrir o cerrar el modal.
-*/
 
 html {
     scrollbar-gutter: stable;
 }
 
-/* ---------- Flechas laterales ---------- */
 
 .projects-carousel {
     position: relative;
@@ -6729,17 +6543,11 @@ html {
     display: none !important;
 }
 
-/* ---------- Sin puntos de navegación ---------- */
 
 .projects-pagination {
     display: none !important;
 }
 
-/*
-    Los indicadores se muestran únicamente dentro del proyecto
-    abierto. La segunda fila solo aparece cuando hay más de una
-    imagen.
-*/
 
 .project-gallery {
     grid-template-rows: auto auto !important;
@@ -6802,7 +6610,6 @@ html {
     padding-bottom: 12px;
 }
 
-/* ---------- Ajustes responsivos ---------- */
 
 @media (max-width: 1320px) {
     #projects-previous {
@@ -6837,13 +6644,6 @@ html {
     }
 }
 
-/* =========================================================
-   CORRECCIÓN: LAS FLECHAS NO BLOQUEAN LAS TARJETAS
-
-   Una regla anterior activaba los eventos del contenedor
-   transparente de navegación. Solo los botones laterales
-   deben recibir clics.
-========================================================= */
 
 .projects-carousel.has-overflow .projects-navigation {
     pointer-events: none;
@@ -6853,9 +6653,6 @@ html {
     pointer-events: auto;
 }
 
-/* =========================================================
-   FOOTER SIN EL LOGO DE TEXTO ANTIGUO
-========================================================= */
 
 .site-footer .footer-inner {
     grid-template-columns: 1fr auto;
@@ -6865,12 +6662,6 @@ html {
     justify-self: start;
 }
 
-/* =========================================================
-   RITMO VERTICAL MÁS COMPACTO ENTRE SECCIONES
-
-   Reduce el espacio acumulado entre el final de una sección
-   y el comienzo de la siguiente sin comprimir su contenido.
-========================================================= */
 
 .section {
     padding-block: clamp(38px, 3vw, 48px);
@@ -6880,12 +6671,12 @@ html {
     margin-bottom: clamp(28px, 2.4vw, 34px);
 }
 
-/* El inicio de Proyectos conserva un poco más de aire después del hero. */
+
 #proyectos.section {
     padding-top: clamp(44px, 3.4vw, 56px);
 }
 
-/* Evita que la última sección deje demasiado espacio antes del footer. */
+
 .contact-section {
     padding-bottom: clamp(48px, 4vw, 64px);
 }
@@ -6904,14 +6695,6 @@ html {
     }
 }
 
-
-/* =========================================================
-   PROFILE REWORK — PARCHE AISLADO
-
-   Estas reglas utilizan nombres exclusivos profile-rework-*.
-   Ningún selector de Proyectos, Insignias, CV o Contacto
-   fue modificado.
-========================================================= */
 
 .profile-rework-layout {
     display: grid;
@@ -7731,12 +7514,6 @@ html {
     }
 }
 
-/* =========================================================
-   PROFILE REWORK — AJUSTE SIMÉTRICO Y NAVEGACIÓN
-   Solo afecta clases profile-rework-*.
-========================================================= */
-
-/* ---------- Sobre mí, sin estado, monograma ni subtítulo ---------- */
 
 .profile-rework-about-heading {
     position: relative;
@@ -7759,16 +7536,11 @@ html {
     margin-top: 30px;
 }
 
-/*
-    Mantiene una distribución equilibrada entre el texto,
-    los datos y las etiquetas inferiores.
-*/
 
 .profile-rework-facts {
     margin-top: auto;
 }
 
-/* ---------- Pestañas sin numeración ---------- */
 
 .profile-rework-tabs label {
     gap: 0;
@@ -7783,7 +7555,6 @@ html {
     font-weight: inherit;
 }
 
-/* ---------- Encabezados alineados sin símbolos ---------- */
 
 .profile-rework-panel-heading {
     display: block;
@@ -7797,7 +7568,6 @@ html {
     max-width: 680px;
 }
 
-/* ---------- Carrusel de herramientas ---------- */
 
 .profile-rework-tools-carousel {
     position: relative;
@@ -7898,7 +7668,6 @@ html {
     right: -25px;
 }
 
-/* ---------- Tableta: dos columnas y ocho herramientas ---------- */
 
 @media (max-width: 900px) {
     .profile-rework-tools-grid {
@@ -7915,7 +7684,6 @@ html {
     }
 }
 
-/* ---------- Móvil: una columna y cuatro herramientas ---------- */
 
 @media (max-width: 560px) {
     .profile-rework-about-heading h3 {
@@ -7942,13 +7710,6 @@ html {
     }
 }
 
-/* =========================================================
-   PROFILE — COMPACTO, ICONOS LOCALES Y HOVER CORREGIDO
-
-   Parche aislado. Solo afecta selectores profile-rework-*.
-========================================================= */
-
-/* ---------- Composición general sin alturas forzadas ---------- */
 
 .profile-rework-layout {
     align-items: start;
@@ -7978,7 +7739,6 @@ html {
         clamp(28px, 3.4vw, 36px);
 }
 
-/* ---------- Tarjeta Sobre mí más compacta ---------- */
 
 .profile-rework-about-heading h3 {
     max-width: 330px;
@@ -8001,7 +7761,6 @@ html {
     margin-top: 20px;
 }
 
-/* ---------- Menos espacio dentro de Herramientas ---------- */
 
 .profile-rework-panel-copy {
     margin-top: 16px;
@@ -8015,11 +7774,6 @@ html {
     min-height: 0;
 }
 
-/*
-    El visor mantiene overflow oculto para la paginación.
-    Por eso las tarjetas ya no se desplazan hacia arriba:
-    solo cambian borde y sombra dentro de su propio espacio.
-*/
 
 .profile-rework-tool:hover {
     transform: none;
@@ -8035,7 +7789,6 @@ html {
         );
 }
 
-/* ---------- Iconos preparados como imágenes locales ---------- */
 
 .profile-tool-mark {
     position: relative;
@@ -8052,15 +7805,6 @@ html {
     object-fit: contain;
 }
 
-/*
-    Las rutas están en:
-    assets/images/tools/
-
-    Puedes reemplazar cualquier SVG conservando el mismo
-    nombre de archivo, sin modificar index.html.
-*/
-
-/* ---------- Ajustes responsivos ---------- */
 
 @media (max-width: 980px) {
     .profile-rework-layout {
@@ -8093,13 +7837,6 @@ html {
     }
 }
 
-/* =========================================================
-   PROFILE — ALTURAS IGUALES E ICONOS CENTRADOS
-
-   Parche aislado. Solo afecta selectores profile-rework-*.
-========================================================= */
-
-/* ---------- Ambas tarjetas ocupan la misma altura ---------- */
 
 .profile-rework-layout {
     align-items: stretch;
@@ -8110,16 +7847,11 @@ html {
     align-self: stretch;
 }
 
-/*
-    La columna izquierda ahora se estira hasta la altura real
-    de la ventana de Herramientas / Idiomas / Logros.
-*/
 
 .profile-rework-about {
     height: 100%;
 }
 
-/* ---------- Imagen perfectamente centrada ---------- */
 
 .profile-tool-mark {
     display: grid;
@@ -8139,12 +7871,6 @@ html {
     object-position: center;
 }
 
-/* =========================================================
-   COLORES DE FONDO DE LOS ICONOS
-
-   Este es el bloque exacto que debes modificar cuando quieras
-   cambiar el color de una herramienta.
-========================================================= */
 
 .mark-swift,
 .mark-swiftui {
@@ -8202,16 +7928,11 @@ html {
         );
 }
 
-/*
-    Blender usa un fondo oscuro para que su icono naranja
-    tenga contraste y no se pierda.
-*/
 
 .mark-blender {
     background: #252a34;
 }
 
-/* ---------- En una sola columna no se fuerza altura común ---------- */
 
 @media (max-width: 980px) {
     .profile-rework-about {
@@ -8219,16 +7940,6 @@ html {
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS FINALES — OCHO ICONOS DEL USUARIO
-
-   Solo afecta la cuadrícula de Herramientas del Perfil.
-========================================================= */
-
-/*
-    Cuatro columnas producen dos filas simétricas de
-    cuatro herramientas en escritorio.
-*/
 
 .profile-rework-tools-grid {
     grid-template-columns:
@@ -8239,10 +7950,6 @@ html {
     min-height: 0;
 }
 
-/*
-    Fondo neutral. El color ya pertenece al propio PNG,
-    por lo que no se aplican fondos naranja, azul o morado.
-*/
 
 .profile-tool-mark,
 .mark-swift,
@@ -8275,9 +7982,6 @@ html {
         rgba(19, 21, 28, 0.07);
 }
 
-/*
-    Todos los PNG quedan centrados y conservan su proporción.
-*/
 
 .profile-tool-image {
     display: block;
@@ -8292,15 +7996,11 @@ html {
     object-position: center;
 }
 
-/*
-    La tarjeta conserva su posición al pasar el mouse.
-*/
 
 .profile-rework-tool:hover {
     transform: none;
 }
 
-/* Dos columnas en pantallas medianas. */
 
 @media (max-width: 1180px) {
     .profile-rework-tools-grid {
@@ -8309,7 +8009,6 @@ html {
     }
 }
 
-/* Una columna en móvil. */
 
 @media (max-width: 560px) {
     .profile-rework-tools-grid {
@@ -8317,17 +8016,6 @@ html {
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — TEXTO COMPLETO Y FONDO EN MODO OSCURO
-
-   Parche aislado. Solo modifica las tarjetas de herramientas
-   dentro del apartado Perfil.
-========================================================= */
-
-/*
-    La información de cada herramienta puede ocupar dos líneas.
-    Se elimina el recorte con puntos suspensivos.
-*/
 
 .profile-rework-tool {
     min-height: 74px;
@@ -8361,18 +8049,11 @@ html {
     line-height: 1.25;
 }
 
-/*
-    Fondo claro de los iconos.
-*/
 
 .profile-tool-mark {
     background: #ffffff !important;
 }
 
-/*
-    En modo oscuro, el fondo blanco del icono cambia
-    automáticamente a un gris oscuro.
-*/
 
 html[data-theme="dark"] .profile-tool-mark {
     border-color:
@@ -8385,9 +8066,6 @@ html[data-theme="dark"] .profile-tool-mark {
         rgba(0, 0, 0, 0.22);
 }
 
-/*
-    En pantallas pequeñas se conserva el texto completo.
-*/
 
 @media (max-width: 560px) {
     .profile-rework-tool {
@@ -8399,12 +8077,6 @@ html[data-theme="dark"] .profile-tool-mark {
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — NAVEGACIÓN INFERIOR Y ANIMACIÓN
-
-   Las flechas se colocan debajo de la cuadrícula,
-   alineadas a la derecha, sin cubrir las herramientas.
-========================================================= */
 
 .profile-rework-tools-carousel {
     padding-bottom: 62px;
@@ -8423,7 +8095,6 @@ html[data-theme="dark"] .profile-tool-mark {
     pointer-events: none;
 }
 
-/* Controles inferiores */
 
 .profile-rework-tools-arrow {
     top: auto;
@@ -8475,16 +8146,11 @@ html[data-theme="dark"] .profile-tool-mark {
     transform: translateY(0) scale(0.96);
 }
 
-/*
-    Cuando una dirección no está disponible, su botón
-    desaparece y el otro permanece alineado a la derecha.
-*/
 
 .profile-rework-tools-arrow[hidden] {
     display: none !important;
 }
 
-/* Modo oscuro */
 
 html[data-theme="dark"] .profile-rework-tools-arrow {
     border-color:
@@ -8497,7 +8163,6 @@ html[data-theme="dark"] .profile-rework-tools-arrow {
         rgba(0, 0, 0, 0.24);
 }
 
-/* En móvil siguen debajo, no encima de las tarjetas */
 
 @media (max-width: 560px) {
     .profile-rework-tools-carousel {
@@ -8521,16 +8186,6 @@ html[data-theme="dark"] .profile-rework-tools-arrow {
 }
 
 
-/* =========================================================
-   PERFIL — CARRUSEL DE HERRAMIENTAS CON FLECHAS LATERALES
-
-   Diseño alineado con el carrusel de Proyectos:
-   - hasta 12 herramientas por página en escritorio;
-   - flechas circulares a los costados;
-   - solo se muestra la dirección disponible;
-   - se conserva la animación lateral existente.
-========================================================= */
-
 .profile-rework-tools-carousel {
     position: relative;
 
@@ -8546,11 +8201,6 @@ html[data-theme="dark"] .profile-rework-tools-arrow {
     overflow: hidden;
 }
 
-/*
-    Tres filas de cuatro herramientas en escritorio.
-    No se dibujan tarjetas vacías: los espacios se llenan
-    conforme agregues nuevas herramientas.
-*/
 
 .profile-rework-tools-grid {
     grid-template-columns:
@@ -8689,10 +8339,6 @@ html[data-theme="dark"]
     background: var(--accent);
 }
 
-/*
-    Cuando la sección se hace más estrecha, la cuadrícula pasa
-    a dos columnas y muestra ocho herramientas por página.
-*/
 
 @media (max-width: 1320px) {
     .profile-rework-tools-previous {
@@ -8741,21 +8387,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — CHEVRONS LATERALES PROFESIONALES
-
-   Decisión de diseño:
-   - botones reales de 44 x 44 px para mantener una zona cómoda;
-   - sin círculo, borde ni sombra visibles en reposo;
-   - chevrons dentro de la ventana, nunca fuera del panel;
-   - solo aparece la dirección disponible;
-   - la animación existente permanece intacta.
-========================================================= */
-
-/*
-    Reserva un pequeño canal lateral únicamente cuando hay
-    más de una página. Así los controles no cubren las tarjetas.
-*/
 
 .profile-rework-tools-carousel.has-multiple-pages
 .profile-rework-tools-viewport {
@@ -8805,9 +8436,6 @@ html[data-theme="dark"]
     left: auto;
 }
 
-/*
-    Oculta la flecha textual original y dibuja un chevron fino.
-*/
 
 .profile-rework-tools-arrow span {
     position: relative;
@@ -8853,10 +8481,6 @@ html[data-theme="dark"]
         rotate(-135deg);
 }
 
-/*
-    El estado interactivo es visible, pero continúa siendo
-    ligero y no compite con las tarjetas de herramientas.
-*/
 
 .profile-rework-tools-arrow:hover:not(:disabled),
 .profile-rework-tools-arrow:focus-visible {
@@ -8888,10 +8512,6 @@ span::before {
     display: none !important;
 }
 
-/*
-    Una sombra lineal muy suave separa la navegación del contenido
-    sin añadir círculos ni cajas visibles.
-*/
 
 .profile-rework-tools-carousel.has-multiple-pages::before,
 .profile-rework-tools-carousel.has-multiple-pages::after {
@@ -8997,12 +8617,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — CHEVRONS MÁS SEPARADOS
-
-   Aumenta el espacio entre los controles laterales y las
-   tarjetas sin cambiar su diseño ni la animación.
-========================================================= */
 
 .profile-rework-tools-carousel.has-multiple-pages
 .profile-rework-tools-viewport {
@@ -9039,18 +8653,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — CHEVRONS AL BORDE INTERIOR
-
-   Los controles se acercan al borde de la ventana, pero
-   permanecen completamente dentro del panel.
-========================================================= */
-
-/*
-    El contenido de la sección tiene padding lateral.
-    Este desplazamiento utiliza parte de ese padding para
-    colocar las flechas cerca del borde interior.
-*/
 
 .profile-rework-tools-previous {
     left: -20px;
@@ -9060,17 +8662,12 @@ html[data-theme="dark"]
     right: -20px;
 }
 
-/*
-    Conserva espacio suficiente entre las flechas
-    y las herramientas.
-*/
 
 .profile-rework-tools-carousel.has-multiple-pages
 .profile-rework-tools-viewport {
     margin-inline: 44px;
 }
 
-/* Tableta */
 
 @media (max-width: 760px) {
     .profile-rework-tools-previous {
@@ -9087,7 +8684,6 @@ html[data-theme="dark"]
     }
 }
 
-/* Móvil */
 
 @media (max-width: 560px) {
     .profile-rework-tools-previous {
@@ -9104,16 +8700,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   PERFIL — TEXTO COMPLETO EN TARJETAS Y ROBLOX
-
-   Corrección final aislada para la cuadrícula de herramientas.
-========================================================= */
-
-/*
-    Todas las tarjetas conservan una altura uniforme y permiten
-    que nombres y descripciones usen más de una línea.
-*/
 
 .profile-rework-tools-grid {
     grid-auto-rows: minmax(88px, auto);
@@ -9165,9 +8751,6 @@ html[data-theme="dark"]
     line-height: 1.3;
 }
 
-/*
-    El icono mantiene su espacio fijo y no empuja el texto fuera.
-*/
 
 .profile-tool-mark {
     width: 48px;
@@ -9175,10 +8758,6 @@ html[data-theme="dark"]
     flex-shrink: 0;
 }
 
-/*
-    En pantallas donde el panel es más estrecho se usan menos
-    columnas para evitar tarjetas demasiado angostas.
-*/
 
 @media (max-width: 1180px) {
     .profile-rework-tools-grid {
@@ -9202,27 +8781,20 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   HERRAMIENTAS — CARDS LEGIBLES Y RESPONSIVAS
 
-   Evita cortes como “JavaScrip / t” y adapta el número de
-   columnas al ancho REAL del panel, no al ancho de la ventana.
-========================================================= */
-
-/* El panel se convierte en referencia para container queries. */
 .profile-rework-tools-viewport {
     container-name: profile-tools;
     container-type: inline-size;
 }
 
-/* Escritorio amplio: cuatro columnas. */
+
 .profile-rework-tools-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-auto-rows: minmax(82px, auto);
     gap: 12px;
 }
 
-/* Tarjeta más limpia y con mayor espacio real para el texto. */
+
 .profile-rework-tool {
     display: grid;
     grid-template-columns: 44px minmax(0, 1fr);
@@ -9245,11 +8817,7 @@ html[data-theme="dark"]
     height: auto;
 }
 
-/*
-   No se permite romper palabras en cualquier carácter.
-   “JavaScript” permanece completo y “Roblox Studio” puede
-   saltar de línea únicamente en el espacio entre palabras.
-*/
+
 .profile-rework-tool strong,
 .profile-rework-tool small {
     display: block;
@@ -9282,7 +8850,7 @@ html[data-theme="dark"]
     line-height: 1.28;
 }
 
-/* Icono ligeramente más compacto para ceder espacio al texto. */
+
 .profile-tool-mark {
     width: 44px;
     height: 44px;
@@ -9296,11 +8864,7 @@ html[data-theme="dark"]
     max-height: 35px;
 }
 
-/*
-   El cambio de columnas depende del ancho del panel de
-   herramientas. Esto corrige el problema aunque el monitor
-   completo sea grande pero la tarjeta sea estrecha.
-*/
+
 @container profile-tools (max-width: 720px) {
     .profile-rework-tools-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9319,13 +8883,6 @@ html[data-theme="dark"]
     }
 }
 
-
-/* =========================================================
-   HERRAMIENTAS — PANEL DE ALTURA FIJA
-
-   La zona de tarjetas conserva siempre el espacio equivalente
-   a tres filas. La última página ya no reduce la altura del panel.
-========================================================= */
 
 .profile-rework-tools-viewport {
     --profile-tools-row-height: 82px;
@@ -9353,10 +8910,6 @@ html[data-theme="dark"]
     min-height: var(--profile-tools-row-height);
 }
 
-/*
-   En móvil se conserva igualmente una altura fija de tres filas,
-   pero con tarjetas ligeramente más compactas.
-*/
 
 @container profile-tools (max-width: 350px) {
     .profile-rework-tools-viewport {
@@ -9365,13 +8918,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — CONTENIDO DENTRO DE LA VENTANA
-
-   Corrige el recorte de la descripción en proyectos con
-   textos largos, como Tracer. El panel derecho mantiene una
-   altura estable y utiliza desplazamiento interno discreto.
-========================================================= */
 
 @media (min-width: 901px) {
     .project-showcase-dialog {
@@ -9383,10 +8929,6 @@ html[data-theme="dark"]
         min-height: 0;
     }
 
-    /*
-        Una regla posterior usaba align-items: start y permitía
-        que la descripción creciera fuera del espacio disponible.
-    */
 
     .project-showcase-content {
         align-items: stretch !important;
@@ -9395,10 +8937,6 @@ html[data-theme="dark"]
         overflow: hidden;
     }
 
-    /*
-        La galería conserva su proporción, mientras la descripción
-        ocupa exactamente la altura disponible de la segunda columna.
-    */
 
     .project-gallery {
         align-self: start;
@@ -9457,10 +8995,6 @@ html[data-theme="dark"]
             );
     }
 
-    /*
-        Evita que margin-top:auto empuje las tecnologías más allá
-        del contenido cuando la descripción es extensa.
-    */
 
     .project-technologies-block {
         margin-top: 24px;
@@ -9468,7 +9002,6 @@ html[data-theme="dark"]
     }
 }
 
-/* ---------- Tableta ---------- */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-showcase-dialog {
@@ -9530,13 +9063,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — TARJETA DE ALTURA ADAPTATIVA
-
-   Las descripciones cortas ocupan únicamente el espacio que
-   necesitan. Las descripciones largas siguen limitadas a la
-   altura del modal y conservan su desplazamiento interno.
-========================================================= */
 
 @media (min-width: 901px) {
     .project-showcase-content {
@@ -9554,10 +9080,6 @@ html[data-theme="dark"]
         overflow-y: auto;
     }
 
-    /*
-        Las tecnologías continúan justo después de la descripción,
-        sin ser empujadas artificialmente hacia la parte inferior.
-    */
 
     .project-technologies-block {
         margin-top: 24px;
@@ -9565,7 +9087,6 @@ html[data-theme="dark"]
     }
 }
 
-/* En tableta también se adapta al contenido disponible. */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-showcase-description {
@@ -9575,13 +9096,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — GEOMETRÍA ESTABLE
-
-   La galería y la tarjeta informativa conservan exactamente
-   el mismo tamaño en todos los proyectos, sin depender de la
-   proporción de la imagen ni de la extensión del texto.
-========================================================= */
 
 @media (min-width: 901px) {
     .project-showcase-dialog {
@@ -9597,10 +9111,6 @@ html[data-theme="dark"]
         min-height: 0;
     }
 
-    /*
-        El contenido ocupa siempre el espacio restante del modal.
-        Ya no se adapta a la altura individual de cada proyecto.
-    */
 
     .project-showcase-content {
         align-items: stretch !important;
@@ -9612,15 +9122,6 @@ html[data-theme="dark"]
         overflow: hidden;
     }
 
-    /*
-        La galería conserva siempre:
-        - una zona flexible para la imagen;
-        - 12 px de separación;
-        - 18 px para la paginación.
-
-        Incluso cuando solo hay una imagen, se reserva el mismo
-        espacio para evitar que el diseño cambie entre proyectos.
-    */
 
     .project-gallery {
         align-self: stretch;
@@ -9636,10 +9137,6 @@ html[data-theme="dark"]
         gap: 12px;
     }
 
-    /*
-        Se anulan las proporciones landscape y portrait que hacían
-        variar la altura del visor en cada proyecto.
-    */
 
     .project-gallery-viewport,
     .project-gallery-viewport.project-frame-landscape,
@@ -9671,11 +9168,6 @@ html[data-theme="dark"]
         object-position: center;
     }
 
-    /*
-        La galería utiliza 30 px para paginación y separación.
-        La tarjeta informativa descuenta exactamente esos 30 px,
-        por lo que su altura coincide con el marco de la imagen.
-    */
 
     .project-showcase-description {
         align-self: start;
@@ -9733,11 +9225,6 @@ html[data-theme="dark"]
             );
     }
 
-    /*
-        En textos cortos, las tecnologías se alinean abajo y el
-        espacio vacío queda distribuido de manera intencional.
-        En textos largos, el panel permite desplazamiento.
-    */
 
     .project-technologies-block {
         margin-top: auto;
@@ -9745,9 +9232,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   TABLETA — MISMA ALTURA PARA IMAGEN E INFORMACIÓN
-========================================================= */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-showcase-layout {
@@ -9799,24 +9283,11 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — LANDSCAPE SIN FRANJAS VACÍAS
-
-   Las capturas horizontales permanecen completas y centradas.
-   El espacio sobrante se rellena con una copia desenfocada de
-   la misma imagen, sin recortar el contenido principal.
-========================================================= */
 
 .project-gallery-media.project-image-landscape {
     background: var(--surface-soft);
 }
 
-/*
-    El JavaScript existente asigna la imagen actual a:
-    --project-image-background
-
-    Se utiliza esa misma imagen como fondo extendido.
-*/
 
 .project-gallery-media.project-image-landscape::before {
     inset: -40px;
@@ -9835,10 +9306,6 @@ html[data-theme="dark"]
     transform: scale(1.12);
 }
 
-/*
-    Esta capa suaviza el fondo para que no compita con la
-    captura principal y se integre con el diseño del modal.
-*/
 
 .project-gallery-media.project-image-landscape::after {
     opacity: 0.48;
@@ -9851,9 +9318,6 @@ html[data-theme="dark"]
         );
 }
 
-/*
-    La captura principal continúa completa, sin recorte.
-*/
 
 .project-gallery-media.project-image-landscape img {
     position: relative;
@@ -9866,7 +9330,6 @@ html[data-theme="dark"]
     object-position: center;
 }
 
-/* Modo oscuro: fondo ligeramente más visible. */
 
 html[data-theme="dark"]
 .project-gallery-media.project-image-landscape::before {
@@ -9885,19 +9348,9 @@ html[data-theme="dark"]
         );
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — LANDSCAPE REALMENTE LLENO
-
-   Se utiliza una altura común calculada para aproximarse a
-   una proporción 16:9. Las imágenes horizontales usan cover
-   para eliminar completamente las franjas vacías.
-========================================================= */
 
 @media (min-width: 901px) {
-    /*
-        Convierte el layout en contenedor para calcular una
-        altura proporcional al ancho disponible del modal.
-    */
+
 
     .project-showcase-layout {
         container-type: inline-size;
@@ -9918,10 +9371,6 @@ html[data-theme="dark"]
         overflow: visible;
     }
 
-    /*
-        La galería mantiene siempre la misma altura:
-        marco + separación + paginación.
-    */
 
     .project-gallery {
         align-self: start;
@@ -9975,13 +9424,6 @@ html[data-theme="dark"]
         min-height: 0 !important;
     }
 
-    /*
-        Capturas horizontales:
-        llenan completamente el marco.
-
-        Puede existir un recorte mínimo en los extremos cuando
-        una captura no sea exactamente 16:9.
-    */
 
     .project-gallery-media.project-image-landscape img {
         width: 100% !important;
@@ -9991,19 +9433,12 @@ html[data-theme="dark"]
         object-position: center;
     }
 
-    /*
-        Ya no se necesita el fondo desenfocado porque la imagen
-        ocupa todo el visor.
-    */
 
     .project-gallery-media.project-image-landscape::before,
     .project-gallery-media.project-image-landscape::after {
         opacity: 0 !important;
     }
 
-    /*
-        Las capturas verticales permanecen completas.
-    */
 
     .project-gallery-media.project-image-portrait img {
         width: auto !important;
@@ -10014,10 +9449,6 @@ html[data-theme="dark"]
         object-position: center;
     }
 
-    /*
-        La tarjeta informativa coincide exactamente con la
-        altura del marco de la imagen.
-    */
 
     .project-showcase-description {
         align-self: start;
@@ -10046,9 +9477,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   TABLETA
-========================================================= */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-showcase-content {
@@ -10116,19 +9544,9 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — SIN RECORTE Y SIN FRANJAS PLANAS
-
-   Corrección final:
-   - La captura principal siempre permanece completa.
-   - El marco mantiene su tamaño estable.
-   - El espacio sobrante usa la misma imagen desenfocada.
-========================================================= */
 
 @media (min-width: 681px) {
-    /*
-        Se revierte el uso de cover que recortaba las capturas.
-    */
+
 
     .project-gallery-media.project-image-landscape img {
         position: relative;
@@ -10141,13 +9559,6 @@ html[data-theme="dark"]
         object-position: center;
     }
 
-    /*
-        El script ya proporciona la imagen actual mediante:
-        --project-image-background
-
-        Esta capa llena completamente el fondo sin modificar
-        ni recortar la captura principal.
-    */
 
     .project-gallery-media.project-image-landscape::before {
         display: block !important;
@@ -10175,10 +9586,6 @@ html[data-theme="dark"]
         transform: scale(1.13);
     }
 
-    /*
-        Capa suave para que el fondo no compita visualmente
-        con la captura principal.
-    */
 
     .project-gallery-media.project-image-landscape::after {
         display: block !important;
@@ -10207,9 +9614,6 @@ html[data-theme="dark"]
             );
     }
 
-    /*
-        Asegura que el contenedor pueda mostrar las capas.
-    */
 
     .project-gallery-media.project-image-landscape {
         position: relative;
@@ -10221,7 +9625,6 @@ html[data-theme="dark"]
     }
 }
 
-/* ---------- Modo oscuro ---------- */
 
 @media (min-width: 681px) {
     html[data-theme="dark"]
@@ -10247,7 +9650,6 @@ html[data-theme="dark"]
     }
 }
 
-/* ---------- Móvil ---------- */
 
 @media (max-width: 680px) {
     .project-gallery-media.project-image-landscape img {
@@ -10259,15 +9661,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — FRAME 4:3 CON SCALE TO FIT
-
-   Rework definitivo del visor:
-   - El frame siempre mantiene la misma proporción.
-   - Todas las imágenes se muestran completas.
-   - No hay fondos desenfocados ni recortes.
-   - La tarjeta de información iguala la altura del frame.
-========================================================= */
 
 @media (min-width: 901px) {
     .project-showcase-layout {
@@ -10284,12 +9677,6 @@ html[data-theme="dark"]
         overflow: hidden;
     }
 
-    /*
-        La galería se compone de:
-        - frame 4:3;
-        - 12 px de separación;
-        - 18 px para los indicadores.
-    */
 
     .project-gallery {
         align-self: start;
@@ -10346,7 +9733,6 @@ html[data-theme="dark"]
         background: transparent !important;
     }
 
-    /* Elimina todos los fondos extendidos anteriores. */
 
     .project-gallery-media::before,
     .project-gallery-media::after,
@@ -10359,10 +9745,6 @@ html[data-theme="dark"]
         opacity: 0 !important;
     }
 
-    /*
-        Verdadero scale to fit:
-        la captura se adapta al frame sin deformarse ni recortarse.
-    */
 
     .project-gallery-media img,
     .project-gallery-media.project-image-landscape img,
@@ -10384,11 +9766,6 @@ html[data-theme="dark"]
         transform: none !important;
     }
 
-    /*
-        La fila completa mide frame + paginación.
-        El margen inferior descuenta esos 30 px para que la tarjeta
-        tenga exactamente la altura visual del frame.
-    */
 
     .project-showcase-description {
         align-self: stretch !important;
@@ -10412,9 +9789,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   TABLETA — MISMO FRAME, DISEÑO ESTABLE
-========================================================= */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-showcase-content {
@@ -10471,19 +9845,9 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — FRAME ADAPTATIVO PROFESIONAL
-
-   La zona de la galería mantiene un tamaño estable, pero el
-   borde visible pertenece a la imagen y no al viewport.
-   Así no hay franjas dentro del frame ni recorte de contenido.
-========================================================= */
 
 @media (min-width: 901px) {
-    /*
-        Una proporción 3:2 aprovecha mejor las capturas de apps
-        y reduce la altura innecesaria del área de galería.
-    */
+
 
     .project-gallery-viewport,
     .project-gallery-viewport.project-frame-landscape,
@@ -10536,7 +9900,6 @@ html[data-theme="dark"]
         box-shadow: none !important;
     }
 
-    /* Elimina por completo fondos extendidos anteriores. */
 
     .project-gallery-media::before,
     .project-gallery-media::after,
@@ -10549,10 +9912,6 @@ html[data-theme="dark"]
         opacity: 0 !important;
     }
 
-    /*
-        La imagen conserva su proporción natural.
-        Su propio rectángulo funciona como el frame visible.
-    */
 
     .project-gallery-media img,
     .project-gallery-media.project-image-landscape img,
@@ -10579,7 +9938,6 @@ html[data-theme="dark"]
         transform: none !important;
     }
 
-    /* La tarjeta informativa conserva la altura de la zona visual. */
 
     .project-showcase-description {
         align-self: stretch !important;
@@ -10600,9 +9958,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   TABLETA
-========================================================= */
 
 @media (min-width: 681px) and (max-width: 900px) {
     .project-gallery-viewport,
@@ -10651,9 +10006,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MÓVIL
-========================================================= */
 
 @media (max-width: 680px) {
     .project-gallery-viewport,
@@ -10693,12 +10045,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — INFORMACIÓN IGUAL A LA IMAGEN ACTIVA
-
-   JavaScript mide la altura renderizada de la captura activa
-   y la comparte mediante --project-active-image-height.
-========================================================= */
 
 @media (min-width: 681px) {
     .project-showcase-description {
@@ -10735,7 +10081,6 @@ html[data-theme="dark"]
     }
 }
 
-/* En móvil vuelve al flujo vertical natural. */
 
 @media (max-width: 680px) {
     .project-showcase-description {
@@ -10745,13 +10090,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — SCROLL INTERIOR PROFESIONAL
-
-   La tarjeta exterior conserva el borde y la sombra.
-   El desplazamiento ocurre dentro de un contenedor separado
-   del borde redondeado.
-========================================================= */
 
 @media (min-width: 681px) {
     .project-showcase-description {
@@ -10802,10 +10140,6 @@ html[data-theme="dark"]
             transparent;
     }
 
-    /*
-        La descripción conserva su estilo aunque ahora esté
-        dentro del contenedor desplazable.
-    */
 
     .project-description-scroll
     > p:not(.eyebrow) {
@@ -10821,7 +10155,6 @@ html[data-theme="dark"]
         padding-top: 24px;
     }
 
-    /* ---------- Chrome, Edge y Safari ---------- */
 
     .project-description-scroll::-webkit-scrollbar {
         width: 7px;
@@ -10862,9 +10195,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODO OSCURO
-========================================================= */
 
 @media (min-width: 681px) {
     html[data-theme="dark"]
@@ -10897,9 +10227,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MÓVIL — SIN SCROLL INTERNO
-========================================================= */
 
 @media (max-width: 680px) {
     .project-showcase-description {
@@ -10927,23 +10254,12 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — SIMETRÍA DEFINITIVA
-
-   La captura activa y “Sobre el proyecto” comienzan en la
-   misma línea y mantienen exactamente la misma altura.
-========================================================= */
 
 @media (min-width: 681px) {
     .project-showcase-content {
         align-items: start !important;
     }
 
-    /*
-        Antes las imágenes verticales se centraban también en
-        vertical dentro del área de galería. Eso desplazaba su
-        borde superior y rompía la alineación con la información.
-    */
 
     .project-gallery-slide {
         align-items: start !important;
@@ -10964,10 +10280,6 @@ html[data-theme="dark"]
         margin-bottom: 0 !important;
     }
 
-    /*
-        El área interior ocupa todo el panel sin introducir un
-        desplazamiento superior diferente al de la imagen.
-    */
 
     .project-description-scroll {
         margin-top: 8px;
@@ -10975,14 +10287,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CORRECCIÓN VISUAL AISLADA
-   Proyectos, enlace de insignias y carrusel de herramientas
-========================================================= */
-
-/* =========================================================
-   1. PROYECTOS — SIN BANDA DE SOMBRA DETRÁS
-========================================================= */
 
 .projects-carousel,
 .projects-viewport,
@@ -10993,11 +10297,7 @@ html[data-theme="dark"]
 }
 
 .projects-viewport {
-    /*
-        Las tarjetas siguen moviéndose programáticamente al pulsar
-        las flechas, pero la rueda, el trackpad y los gestos táctiles
-        ya no desplazan el carrusel lateralmente.
-    */
+
     overflow-x: hidden !important;
     overflow-y: hidden !important;
 
@@ -11014,14 +10314,10 @@ html[data-theme="dark"]
 
 .project-card:hover,
 .project-card-dynamic:hover {
-    /*
-        La interacción se comunica mediante el borde y el ligero
-        desplazamiento existente, no mediante una sombra extensa.
-    */
+
     box-shadow: none !important;
 }
 
-/* Modo oscuro: borde un poco más definido sin crear una sombra. */
 
 html[data-theme="dark"] .project-card {
     border-color:
@@ -11036,10 +10332,6 @@ html[data-theme="dark"] .project-card:hover {
     border-color: var(--accent);
 }
 
-
-/* =========================================================
-   2. INSIGNIAS — ENLACE LIMPIO EN MODO OSCURO
-========================================================= */
 
 .badges-section-heading .section-link {
     display: inline-flex;
@@ -11094,10 +10386,6 @@ html[data-theme="dark"]
 }
 
 
-/* =========================================================
-   3. HERRAMIENTAS — SIN RECTÁNGULO DETRÁS DE LAS CARDS
-========================================================= */
-
 .profile-rework-tools-carousel,
 .profile-rework-tools-viewport,
 .profile-rework-tools-grid {
@@ -11108,10 +10396,6 @@ html[data-theme="dark"]
     filter: none !important;
 }
 
-/*
-    Los degradados laterales anteriores podían mezclarse y parecer
-    un gran rectángulo detrás de las herramientas.
-*/
 
 .profile-rework-tools-carousel::before,
 .profile-rework-tools-carousel::after,
@@ -11125,11 +10409,6 @@ html[data-theme="dark"]
     box-shadow: none !important;
 }
 
-/*
-    Las tarjetas individuales conservan su borde; se añade una
-    superficie apenas perceptible para separarlas del panel sin
-    crear otra caja grande.
-*/
 
 .profile-rework-tool {
     background:
@@ -11155,13 +10434,6 @@ html[data-theme="dark"] .profile-rework-tool {
     box-shadow: none !important;
 }
 
-/* =========================================================
-   CONTACTO — ETIQUETA EXTERIOR, DISEÑO ORIGINAL
-
-   Solo “CONTACTO” queda fuera de la tarjeta.
-   El título, la descripción y las acciones conservan el
-   diseño y las proporciones originales.
-========================================================= */
 
 .contact-section-eyebrow {
     width: min(
@@ -11172,16 +10444,11 @@ html[data-theme="dark"] .profile-rework-tool {
     margin: 0 0 18px 2px;
 }
 
-/*
-    El h2 ya no tiene el eyebrow encima dentro de la tarjeta.
-    Se elimina únicamente ese espacio superior extra.
-*/
 
 .contact-card .contact-copy h2 {
     margin-top: 0;
 }
 
-/* ---------- Icono SVG de correo ---------- */
 
 .contact-mail-icon {
     width: 22px;
@@ -11200,12 +10467,6 @@ html[data-theme="dark"] .profile-rework-tool {
     }
 }
 
-/* =========================================================
-   CONTACTO — MAYOR ALTURA
-
-   Aumenta únicamente la presencia vertical del bloque oscuro.
-   No modifica el ancho, las columnas ni el tamaño de las cards.
-========================================================= */
 
 @media (min-width: 981px) {
     .contact-card {
@@ -11219,12 +10480,6 @@ html[data-theme="dark"] .profile-rework-tool {
     }
 }
 
-/* =========================================================
-   MODAL DE PROYECTOS — FONDO EXCLUSIVO PARA PORTRAIT
-
-   Solo las capturas verticales reciben un fondo visual.
-   Las capturas horizontales conservan su diseño actual.
-========================================================= */
 
 .project-gallery-media.project-image-portrait {
     position: relative;
@@ -11263,10 +10518,6 @@ html[data-theme="dark"] .profile-rework-tool {
             rgba(24, 24, 38, 0.08) !important;
 }
 
-/*
-    Resplandor decorativo suave.
-    Se reactiva únicamente para portrait.
-*/
 
 .project-gallery-media.project-image-portrait::before {
     display: block !important;
@@ -11302,10 +10553,6 @@ html[data-theme="dark"] .profile-rework-tool {
     transform: none !important;
 }
 
-/*
-    Capa interior para dar profundidad sin competir con
-    la captura principal.
-*/
 
 .project-gallery-media.project-image-portrait::after {
     display: block !important;
@@ -11328,9 +10575,6 @@ html[data-theme="dark"] .profile-rework-tool {
     pointer-events: none;
 }
 
-/*
-    La imagen vertical permanece completa y centrada.
-*/
 
 .project-gallery-media.project-image-portrait img {
     position: relative;
@@ -11351,10 +10595,6 @@ html[data-theme="dark"] .profile-rework-tool {
             rgba(13, 14, 24, 0.16) !important;
 }
 
-
-/* =========================================================
-   MODO OSCURO
-========================================================= */
 
 html[data-theme="dark"]
 .project-gallery-media.project-image-portrait {
@@ -11413,10 +10653,6 @@ html[data-theme="dark"]
 }
 
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
 @media (max-width: 680px) {
     .project-gallery-media.project-image-portrait {
         border-radius: 20px !important;
@@ -11427,12 +10663,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — REWORK PROFESIONAL Y SIN REDUNDANCIAS
-
-   El documento es el protagonista. Se eliminan el perfil
-   duplicado, las etiquetas innecesarias y los chips repetidos.
-========================================================= */
 
 .cv-card.cv-rework-card {
     display: grid !important;
@@ -11465,8 +10695,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Texto y acciones ---------- */
-
 .cv-rework-copy {
     display: flex !important;
     align-items: flex-start;
@@ -11498,11 +10726,6 @@ html[data-theme="dark"]
     line-height: 1.78 !important;
 }
 
-
-/*
-    Información útil sobre el archivo. No funciona como lista de
-    contenidos y evita repetir Perfil, Proyectos o Certificaciones.
-*/
 
 .cv-document-meta {
     display: flex;
@@ -11539,8 +10762,6 @@ html[data-theme="dark"]
     min-width: 150px;
 }
 
-
-/* ---------- Escenario de la vista previa ---------- */
 
 .cv-preview-shell.cv-compact-panel.cv-rework-preview {
     position: relative;
@@ -11613,8 +10834,6 @@ html[data-theme="dark"]
     left: -85px;
 }
 
-
-/* ---------- Documento ---------- */
 
 .cv-thumbnail-button.cv-rework-preview-button {
     display: grid !important;
@@ -11693,8 +10912,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Hover discreto ---------- */
-
 .cv-rework-document-frame
 .cv-thumbnail-hover {
     inset: auto 12px 12px !important;
@@ -11746,10 +10963,6 @@ html[data-theme="dark"]
 }
 
 
-/* =========================================================
-   MODO OSCURO
-========================================================= */
-
 html[data-theme="dark"]
 .cv-card.cv-rework-card {
     background:
@@ -11791,10 +11004,6 @@ html[data-theme="dark"]
         0 5px 18px rgba(0, 0, 0, 0.22) !important;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 980px) {
     .cv-card.cv-rework-card {
@@ -11857,12 +11066,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — PERFIL RESTAURADO Y VISTA PREVIA COMPACTA
-
-   Recupera nombre, carrera, descripción y áreas de enfoque.
-   Elimina por completo los metadatos PDF · ES · 2026.
-========================================================= */
 
 .cv-card.cv-rework-card.cv-profile-restored {
     grid-template-columns:
@@ -11872,8 +11075,6 @@ html[data-theme="dark"]
     min-height: 520px;
 }
 
-
-/* ---------- Columna izquierda ---------- */
 
 .cv-profile-restored .cv-rework-copy {
     max-width: 380px;
@@ -11892,8 +11093,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Panel derecho ---------- */
-
 .cv-profile-restored
 .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
     display: grid !important;
@@ -11908,8 +11107,6 @@ html[data-theme="dark"]
     padding: clamp(28px, 3.8vw, 42px) !important;
 }
 
-
-/* ---------- Vista previa compacta ---------- */
 
 .cv-profile-restored
 .cv-thumbnail-button.cv-rework-preview-button {
@@ -11943,8 +11140,6 @@ html[data-theme="dark"]
     transform: translateY(-5px) !important;
 }
 
-
-/* ---------- Información profesional ---------- */
 
 .cv-rework-information {
     display: grid;
@@ -11996,10 +11191,6 @@ html[data-theme="dark"]
     font-size: 0.73rem;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 1080px) {
     .cv-card.cv-rework-card.cv-profile-restored {
@@ -12073,16 +11264,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — ACCIONES EN EL PERFIL Y RESUMEN VISUAL
-
-   Los botones terminan el recorrido de lectura del panel derecho.
-   La columna izquierda utiliza el espacio con un resumen breve
-   del contenido del documento.
-========================================================= */
-
-
-/* ---------- Columna izquierda ---------- */
 
 .cv-profile-restored .cv-rework-copy {
     justify-content: center;
@@ -12178,8 +11359,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Panel derecho ---------- */
-
 .cv-rework-information {
     gap: 15px;
 }
@@ -12202,8 +11381,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Modo oscuro ---------- */
-
 html[data-theme="dark"] .cv-summary-item {
     background:
         color-mix(
@@ -12222,8 +11399,6 @@ html[data-theme="dark"] .cv-summary-item:hover {
         );
 }
 
-
-/* ---------- Responsive ---------- */
 
 @media (max-width: 1080px) {
     .cv-profile-actions {
@@ -12264,12 +11439,6 @@ html[data-theme="dark"] .cv-summary-item:hover {
     }
 }
 
-/* =========================================================
-   CV — RESUMEN EN FORMATO TAG
-
-   Formación, Proyectos y Tecnologías vuelven a mostrarse como
-   etiquetas compactas en lugar de tarjetas rectangulares.
-========================================================= */
 
 .cv-summary-grid {
     display: flex !important;
@@ -12342,10 +11511,6 @@ html[data-theme="dark"] .cv-summary-item:hover {
     transform: none !important;
 }
 
-/*
-    La etiqueta más importante recibe un acento discreto,
-    igual que en la versión anterior.
-*/
 
 .cv-summary-item:last-child {
     color: var(--accent);
@@ -12361,8 +11526,6 @@ html[data-theme="dark"] .cv-summary-item:hover {
 }
 
 
-/* ---------- Modo oscuro ---------- */
-
 html[data-theme="dark"] .cv-summary-item,
 html[data-theme="dark"]
 .cv-summary-item.cv-summary-item-wide {
@@ -12374,8 +11537,6 @@ html[data-theme="dark"] .cv-summary-item:last-child {
     background: var(--accent-soft) !important;
 }
 
-
-/* ---------- Responsive ---------- */
 
 @media (max-width: 680px) {
     .cv-summary-grid {
@@ -12393,12 +11554,6 @@ html[data-theme="dark"] .cv-summary-item:last-child {
     }
 }
 
-/* =========================================================
-   CV — MAYOR ALTURA Y TAGS PROFESIONALES
-
-   Los tags nunca se parten: cuando uno no cabe, pasa completo
-   a la siguiente fila. La tarjeta gana presencia vertical.
-========================================================= */
 
 .cv-card.cv-rework-card.cv-profile-restored {
     min-height: 610px !important;
@@ -12412,8 +11567,6 @@ html[data-theme="dark"] .cv-summary-item:last-child {
 }
 
 
-/* ---------- Columna izquierda ---------- */
-
 .cv-profile-restored .cv-rework-copy {
     max-width: 430px;
 }
@@ -12426,8 +11579,6 @@ html[data-theme="dark"] .cv-summary-item:last-child {
     max-width: 405px;
 }
 
-
-/* ---------- Tags ---------- */
 
 .cv-summary-grid {
     display: flex !important;
@@ -12516,8 +11667,6 @@ html[data-theme="dark"] .cv-summary-item:last-child {
 }
 
 
-/* ---------- Modo oscuro ---------- */
-
 html[data-theme="dark"] .cv-summary-item,
 html[data-theme="dark"]
 .cv-summary-item:last-child {
@@ -12533,8 +11682,6 @@ html[data-theme="dark"]
     background: var(--accent-soft) !important;
 }
 
-
-/* ---------- Responsive ---------- */
 
 @media (max-width: 900px) {
     .cv-card.cv-rework-card.cv-profile-restored {
@@ -12565,12 +11712,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — TAGS REFINADOS
-
-   Etiquetas breves, ligeras y no interactivas.
-   Cuando una no cabe, pasa completa a la siguiente fila.
-========================================================= */
 
 .cv-summary-grid {
     display: flex !important;
@@ -12662,10 +11803,6 @@ html[data-theme="dark"]
         ) !important;
 }
 
-/*
-    No son botones ni enlaces, por lo que el hover no cambia
-    su posición ni crea una falsa invitación a hacer clic.
-*/
 
 .cv-summary-item:hover,
 .cv-summary-item.cv-summary-item-accent:hover {
@@ -12673,8 +11810,6 @@ html[data-theme="dark"]
     transform: none !important;
 }
 
-
-/* ---------- Modo oscuro ---------- */
 
 html[data-theme="dark"] .cv-summary-item {
     border-color:
@@ -12708,8 +11843,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Responsive ---------- */
-
 @media (max-width: 680px) {
     .cv-summary-grid {
         max-width: none !important;
@@ -12720,12 +11853,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — BOTONES DEBAJO DE LA VISTA PREVIA
-
-   La vista previa y sus acciones forman una misma columna.
-   La información profesional queda limpia en la derecha.
-========================================================= */
 
 .cv-profile-restored
 .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
@@ -12735,8 +11862,6 @@ html[data-theme="dark"]
     gap: clamp(34px, 4vw, 54px) !important;
 }
 
-
-/* ---------- Columna de documento ---------- */
 
 .cv-preview-column {
     display: flex;
@@ -12761,8 +11886,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Acciones debajo del documento ---------- */
-
 .cv-preview-actions {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -12783,8 +11906,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Información profesional ---------- */
-
 .cv-profile-restored .cv-rework-information {
     align-content: center;
     gap: 18px;
@@ -12794,10 +11915,6 @@ html[data-theme="dark"]
     margin-bottom: 0;
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 1080px) {
     .cv-profile-restored
@@ -12845,12 +11962,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — BOTONES COMPACTOS BAJO EL PREVIEW
-
-   Conserva el layout anterior. Los dos botones ocupan juntos
-   exactamente el ancho visual de la vista previa.
-========================================================= */
 
 .cv-profile-restored
 .cv-preview-column
@@ -12890,8 +12001,6 @@ html[data-theme="dark"]
     font-size: 0.72rem;
 }
 
-
-/* En tamaños intermedios se conserva la simetría horizontal. */
 
 @media (max-width: 1080px) {
     .cv-preview-actions {
@@ -12937,20 +12046,11 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — MÁS ESPACIO ENTRE PREVIEW Y BOTONES
-========================================================= */
 
 .cv-preview-actions {
     margin-top: 10px !important;
 }
 
-/* =========================================================
-   CV — TEXTO COMPLETO SIN RECORTES
-
-   Corrige únicamente la distribución del panel interior.
-   No mueve los botones, tags ni demás elementos.
-========================================================= */
 
 .cv-profile-restored
 .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
@@ -12965,8 +12065,6 @@ html[data-theme="dark"]
 }
 
 
-/* ---------- Preview y botones ---------- */
-
 .cv-profile-restored
 .cv-preview-column
 .cv-thumbnail-frame.cv-rework-document-frame {
@@ -12977,8 +12075,6 @@ html[data-theme="dark"]
     width: min(100%, 205px) !important;
 }
 
-
-/* ---------- Información profesional ---------- */
 
 .cv-profile-restored
 .cv-rework-information,
@@ -13040,10 +12136,6 @@ html[data-theme="dark"]
 }
 
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
 @media (max-width: 1080px) and (min-width: 901px) {
     .cv-profile-restored
     .cv-preview-shell.cv-restored-panel {
@@ -13093,12 +12185,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   CV — INFORMACIÓN ALINEADA CON EL PREVIEW
-
-   El nombre comienza a la misma altura que la parte superior
-   del documento y el resto del contenido continúa debajo.
-========================================================= */
 
 .cv-profile-restored
 .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
@@ -13145,12 +12231,6 @@ html[data-theme="dark"]
     margin-top: 7px !important;
 }
 
-/* =========================================================
-   CV — INFORMACIÓN MÁS COMPACTA
-
-   Acerca la descripción al cargo y la lista a la descripción.
-   El espacio libre restante permanece debajo del contenido.
-========================================================= */
 
 .cv-profile-restored
 .cv-rework-information,
@@ -13176,12 +12256,6 @@ html[data-theme="dark"]
     margin-bottom: 0 !important;
 }
 
-/* =========================================================
-   PERFIL — FORMACIÓN EN CURSO
-
-   Mantiene intacta la tarjeta original. Solo añade universidad
-   e indicador amarillo dentro de la fila Formación.
-========================================================= */
 
 .profile-rework-facts dd.profile-education {
     display: grid;
@@ -13280,12 +12354,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   SELECTOR DE CORREO
-
-   Movido desde index.html para mantener la estructura HTML
-   separada de la presentación. El diseño no fue alterado.
-========================================================= */
 
 .email-choice-dialog {
             --email-surface: rgba(255, 255, 255, 0.985);
@@ -13616,13 +12684,6 @@ html[data-theme="dark"]
         }
 
 
-/* =========================================================
-   GALERÍA DE PROYECTOS — AJUSTE PARA LAPTOPS
-
-   Conserva únicamente los puntos originales y reserva una fila
-   real para evitar que queden recortados en pantallas de poca altura.
-========================================================= */
-
 .project-gallery-pagination {
     display: flex !important;
     align-items: center;
@@ -13645,10 +12706,6 @@ html[data-theme="dark"]
     min-width: 0;
 }
 
-/*
-   En pantallas de laptop con poca altura, la galería utiliza el
-   espacio disponible y reserva una fila para los puntos originales.
-*/
 
 @media (min-width: 901px) and (max-height: 900px) {
     .project-showcase-dialog {
@@ -13714,10 +12771,6 @@ html[data-theme="dark"]
 }
 
 
-/*
-    El botón conserva el aspecto original. Las pulsaciones repetidas
-    reinician un debounce fijo, pero nunca crean otra transición.
-*/
 .theme-button[aria-busy="true"] {
     opacity: 1;
     cursor: pointer;
@@ -13727,15 +12780,9 @@ html[data-theme="dark"]
     touch-action: manipulation;
 }
 
-/* =========================================================
-   MOBILE POLISH — AJUSTES AISLADOS PARA TELÉFONOS
-
-   Todo este bloque se aplica únicamente a pantallas de hasta
-   680 px. La composición de escritorio y laptop no se modifica.
-========================================================= */
 
 @media (max-width: 680px) {
-    /* Evita que textos largos o controles internos ensanchen tarjetas. */
+
     .hero-card,
     .project-card,
     .badge-card,
@@ -13746,7 +12793,7 @@ html[data-theme="dark"]
         min-width: 0;
     }
 
-    /* Las tres pestañas del perfil quedan visibles sin desplazamiento lateral. */
+
     .profile-rework-tabs {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -13771,7 +12818,7 @@ html[data-theme="dark"]
         scroll-snap-align: none !important;
     }
 
-    /* El panel del CV deja de conservar las dos columnas de escritorio. */
+
     .cv-profile-restored
     .cv-preview-shell.cv-compact-panel.cv-rework-preview.cv-restored-panel {
         grid-template-columns: minmax(0, 1fr) !important;
@@ -13887,7 +12934,7 @@ html[data-theme="dark"]
         word-break: normal !important;
     }
 
-    /* Mantiene direcciones y enlaces legibles en teléfonos estrechos. */
+
     .contact-primary-copy strong,
     .contact-social-card strong,
     .profile-rework-facts dd {
@@ -13932,17 +12979,13 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MOBILE REFINEMENT V2 — HEADER Y HERRAMIENTAS
-   Solo modifica teléfonos. Escritorio y laptop permanecen iguales.
-========================================================= */
 
 @media (max-width: 680px) {
     :root {
         --header-height: 82px;
     }
 
-    /* Header móvil flotante, compacto y con una sola superficie. */
+
     .site-header,
     .site-header.scrolled {
         min-height: var(--header-height);
@@ -14040,7 +13083,7 @@ html[data-theme="dark"]
         padding: 12px 14px;
     }
 
-    /* Herramientas: 2 columnas x 2 filas por página, no una pila larga. */
+
     .profile-rework-tools-carousel.has-multiple-pages
     .profile-rework-tools-viewport {
         margin-inline: 24px !important;
@@ -14187,10 +13230,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MOBILE REFINEMENT V3 — NAVEGACIÓN, HERO Y PROYECTOS
-   Este bloque solo se aplica a teléfonos (hasta 680 px).
-========================================================= */
 
 @media (max-width: 680px) {
     :root {
@@ -14201,11 +13240,6 @@ html[data-theme="dark"]
         scroll-margin-top: 92px;
     }
 
-    /* -----------------------------------------------------
-       NAVEGACIÓN MÓVIL
-       Sin la caja blanca larga: logo independiente y controles
-       agrupados en una cápsula compacta.
-    ----------------------------------------------------- */
 
     .site-header,
     .site-header.scrolled {
@@ -14371,10 +13405,6 @@ html[data-theme="dark"]
         background: var(--accent-soft);
     }
 
-    /* -----------------------------------------------------
-       HERO MÓVIL
-       Título → subtítulo → fotografía → botones → enlaces.
-    ----------------------------------------------------- */
 
     .hero-section {
         padding-top: calc(var(--header-height) + 24px) !important;
@@ -14506,10 +13536,6 @@ html[data-theme="dark"]
         white-space: nowrap;
     }
 
-    /* -----------------------------------------------------
-       PROYECTOS MÓVIL
-       Flechas permanentes, estados deshabilitados y puntos.
-    ----------------------------------------------------- */
 
     #proyectos .section-heading {
         margin-bottom: 23px !important;
@@ -14734,7 +13760,7 @@ html[data-theme="dark"]
     }
 }
 
-/* El CTA de contacto es exclusivo del hero móvil. */
+
 .hero-contact-button {
     display: none;
 }
@@ -14749,15 +13775,9 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   AJUSTE FINAL MÓVIL — ENLACES DEL HERO Y NAVEGACIÓN
-   EDITORIAL DE PROYECTOS
-   No modifica tablet, laptop ni escritorio.
-========================================================= */
 
 @media (max-width: 680px) {
-    /* Los accesos sociales vuelven a ser enlaces tipográficos,
-       no una tercera fila de botones. */
+
     .quick-links {
         order: 7;
 
@@ -14820,8 +13840,7 @@ html[data-theme="dark"]
         text-underline-offset: 4px;
     }
 
-    /* Navegación editorial del carrusel:
-       contador + progreso segmentado + controles discretos. */
+
     .projects-carousel {
         display: grid !important;
         grid-template-columns: auto minmax(72px, 1fr) auto !important;
@@ -15051,11 +14070,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   FINAL POLISH — PROJECT DETAIL DIALOG
-   Professional presentation on desktop and mobile.
-   Appended last intentionally so it wins over legacy overrides.
-========================================================= */
 
 .project-showcase-dialog {
     width: min(calc(100% - 36px), 1120px) !important;
@@ -15300,7 +14314,7 @@ html[data-theme="dark"]
     background: var(--accent-soft) !important;
 }
 
-/* Refined open/close motion for the project dialog on every device. */
+
 .project-showcase-dialog.is-opening {
     animation: projectDialogOpenPolished 300ms cubic-bezier(.22, 1, .36, 1) both !important;
 }
@@ -15546,12 +14560,6 @@ html[data-theme="dark"]
 }
 
 
-/* =========================================================
-   MOBILE FIX V6 — PORTADAS DE PROYECTOS COMPLETAS
-   El marco adopta la proporción REAL de cada cover.
-   No se recorta, no se fuerza 16:10 y no quedan franjas.
-========================================================= */
-
 @media (max-width: 680px) {
     #proyectos .project-card-media,
     #proyectos .project-card-media.project-image-landscape,
@@ -15600,21 +14608,9 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MOBILE FIX V7 — INTERACCIÓN TÁCTIL + VISOR CV + GALERÍA
-   1) Evita hover/active "pegajoso" en tarjetas de proyecto.
-   2) Mantiene el foco dentro del borde sin levantar la tarjeta.
-   3) En móvil, la galería del proyecto se navega por swipe.
-   4) Compacta el toolbar del CV para mostrar Abrir/Descargar/Cerrar.
-========================================================= */
 
 @media (max-width: 680px) {
-    /* -----------------------------------------------------
-       PROYECTOS — NO LEVANTAR TARJETAS EN PANTALLAS TÁCTILES
-       Safari puede conservar :hover después de tocar un elemento.
-       La tarjeta ya no sube ni escala, por lo que sus esquinas no
-       quedan recortadas por el viewport del carrusel.
-    ----------------------------------------------------- */
+
     #proyectos .project-card,
     #proyectos .project-card-dynamic {
         transform: none !important;
@@ -15637,7 +14633,7 @@ html[data-theme="dark"]
         transform: none !important;
     }
 
-    /* Foco accesible, pero dibujado hacia dentro para que nunca se corte. */
+
     #proyectos .project-card-dynamic:focus-visible {
         outline: 2px solid var(--focus) !important;
         outline-offset: -2px !important;
@@ -15646,11 +14642,7 @@ html[data-theme="dark"]
         transform: none !important;
     }
 
-    /* -----------------------------------------------------
-       DETALLE DE PROYECTO — SWIPE EN VEZ DE FLECHAS
-       Los puntos siguen indicando la posición y siguen siendo
-       clicables; las flechas se conservan en escritorio.
-    ----------------------------------------------------- */
+
     .project-showcase-dialog .project-gallery-button,
     .project-showcase-dialog .project-gallery-previous,
     .project-showcase-dialog .project-gallery-next {
@@ -15667,10 +14659,7 @@ html[data-theme="dark"]
         margin-top: 4px !important;
     }
 
-    /* -----------------------------------------------------
-       VISOR DEL CV — TOOLBAR MÓVIL COMPACTO
-       Los tres controles siempre caben: abrir, descargar y cerrar.
-    ----------------------------------------------------- */
+
     .cv-viewer-header {
         display: flex !important;
         align-items: center !important;
@@ -15791,7 +14780,7 @@ html[data-theme="dark"]
     }
 }
 
-/* El estado hover que sí levanta la tarjeta se reserva a ratón real. */
+
 @media (hover: none), (pointer: coarse) {
     #proyectos .project-card:hover,
     #proyectos .project-card-dynamic:hover,
@@ -15805,17 +14794,9 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MOBILE FIX V8 — CLIP LIMPIO + SWIPE CON INTENCIÓN
-   Ajustes aislados para teléfono. No modifica escritorio/laptop.
-========================================================= */
 
 @media (max-width: 680px) {
-    /*
-       Safari puede mostrar el rectángulo de composición de un pseudo-elemento
-       con blur aunque el padre tenga border-radius + overflow:hidden.
-       En móvil integramos el brillo directamente en el background del card.
-    */
+
     .profile-rework-about {
         background:
             radial-gradient(
@@ -15834,22 +14815,13 @@ html[data-theme="dark"]
         filter: none !important;
     }
 
-    /*
-       El viewport sigue permitiendo scroll vertical con total naturalidad.
-       El JS solo bloquea el gesto cuando detecta una intención horizontal clara.
-    */
+
     .project-showcase-dialog .project-gallery-viewport {
         touch-action: pan-y pinch-zoom !important;
         overscroll-behavior-x: contain !important;
     }
 }
 
-/* =========================================================
-   MOBILE FIX V10 — VISOR CV DENTRO DEL VIEWPORT REAL DE SAFARI
-   Ajuste exclusivo para teléfono. No altera escritorio/laptop.
-   Evita que la barra Abrir / Descargar / Cerrar quede detrás de
-   la interfaz superior de Safari en iPhone con barra arriba.
-========================================================= */
 
 @media (max-width: 680px) {
     .cv-viewer-dialog {
@@ -15867,7 +14839,7 @@ html[data-theme="dark"]
         border-radius: 18px !important;
     }
 
-    /* Fallback + viewport dinámico para Safari moderno. */
+
     @supports (height: 100dvh) {
         .cv-viewer-dialog {
             top: max(8px, env(safe-area-inset-top)) !important;
@@ -15939,12 +14911,6 @@ html[data-theme="dark"]
     }
 }
 
-/* =========================================================
-   MOBILE FIX V12 — CV ADAPTATIVO SIN DOCK FLOTANTE
-   Solo teléfono. Conserva la barra superior compacta/profesional.
-   El dialog completo se mueve dentro del VisualViewport de Safari,
-   así la barra URL nunca se coloca encima de Abrir/Descargar/Cerrar.
-========================================================= */
 
 @media (max-width: 680px) {
     .cv-viewer-dialog {
@@ -15973,7 +14939,7 @@ html[data-theme="dark"]
         overflow: hidden !important;
     }
 
-    /* Barra integrada al documento: no flotante, no superpuesta. */
+
     .cv-viewer-header {
         position: relative !important;
         z-index: 30 !important;
@@ -16146,7 +15112,7 @@ html[data-theme="dark"]
     }
 }
 
-/* SAFARI: BORDES REDONDEADOS */
+
 @media (min-width: 681px) {
     .profile-rework-about {
         background:
@@ -16315,3 +15281,359 @@ html[data-theme="dark"]
     box-shadow:
         0 50px 150px rgba(0, 0, 0, 0.38) !important;
 }
+
+
+.profile-rework-about .profile-meta {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+
+.cv-profile-restored .cv-rework-copy {
+    width: 100%;
+    max-width: 440px !important;
+}
+
+.cv-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+
+    width: 100%;
+    max-width: 430px;
+    margin-top: 28px;
+}
+
+.cv-overview-item {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+    min-height: 82px;
+    padding: 13px 14px;
+
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--border) 92%,
+            transparent
+        );
+    border-radius: 17px;
+
+    color: var(--text);
+    background:
+        color-mix(
+            in srgb,
+            var(--surface-solid) 72%,
+            transparent
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+    cursor: default;
+
+    transition:
+        border-color 180ms ease,
+        background-color 180ms ease,
+        transform 180ms ease;
+}
+
+.cv-overview-icon {
+    display: grid;
+    place-items: center;
+
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--accent) 24%,
+            var(--border)
+        );
+    border-radius: 14px;
+
+    color: var(--accent);
+    background:
+        color-mix(
+            in srgb,
+            var(--accent-soft) 86%,
+            var(--surface-solid)
+        );
+}
+
+.cv-overview-icon svg {
+    width: 23px;
+    height: 23px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.cv-overview-copy {
+    display: grid;
+    gap: 2px;
+
+    min-width: 0;
+}
+
+.cv-overview-copy strong {
+    color: var(--text);
+
+    font-size: 0.76rem;
+    font-weight: 735;
+    line-height: 1.3;
+}
+
+.cv-overview-copy small {
+    color: var(--text-muted);
+
+    font-size: 0.63rem;
+    font-weight: 570;
+    line-height: 1.42;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .cv-overview-item:hover {
+        border-color:
+            color-mix(
+                in srgb,
+                var(--accent) 30%,
+                var(--border)
+            );
+
+        background:
+            color-mix(
+                in srgb,
+                var(--accent-soft) 22%,
+                var(--surface-solid)
+            );
+
+        transform: translateY(-2px);
+    }
+}
+
+
+html[data-theme="dark"] .cv-overview-item {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--border) 88%,
+            transparent
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface-solid) 82%,
+            transparent
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+html[data-theme="dark"] .cv-overview-icon {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--accent) 30%,
+            var(--border)
+        );
+
+    color: var(--accent);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--accent-soft) 74%,
+            var(--surface-solid)
+        );
+}
+
+html[data-theme="dark"] .cv-overview-copy small {
+    color: var(--text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html[data-theme="dark"] .cv-overview-item:hover {
+        background:
+            color-mix(
+                in srgb,
+                var(--accent-soft) 26%,
+                var(--surface-solid)
+            );
+    }
+}
+
+
+@media (max-width: 900px) {
+    .cv-profile-restored .cv-rework-copy {
+        max-width: 620px !important;
+    }
+
+    .cv-overview-grid {
+        max-width: 560px;
+    }
+}
+
+
+@media (max-width: 680px) {
+    .cv-overview-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+
+        max-width: none;
+        margin-top: 24px;
+    }
+
+    .cv-overview-item {
+        grid-template-columns: 44px minmax(0, 1fr);
+
+        min-height: 72px;
+        padding: 11px 12px;
+        border-radius: 15px;
+    }
+
+    .cv-overview-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+    }
+
+    .cv-overview-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .cv-overview-copy strong {
+        font-size: 0.75rem;
+    }
+
+    .cv-overview-copy small {
+        font-size: 0.62rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .cv-overview-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .cv-overview-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cv-overview-item {
+        transition: none;
+    }
+}
+
+@media (min-width: 681px) {
+    .project-showcase-description {
+        margin-top: var(--project-active-image-offset, 0px) !important;
+    }
+}
+
+@media (max-width: 680px) {
+    .project-showcase-description {
+        margin-top: 0 !important;
+    }
+}
+
+@media (min-width: 901px) {
+    .project-showcase-dialog {
+        width: min(calc(100% - 32px), 1240px);
+        height: auto;
+        max-height: calc(100vh - 24px);
+        overflow: auto;
+    }
+
+    .project-showcase-layout {
+        height: auto;
+        min-height: 0;
+        gap: 18px;
+        padding: clamp(30px, 3vw, 38px);
+    }
+
+    .project-showcase-content {
+        grid-template-columns:
+            minmax(0, 1.95fr)
+            minmax(280px, 0.60fr);
+        gap: 18px;
+    }
+
+    .project-gallery-viewport.project-frame-landscape {
+        width: 100%;
+    }
+
+    .project-showcase-description {
+        max-height: var(--project-active-image-height, none);
+    }
+}
+
+@media (min-width: 681px) {
+    .project-description-scroll {
+        width: calc(100% + 14px) !important;
+        margin-right: -14px !important;
+        padding-right: 26px !important;
+        scrollbar-gutter: auto !important;
+        scrollbar-width: thin !important;
+        scrollbar-color:
+            color-mix(in srgb, var(--text-muted) 30%, transparent)
+            transparent !important;
+    }
+
+    .project-description-scroll::-webkit-scrollbar {
+        width: 5px !important;
+    }
+
+    .project-description-scroll::-webkit-scrollbar-track {
+        margin-block: 10px !important;
+        background: transparent !important;
+    }
+
+    .project-description-scroll::-webkit-scrollbar-thumb {
+        border: 0 !important;
+        border-radius: 999px !important;
+        background:
+            color-mix(
+                in srgb,
+                var(--text-muted) 30%,
+                transparent
+            ) !important;
+    }
+
+    .project-description-scroll::-webkit-scrollbar-thumb:hover {
+        background:
+            color-mix(
+                in srgb,
+                var(--accent) 62%,
+                transparent
+            ) !important;
+    }
+
+    html[data-theme="dark"] .project-description-scroll {
+        scrollbar-color:
+            rgba(255, 255, 255, 0.18)
+            transparent !important;
+    }
+
+    html[data-theme="dark"]
+    .project-description-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.18) !important;
+    }
+}
+
