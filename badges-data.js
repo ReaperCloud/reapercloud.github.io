@@ -450,5 +450,41 @@ window.PORTFOLIO_BADGES = [
             en: "Outstanding"
         },
         url: "https://www.credly.com/badges/b979d3cd-f2af-4617-af1c-ef3bb8f5d943/public_url"
+    },
+
+
+    {
+        id: "aws-academy-graduate-cloud-security-foundations-tra",
+        title: {
+            es: "AWS Academy Fundamentos de Seguridad en la Nube",
+            en: "AWS Academy Cloud Security Foundations"
+        },
+        issuer: "AWS Academy",
+        image: "./assets/images/badges/aws-academy-graduate-cloud-security-foundations-tra.png",
+        category: "cybersecurity",
+        featured: false,
+        distinction: {
+            es: "Formación completada",
+            en: "Trained"
+        },
+        url: "https://www.credly.com/badges/63168eb5-8e95-4631-8b36-1ca06bc553d7/public_url"
+    },
+    
+    {
+        id: "cisco-network-defense",
+        title: {
+            es: "Defensa de Redes",
+            en: "Network Defense"
+        },
+        issuer: "Cisco Networking Academy",
+        image: "./assets/images/badges/network-defense.png",
+        category: "cybersecurity",
+        featured: false,
+        distinction: {
+            es: "Verificado",
+            en: "Verified"
+        },
+        url: "https://www.credly.com/badges/69c91edf-c40f-4675-b201-3d3e803c5ead/public_url"
     }
+
 ];
